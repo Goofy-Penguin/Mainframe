@@ -1,0 +1,80 @@
+﻿{
+    "configurations": [
+        {
+            "name": "x32-Debug",
+            "generator": "Ninja",
+            "configurationType": "Debug",
+            "inheritEnvironments": [ "msvc_x86_x64" ],
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "-v",
+            "ctestCommandArgs": "",
+            "variables": [
+                {
+                    "name": "glfw3_DIR",
+                    "value": "E:/AutoSync/Programming/Libs/glfw-3.3/src",
+                    "type": "PATH"
+                },
+                {
+                    "name": "GLFW_BUILD_TESTS",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "GLFW_BUILD_EXAMPLES",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "GLFW_BUILD_DOCS",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "CMAKE_INSTALL_PREFIX",
+                    "value": "G:/CMakeData/install/x32-Debug",
+                    "type": "PATH"
+                }
+            ]
+        },
+        {
+            "name": "x64-Debug",
+            "generator": "Ninja",
+            "configurationType": "Debug",
+            "inheritEnvironments": [ "msvc_x86_x64" ],
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "-v",
+            "ctestCommandArgs": "",
+            "variables": [
+                {
+                    "name": "glfw3_DIR",
+                    "value": "E:/AutoSync/Programming/Libs/glfw-3.3/src",
+                    "type": "PATH"
+                },
+                {
+                    "name": "GLFW_BUILD_TESTS",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "GLFW_BUILD_EXAMPLES",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "GLFW_BUILD_DOCS",
+                    "value": "False",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "CMAKE_INSTALL_PREFIX",
+                    "value": "G:/CMakeData/install/x64-Debug",
+                    "type": "PATH"
+                }
+            ]
+        }
+    ]
+}
