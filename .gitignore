@@ -285,6 +285,7 @@ tags
 
 #cmake
 CMakeFiles/*
+CMakeSettings.json
 cmake_install.cmake
 MakeFile
 build/*
