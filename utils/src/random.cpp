@@ -4,17 +4,19 @@
 
 namespace mainframe {
 	namespace utils {
-		void random::init() {
-			static bool did = false;
-			if (did) return;
+		namespace random {
+			void init() {
+				static bool did = false;
+				if (did) return;
 
-			did = true;
-			srand(static_cast<unsigned int>(std::time(nullptr)));
-		}
+				did = true;
+				srand(static_cast<unsigned int>(std::time(nullptr)));
+			}
 
-		int random::get(int min, int max) {
-			init();
-			return rand() % (max - min) + min;
+			int get(int min, int max) {
+				init();
+				return rand() % (max - min) + min;
+			}
 		}
 	}
 }

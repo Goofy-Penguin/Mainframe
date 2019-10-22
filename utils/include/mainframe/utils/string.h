@@ -5,10 +5,10 @@
 
 namespace mainframe {
 	namespace utils {
-		class string {
-		public:
-			static std::vector<std::string> split(const std::string& haystack, char needle);
-			static std::vector<std::string> split(const std::string& haystack, const std::string& needle);
+		namespace string {
+			std::vector<std::string> split(const std::string& haystack, char needle);
+			std::vector<std::string> split(const std::string& haystack, const std::string& needle);
+			std::string replace(const std::string& haystack, const std::string& needle, const std::string& replacement);
 		};
 	}
 }
