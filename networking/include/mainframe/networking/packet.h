@@ -12,7 +12,7 @@ namespace mainframe {
 
 		class Packet {
 		private:
-			std::vector<uint8_t> buffer;
+			std::vector<uint8_t> _buffer;
 			size_t pos = 0;
 
 			template <typename T>
@@ -40,7 +40,7 @@ namespace mainframe {
 					return ret;
 				}
 
-				const T* ret = reinterpret_cast<const T*>(&buffer.at(pos));
+				const T* ret = reinterpret_cast<const T*>(&_buffer.at(pos));
 				pos += sizeof(const T);
 
 				return *ret;
@@ -58,25 +58,36 @@ namespace mainframe {
 
 			template<>
 			std::string read() {
-				auto len = read<size_t>();
-				return {buffer.begin() + pos, buffer.begin() + pos + len};
+				auto len = read<uint16_t>();
+				pos += len;
+				return {_buffer.begin() + pos - len, _buffer.begin() + pos};
 			}
 
 			std::string readAllString() {
-				return {buffer.begin() + pos, buffer.end()};
+				auto len = size() - pos;
+				pos += len;
+				return {_buffer.end() - len, _buffer.end()};
 			}
 
+			bool readToFile(const std::string& filename);
+			bool writeFromFile(const std::string& filename);
+
+			const std::vector<uint8_t>& buffer();
 			bool seek(size_t offset);
-			inline size_t begin() { return 0; }
-			inline size_t tell() { return pos; }
-			inline size_t end() { return buffer.size(); }
-			inline const std::vector<uint8_t>& readAll() { return buffer; }
+			inline size_t begin() const { return 0; }
+			inline size_t tell() const { return pos; }
+			inline size_t end() const { return _buffer.size(); }
+			inline size_t size() const { return _buffer.size(); }
+			inline auto data() { return _buffer.data(); }
+			inline auto data() const { return _buffer.data(); }
+			inline bool empty() const { return _buffer.empty(); }
+			inline const std::vector<uint8_t>& readAll() const { return _buffer; }
 
 			template<class T>
 			void write(const T& obj) {
 				auto ptr = reinterpret_cast<const uint8_t*>(&obj);
 
-				buffer.insert(buffer.begin() + pos, ptr, ptr + sizeof(const T));
+				_buffer.insert(_buffer.begin() + pos, ptr, ptr + sizeof(const T));
 				pos += sizeof(const T);
 			}
 
@@ -90,9 +101,9 @@ namespace mainframe {
 				write(arr.begin(), arr.end());
 			}
 
-			template<class T>
-			void write(T begin, T end, bool writeLength = true) {
-				if (writeLength) write(std::distance(begin, end));
+			template<class IterType>
+			void write(IterType begin, IterType end, bool writeLength = true) {
+				if (writeLength) write(static_cast<uint16_t>(std::distance(begin, end)));
 
 				std::for_each(begin, end, [this](const auto& row) {
 					write(row);
