@@ -2,6 +2,8 @@
 
 #ifdef _MSC_VER
 #include <windows.h>
+#include <locale>
+#include <codecvt>
 #endif
 
 namespace mainframe {
@@ -142,6 +144,13 @@ namespace mainframe {
 			} THREADNAME_INFO;
 #pragma pack(pop)
 
+			// sub function due object unwinding with __try
+			void _setName(uint32_t threadId, const std::string& name) {
+				std::wstring wide;
+				wide.assign(name.begin(), name.end());
+				SetThreadDescription(GetCurrentThread(), wide.c_str());
+			}
+
 			void setName(uint32_t threadId, const std::string& name) {
 				THREADNAME_INFO info;
 				info.dwType = 0x1000;
@@ -153,12 +162,29 @@ namespace mainframe {
 					RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
 				} __except (EXCEPTION_EXECUTE_HANDLER) {
 				}
+
+				_setName(threadId, name);
 			}
 
 			void setName(std::thread* thread, const std::string& name) {
 				setName(GetThreadId(static_cast<HANDLE>(thread->native_handle())), name);
 			}
 
+#pragma warning( push )
+#pragma warning( disable: 4996)
+			std::string getName() {
+				PWSTR wide;
+				if (FAILED(GetThreadDescription(GetCurrentThread(), &wide))) {
+					return "";
+				}
+
+				std::wstring retw = wide;
+				LocalFree(wide);
+
+				std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+				return converter.to_bytes(retw);
+			}
+#pragma warning( pop )
 #else
 			void setName(pthread_t threadId, const std::string& name) {
 				pthread_setname_np(threadId, name.c_str());
@@ -167,6 +193,15 @@ namespace mainframe {
 			void setName(std::thread* thread, const std::string& name) {
 				auto handle = thread->native_handle();
 				pthread_setname_np(handle, name.c_str());
+			}
+
+			std::string getName() {
+				char threadname[256] {0};
+
+				auto handle = thread->native_handle();
+				pthread_getname_np(handle, threadname, sizeof(threadname));
+
+				return threadname;
 			}
 #endif
 		}

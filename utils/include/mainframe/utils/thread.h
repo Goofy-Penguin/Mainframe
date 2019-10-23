@@ -30,6 +30,7 @@ namespace mainframe {
 
 			unsigned long getId();
 
+			std::string getName();
 			void setName(const std::string& name);
 			void setName(std::thread* thread, const std::string& name);
 #ifdef _MSC_VER
