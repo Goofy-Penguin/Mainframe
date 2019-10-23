@@ -127,8 +127,11 @@ namespace mainframe {
 			if (!check())
 				return 1;
 
-			struct hostent* phe;
-			phe = gethostbyname(host);
+#pragma warning( push )
+#pragma warning( disable: 4996)
+			hostent* phe = gethostbyname(host);
+#pragma warning( pop )
+
 			if (phe == nullptr)
 				return 2;
 

@@ -12,7 +12,7 @@ namespace mainframe {
 
 		class Packet {
 		private:
-			std::vector<uint8_t> _buffer;
+			std::vector<uint8_t> buffer;
 			size_t pos = 0;
 
 			template <typename T>
@@ -30,20 +30,21 @@ namespace mainframe {
 			template<class T>
 			T read() {
 				if constexpr (is_container<T>::value) {
-					auto elms = read<size_t>();
+					auto elms = read<uint16_t>();
 
 					T ret;
-					for (size_t i = 0; i < elms; i++) {
+					for (uint16_t i = 0; i < elms; i++) {
 						ret.push_back(read<is_container<T>::subtype>());
 					}
 
 					return ret;
 				}
 
-				const T* ret = reinterpret_cast<const T*>(&_buffer.at(pos));
+				T ret;
+				memcpy(&ret, &buffer.at(pos), sizeof(T));
 				pos += sizeof(const T);
 
-				return *ret;
+				return ret;
 			}
 
 			template<class T, size_t SIZE>
@@ -60,34 +61,33 @@ namespace mainframe {
 			std::string read() {
 				auto len = read<uint16_t>();
 				pos += len;
-				return {_buffer.begin() + pos - len, _buffer.begin() + pos};
+				return {buffer.begin() + pos - len, buffer.begin() + pos};
 			}
 
 			std::string readAllString() {
 				auto len = size() - pos;
 				pos += len;
-				return {_buffer.end() - len, _buffer.end()};
+				return {buffer.end() - len, buffer.end()};
 			}
 
 			bool readToFile(const std::string& filename);
 			bool writeFromFile(const std::string& filename);
 
-			const std::vector<uint8_t>& buffer();
 			bool seek(size_t offset);
 			inline size_t begin() const { return 0; }
 			inline size_t tell() const { return pos; }
-			inline size_t end() const { return _buffer.size(); }
-			inline size_t size() const { return _buffer.size(); }
-			inline auto data() { return _buffer.data(); }
-			inline auto data() const { return _buffer.data(); }
-			inline bool empty() const { return _buffer.empty(); }
-			inline const std::vector<uint8_t>& readAll() const { return _buffer; }
+			inline size_t end() const { return buffer.size(); }
+			inline size_t size() const { return buffer.size(); }
+			inline auto data() { return buffer.data(); }
+			inline auto data() const { return buffer.data(); }
+			inline bool empty() const { return buffer.empty(); }
+			inline const std::vector<uint8_t>& readAll() const { return buffer; }
 
 			template<class T>
 			void write(const T& obj) {
 				auto ptr = reinterpret_cast<const uint8_t*>(&obj);
 
-				_buffer.insert(_buffer.begin() + pos, ptr, ptr + sizeof(const T));
+				buffer.insert(buffer.begin() + pos, ptr, ptr + sizeof(const T));
 				pos += sizeof(const T);
 			}
 

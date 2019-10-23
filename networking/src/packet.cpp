@@ -11,15 +11,11 @@ namespace mainframe {
 			return true;
 		}
 
-		const std::vector<uint8_t>& Packet::buffer() {
-			return _buffer;
-		}
-
 		bool Packet::readToFile(const std::string& filename) {
 			std::fstream  file(filename, std::ios::out | std::ios::binary | std::ios::trunc);
 			if (!file.is_open()) return false;
 
-			file.write(reinterpret_cast<char*>(_buffer.data()) + pos, size() - pos);
+			file.write(reinterpret_cast<char*>(buffer.data()) + pos, size() - pos);
 			file.close();
 
 			return true;
@@ -37,7 +33,7 @@ namespace mainframe {
 			file.read(fileData.data(), size);
 			file.close();
 
-			_buffer.insert(_buffer.begin(), fileData.begin(), fileData.end());
+			buffer.insert(buffer.begin(), fileData.begin(), fileData.end());
 
 			return true;
 		}

@@ -58,7 +58,7 @@ void testSeek() {
 		fmt::print("test success for seek\n");
 		return;
 	}
-	
+
 	failed = true;
 	fmt::print("test failed for seek\n");
 }
