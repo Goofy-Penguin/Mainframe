@@ -1,7 +1,9 @@
 ﻿#pragma once
 
 #include <string>
+#include <cstring>
 #include <vector>
+#include <array>
 #include <algorithm>
 
 namespace mainframe {
@@ -23,7 +25,6 @@ namespace mainframe {
 			template <typename T, typename Alloc>
 			struct  is_container<std::vector<T, Alloc> > {
 				static const bool value = true;
-				using subtype = T;
 			};
 
 		public:
@@ -34,31 +35,20 @@ namespace mainframe {
 
 					T ret;
 					for (uint16_t i = 0; i < elms; i++) {
-						ret.push_back(read<is_container<T>::subtype>());
+						ret.push_back(read<typename T::value_type>());
 					}
 
 					return ret;
 				}
 
 				T ret;
-				memcpy(&ret, &buffer.at(pos), sizeof(T));
+				std::memcpy(&ret, &buffer.at(pos), sizeof(T));
 				pos += sizeof(const T);
 
 				return ret;
 			}
 
-			template<class T, size_t SIZE>
-			std::array<T, SIZE> read() {
-				auto ret = {};
-				for (size_t i = 0; i < SIZE; i++) {
-					ret[i] = read();
-				}
-
-				return ret;
-			}
-
-			template<>
-			std::string read() {
+			std::string readString() {
 				auto len = read<uint16_t>();
 				pos += len;
 				return {buffer.begin() + pos - len, buffer.begin() + pos};
@@ -91,7 +81,7 @@ namespace mainframe {
 				pos += sizeof(const T);
 			}
 
-			template<>
+			template<class T>
 			void write(const std::string& obj) {
 				write(obj, true);
 			}

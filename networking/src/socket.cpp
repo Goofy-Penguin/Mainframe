@@ -95,8 +95,12 @@ namespace mainframe {
 		bool Socket::accept(Socket* socket) {
 			if (!blocking && !canRead()) return false;
 
+#ifdef _MSC_VER
 			int length = sizeof(socket->addr);
-			socket->sock = static_cast<int>(::accept(sock, reinterpret_cast<struct sockaddr*>(&socket->addr), reinterpret_cast<int*>(&length)));
+#else
+			auto length = static_cast<socklen_t>(sizeof(socket->addr));
+#endif
+			socket->sock = static_cast<int>(::accept(sock, reinterpret_cast<struct sockaddr*>(&socket->addr), &length));
 
 			lastCode = socket->sock;
 			if (socket->sock == SOCKET_ERROR)

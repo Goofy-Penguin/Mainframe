@@ -71,7 +71,6 @@ int main() {
 	testType(static_cast<uint16_t>(1));
 	testType(static_cast<uint32_t>(1));
 	testType(static_cast<uint64_t>(1));
-	testType(std::string("hello world"));
 	testType(std::vector<int>{1, 2, 3});
 	testType(std::vector<std::vector<int>>{ {1, 2, 3}});
 

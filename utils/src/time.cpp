@@ -8,20 +8,20 @@
 #include <cstdarg>
 #include <fmt/printf.h>
 
-#ifdef LINUX
-#include <sys/time.h>
-#include <stdio.h>
-#include <unistd.h>
-#else
+#ifdef WIN32
 #include <winsock.h>
 #include <time.h>
 #include <windows.h>
+#else
+#include <sys/time.h>
+#include <stdio.h>
+#include <unistd.h>
+#endif
 
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
 #else
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
-#endif
 #endif
 
 

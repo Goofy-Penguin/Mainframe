@@ -198,8 +198,7 @@ namespace mainframe {
 			std::string getName() {
 				char threadname[256] {0};
 
-				auto handle = thread->native_handle();
-				pthread_getname_np(handle, threadname, sizeof(threadname));
+				pthread_getname_np(getId(), threadname, sizeof(threadname));
 
 				return threadname;
 			}
