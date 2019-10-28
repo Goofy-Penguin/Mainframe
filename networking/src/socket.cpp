@@ -127,13 +127,13 @@ namespace mainframe {
 			return addr.sin_addr.s_addr;
 		}
 
-		int Socket::connect(const char* host, unsigned short port) {
+		int Socket::connect(const std::string& host, unsigned short port) {
 			if (!check())
 				return 1;
 
 #pragma warning( push )
 #pragma warning( disable: 4996)
-			hostent* phe = gethostbyname(host);
+			hostent* phe = gethostbyname(host.c_str());
 #pragma warning( pop )
 
 			if (phe == nullptr)
@@ -195,15 +195,42 @@ namespace mainframe {
 		}
 
 		int Socket::receive(unsigned char* buffer, int size, int spos) {
-			return recv(this->sock, reinterpret_cast<char*>(buffer) + spos, size, 0);
+			return ::recv(this->sock, reinterpret_cast<char*>(buffer) + spos, size, 0);
+		}
+
+		bool Socket::receiveAll(unsigned char* buffer, int size, int spos) {
+			int recv = 0;
+
+			while (recv != size) {
+				int ret = ::recv(this->sock, reinterpret_cast<char*>(buffer) + spos + recv, size - recv, 0);
+				if (ret <= 0)
+					return false;
+
+				recv += ret;
+			}
+
+			return true;
 		}
 
 		int Socket::sendUDP(const unsigned char* buffer, int size, sockaddr_in* to) {
-			return sendto(this->sock, reinterpret_cast<const char*>(buffer), size, 0, reinterpret_cast<struct sockaddr*>(&to), sizeof(struct sockaddr_in));
+			return ::sendto(sock, reinterpret_cast<const char*>(buffer), size, 0, reinterpret_cast<struct sockaddr*>(&to), sizeof(struct sockaddr_in));
 		}
 
-		int Socket::sendRaw(const unsigned char* data, int dataSize) {
-			return send(this->sock, reinterpret_cast<const char*>(data), dataSize, 0);
+		int Socket::send(const unsigned char* data, int dataSize) {
+			return ::send(sock, reinterpret_cast<const char*>(data), dataSize, 0);
+		}
+
+		bool Socket::sendAll(const unsigned char* data, int dataSize) {
+			int sent = 0;
+
+			while (sent != dataSize) {
+				int ret = ::send(sock, reinterpret_cast<const char*>(data) + sent, dataSize - sent, 0);
+				if (ret <= 0) return false;
+
+				sent += ret;
+			}
+
+			return true;
 		}
 	}
 }

@@ -27,6 +27,7 @@ add_subdirectory ("utils")
 add_subdirectory ("math")
 #add_subdirectory ("game") # glew/glfw issues
 add_subdirectory ("networking")
+add_subdirectory ("database")
 
 # samples
 if (build_samples)

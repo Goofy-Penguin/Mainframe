@@ -52,7 +52,7 @@ namespace mainframe {
 			bool bind(unsigned short port);
 			bool listen();
 			bool accept(Socket* socket);
-			int connect(const char* host, unsigned short port);
+			int connect(const std::string& host, unsigned short port);
 			void close();
 
 			uint64_t uAddr();
@@ -61,7 +61,9 @@ namespace mainframe {
 			bool canRead();
 
 			int receive(unsigned char* buffer, int size, int spos = 0);
-			int sendRaw(const unsigned char* data, int dataSize);
+			bool receiveAll(unsigned char* buffer, int size, int spos = 0);
+			int send(const unsigned char* data, int dataSize);
+			bool sendAll(const unsigned char* data, int dataSize);
 			int sendUDP(const unsigned char* buffer, int size, sockaddr_in* to);
 			int receiveUDP(unsigned char* buffer, int size, sockaddr_in* from);
 			void setTimeout(int miliseconds);
