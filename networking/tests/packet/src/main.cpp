@@ -7,8 +7,9 @@ using namespace mainframe::networking;
 bool failed = false;
 
 template<class T>
-void testType(const T& obj) {
+void testType(const T& obj, LengthType ltype = LengthType::None) {
 	Packet p;
+	p.setlengthFormat(ltype);
 
 	p.write(obj);
 	p.seek(p.begin());
@@ -64,6 +65,8 @@ void testSeek() {
 }
 
 int main() {
+	testSeek();
+
 	testType(true);
 	testType(static_cast<float>(1));
 	testType(static_cast<double>(1));
@@ -71,12 +74,20 @@ int main() {
 	testType(static_cast<uint16_t>(1));
 	testType(static_cast<uint32_t>(1));
 	testType(static_cast<uint64_t>(1));
-	testType(std::vector<int>{1, 2, 3});
-	testType(std::vector<std::vector<int>>{ {1, 2, 3}});
 
 	testStringAll("beep boop");
 
-	testSeek();
+	// test all length types for all objects
+	int lengthTypes = static_cast<int>(LengthType::UInt64) - static_cast<int>(LengthType::UInt8);
+	for (int i = 0; i <= lengthTypes; i++) {
+		LengthType ltype = static_cast<LengthType>(static_cast<int>(LengthType::UInt8) + i);
+
+		testType(std::string("hello world"), ltype);
+		testType(std::vector<int>{1, 2, 3}, ltype);
+		testType(std::vector<std::vector<int>>{ {1, 2, 3}}, ltype);
+		testType(std::array<int, 3>{ {1, 2, 3}}, ltype);
+		testType(std::map<std::string, int>{ {"a", 1}, {"b", 2}, {"c", 3}}, ltype);
+	}
 
 	return failed ? -1 : 0;
 }

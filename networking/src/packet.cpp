@@ -4,6 +4,8 @@
 
 namespace mainframe {
 	namespace networking {
+		LengthType Packet::lengthFormatGlobal = LengthType::UInt16;
+
 		bool Packet::seek(size_t offset) {
 			if (offset > end()) return false;
 

@@ -4,6 +4,7 @@
 #include <cstring>
 #include <vector>
 #include <array>
+#include <map>
 #include <algorithm>
 
 namespace mainframe {
@@ -12,46 +13,69 @@ namespace mainframe {
 			System, Big, Little
 		};
 
+		enum class LengthType {
+			None, UInt8, UInt16, UInt32, UInt64
+		};
+
 		class Packet {
 		private:
 			std::vector<uint8_t> buffer;
 			size_t pos = 0;
 
-			template <typename T>
-			struct  is_container {
-				static const bool value = false;
-			};
-
-			template <typename T, typename Alloc>
-			struct  is_container<std::vector<T, Alloc> > {
-				static const bool value = true;
-			};
+			LengthType lengthFormat = LengthType::None;
+			static LengthType lengthFormatGlobal;
 
 		public:
 			template<class T>
 			T read() {
-				if constexpr (is_container<T>::value) {
-					auto elms = read<uint16_t>();
-
-					T ret;
-					for (uint16_t i = 0; i < elms; i++) {
-						ret.push_back(read<typename T::value_type>());
-					}
-
-					return ret;
-				}
-
 				T ret;
-				std::memcpy(&ret, &buffer.at(pos), sizeof(T));
-				pos += sizeof(const T);
-
+				read(ret);
 				return ret;
 			}
 
-			std::string readString() {
-				auto len = read<uint16_t>();
+			template<class T>
+			void read(T& ret) {
+				std::memcpy(&ret, &buffer.at(pos), sizeof(T));
+				pos += sizeof(const T);
+			}
+
+			template<class T>
+			void read(std::vector<T>& ret) {
+				size_t elms = readLength<size_t>();
+
+				while (elms-- > 0) {
+					ret.push_back(read<T>());
+				}
+			}
+
+			template<class T, size_t size>
+			void read(std::array<T, size>& ret) {
+				for (size_t i = 0; i < size; i++) {
+					read<T>(ret[i]);
+				}
+			}
+
+			template<class A, class B>
+			void read(std::pair<A, B>& ret) {
+				ret.first = read<A>();
+				ret.second = read<B>();
+			}
+
+			template<class A, class B>
+			void read(std::map<A, B>& ret) {
+				size_t elms = readLength<size_t>();
+
+				while (elms-- > 0) {
+					ret.emplace(read<std::pair<A, B>>());
+				}
+			}
+
+			void read(std::string& ret) {
+				auto len = readLength<size_t>();
+				auto start = buffer.begin() + pos;
+
+				ret.assign(start, start + len);
 				pos += len;
-				return {buffer.begin() + pos - len, buffer.begin() + pos};
 			}
 
 			std::string readAllString() {
@@ -83,31 +107,92 @@ namespace mainframe {
 
 			template<class T>
 			void write(const std::string& obj) {
-				write(obj, true);
+				write(obj.begin(), obj.end());
 			}
 
 			template<class T>
-			void write(std::vector<T> arr) {
-				write(arr.begin(), arr.end());
+			void write(const std::vector<T>& obj) {
+				write(obj.begin(), obj.end());
+			}
+
+			template<class A, class B>
+			void write(const std::pair<A, B>& obj) {
+				write(obj.first);
+				write(obj.second);
+			}
+
+			template<class A, class B>
+			void write(const std::map<A, B>& obj) {
+				write(obj.begin(), obj.end());
+			}
+
+			template<class T, size_t size>
+			void write(const std::array<T, size>& obj, bool shouldWriteLength = false) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
 			template<class IterType>
-			void write(IterType begin, IterType end, bool writeLength = true) {
-				if (writeLength) write(static_cast<uint16_t>(std::distance(begin, end)));
+			void write(IterType begin, IterType end, bool shouldWriteLength = true) {
+				if (shouldWriteLength) writeLength(std::distance(begin, end));
 
 				std::for_each(begin, end, [this](const auto& row) {
 					write(row);
 				});
 			}
 
-			void write(const std::string& obj, bool writeLength = true) {
-				write(obj.begin(), obj.end(), writeLength);
+			void write(const std::string& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
+			}
+
+
+			template<class T>
+			void writeLength(T size) {
+				auto format = lengthFormat;
+				if (format == LengthType::None)
+					format = lengthFormatGlobal;
+
+				switch (format) {
+					case LengthType::None: throw std::runtime_error("lengthFormat cannot be None");
+					case LengthType::UInt8: write(static_cast<uint8_t>(size)); break;
+					case LengthType::UInt16: write(static_cast<uint16_t>(size)); break;
+					case LengthType::UInt32: write(static_cast<uint32_t>(size)); break;
+					case LengthType::UInt64: write(static_cast<uint64_t>(size)); break;
+					default: throw std::runtime_error("unknown lengthFormat");
+				}
+			}
+
+			template<class T>
+			T readLength() {
+				auto format = lengthFormat;
+				if (format == LengthType::None)
+					format = lengthFormatGlobal;
+
+				switch (format) {
+					case LengthType::None: throw std::runtime_error("lengthFormat cannot be None");
+					case LengthType::UInt8: return static_cast<T>(read<uint8_t>());
+					case LengthType::UInt16: return static_cast<T>(read<uint16_t>());
+					case LengthType::UInt32: return static_cast<T>(read<uint32_t>());
+					case LengthType::UInt64: return static_cast<T>(read<uint64_t>());
+					default: throw std::runtime_error("unknown lengthFormat");
+				}
+			}
+
+			// LengthType::None refers to Global, defaults to UInt16
+			void setlengthFormat(LengthType format) {
+				lengthFormat = format;
+			}
+
+			static void setlengthFormatGlobal(LengthType format) {
+				if (format == LengthType::None) throw std::runtime_error("cannot set LengthType::None as global length, used for global to local override");
+				lengthFormatGlobal = format;
+			}
+
+			LengthType getLengthFormat() const {
+				return lengthFormat == LengthType::None ? lengthFormatGlobal : lengthFormat;
 			}
 
 			template<class T>
 			inline operator T() { return this->read<T>(); }
-
-			inline operator std::string() { return read<std::string>(); }
 		};
 	}
 }
