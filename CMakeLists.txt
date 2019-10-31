@@ -14,7 +14,7 @@ set (build_samples true CACHE BOOL "build samples")
 # libraries
 
 FetchContent_Declare(fmtlib
-	GIT_REPOSITORY git@github.com:fmtlib/fmt.git
+	GIT_REPOSITORY https://github.com/fmtlib/fmt.git
 )
 FetchContent_MakeAvailable(fmtlib)
 
