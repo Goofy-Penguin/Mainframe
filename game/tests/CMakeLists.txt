@@ -1,1 +1,1 @@
-﻿add_subdirectory ("sanitycheck")
+﻿add_subdirectory ("window")
