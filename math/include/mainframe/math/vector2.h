@@ -13,20 +13,14 @@ namespace mainframe {
 		private:
 			using VecType = Vector2_t<NumberType>;
 
-			template<typename T, typename U>
-			struct is_same : std::false_type {};
-
-			template<typename T>
-			struct is_same<T, T> : std::true_type {};
-
-			template<typename T, typename U>
-			static constexpr bool eqTypes() { return is_same<T, U>::value; }
-
 		public:
 			NumberType x = 0, y = 0;
 
 			Vector2_t() = default;
 			Vector2_t(NumberType _x, NumberType _y = 0) : x(_x), y(_y) {}
+
+			template<class T>
+			Vector2_t(Vector2_t<T> other) : x(static_cast<NumberType>(other.x)), y(static_cast<NumberType>(other.y)) {}
 
 			NumberType distance(const VecType& other) const {
 				return std::sqrt(((x - other.x) * (x - other.x)) + ((y - other.y) * (y - other.y)));
@@ -53,7 +47,7 @@ namespace mainframe {
 				return x * other.y - y * other.x;
 			}
 
-			VecType lerp(const VecType& other, NumberType timestep) {
+			VecType lerp(const VecType& other, NumberType timestep) const {
 				VecType ret;
 
 				ret.x = x + (other.x - x) * timestep;
@@ -62,7 +56,7 @@ namespace mainframe {
 				return ret;
 			}
 
-			NumberType atan2() {
+			NumberType atan2() const {
 				return std::atan2(y, x);
 			}
 
@@ -70,7 +64,11 @@ namespace mainframe {
 				return VecType(std::cos(radians), std::sin(radians));
 			}
 
-			VecType rotateAroundOrigin(NumberType rads, const VecType& origin) {
+			bool isNaN() const {
+				return std::isnan(x) || std::isnan(y);
+			}
+
+			VecType rotateAroundOrigin(NumberType rads, const VecType& origin) const {
 				if (rads == 0) return *this;
 
 				VecType u = *this - origin;
