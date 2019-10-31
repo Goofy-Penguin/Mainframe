@@ -144,11 +144,22 @@ namespace mainframe {
 			} THREADNAME_INFO;
 #pragma pack(pop)
 
+			char* _nameBuffer() {
+				thread_local char buffer[256] {0};
+				return buffer;
+			}
+
 			// sub function due object unwinding with __try
 			void _setName(uint32_t threadId, const std::string& name) {
 				std::wstring wide;
 				wide.assign(name.begin(), name.end());
-				SetThreadDescription(GetCurrentThread(), wide.c_str());
+
+				if (name.size() > 254) throw std::runtime_error("buffer not big enough for such a long name");
+				memcpy(_nameBuffer(), name.data(), name.size() + 1);
+
+				// < win10 doesn't work :(
+				// rip all windows servers below 2019
+				//SetThreadDescription(GetCurrentThread(), wide.c_str());
 			}
 
 			void setName(uint32_t threadId, const std::string& name) {
@@ -173,6 +184,10 @@ namespace mainframe {
 #pragma warning( push )
 #pragma warning( disable: 4996)
 			std::string getName() {
+				return _nameBuffer();
+				// < win10 doesn't work :(
+				// rip all windows servers below 2019
+				/*
 				PWSTR wide;
 				if (FAILED(GetThreadDescription(GetCurrentThread(), &wide))) {
 					return "";
@@ -183,6 +198,7 @@ namespace mainframe {
 
 				std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 				return converter.to_bytes(retw);
+				*/
 			}
 #pragma warning( pop )
 #else

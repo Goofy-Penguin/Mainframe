@@ -41,11 +41,11 @@ namespace mainframe {
 				return *this;
 			}
 
-			void operator()(CallbackArgs&&... args) {
+			void operator()(CallbackArgs... args) {
 				// copy it so we can += and -= inside the callback
 				auto callsCopy = calls;
 				for (const auto& callback : callsCopy) {
-					callback(std::forward<CallbackArgs>(args)...);
+					callback(args...);
 				}
 			}
 
