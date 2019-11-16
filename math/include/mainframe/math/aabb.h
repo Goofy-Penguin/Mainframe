@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mainframe/math/vector2.h>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -17,6 +18,7 @@ namespace mainframe {
 			~AABB_t() = default;
 
 			AABB_t(NumberType _x, NumberType _y = 0, NumberType _w = 0, NumberType _h = 0) : x(_x), y(_y), w(_w), h(_h) {}
+			AABB_t(const Vector2_t<NumberType>& pos, const Vector2_t<NumberType>& size) : x(pos.x), y(pos.y), w(size.x), h(size.y) {}
 
 			AABB_t<NumberType> clamp(const AABB_t<NumberType>& boundries) {
 				AABB_t<NumberType> r = *this;

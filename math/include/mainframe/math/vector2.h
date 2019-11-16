@@ -17,7 +17,10 @@ namespace mainframe {
 			NumberType x = 0, y = 0;
 
 			Vector2_t() = default;
-			Vector2_t(NumberType _x, NumberType _y = 0) : x(_x), y(_y) {}
+			Vector2_t(NumberType val) : x(static_cast<NumberType>(val)), y(static_cast<NumberType>(val)) {}
+
+			template <class T>
+			Vector2_t(T _x, T _y) : x(static_cast<NumberType>(_x)), y(static_cast<NumberType>(_y)) {}
 
 			template<class T>
 			Vector2_t(Vector2_t<T> other) : x(static_cast<NumberType>(other.x)), y(static_cast<NumberType>(other.y)) {}
@@ -54,6 +57,13 @@ namespace mainframe {
 				ret.y = y + (other.y - y) * timestep;
 
 				return ret;
+			}
+
+			VecType clamp(const VecType& min, const VecType& max) const {
+				return {
+					std::clamp(x, min.x, max.x),
+					std::clamp(y, min.y, max.y)
+				};
 			}
 
 			NumberType atan2() const {
@@ -101,22 +111,6 @@ namespace mainframe {
 				return VecType(x / other.x, y / other.y);
 			}
 
-			VecType operator* (NumberType scale) const {
-				return VecType(x * scale, y * scale);
-			}
-
-			VecType operator/ (NumberType scale) const {
-				return VecType(x / scale, y / scale);
-			}
-
-			VecType operator+ (NumberType other) const {
-				return VecType(x + other, y + other);
-			}
-
-			VecType operator- (NumberType other) const {
-				return VecType(x - other, y - other);
-			}
-
 			VecType& operator-= (const VecType& other) {
 				x = x - other.x;
 				y = y - other.y;
@@ -138,24 +132,6 @@ namespace mainframe {
 			VecType& operator/= (const VecType& other) {
 				x = x / other.x;
 				y = y / other.y;
-				return *this;
-			}
-
-			VecType& operator*= (NumberType other) {
-				x = x * other;
-				y = y * other;
-				return *this;
-			}
-
-			VecType& operator+= (NumberType other) {
-				x = x + other;
-				y = y + other;
-				return *this;
-			}
-
-			VecType& operator/= (NumberType other) {
-				x = x / other;
-				y = y / other;
 				return *this;
 			}
 
