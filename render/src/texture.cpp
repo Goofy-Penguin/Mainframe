@@ -6,8 +6,9 @@
 
 namespace mainframe {
 	namespace render {
-		Texture::Texture(const Texture& t) {
-
+		TextureHandle::~TextureHandle() {
+			if (glHandle == -1) return;
+			glDeleteTextures(1, &glHandle);
 		}
 
 		Texture::Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol) {
@@ -43,17 +44,12 @@ namespace mainframe {
 			}
 		}
 
-		Texture::~Texture() {
-			if (handle == -1) return;
-			glDeleteTextures(1, &handle);
-		}
-
 		const mainframe::math::Vector2i& Texture::getSize() const {
 			return size;
 		}
 
 		unsigned int Texture::getHandle() const {
-			return handle;
+			return handle->glHandle;
 		}
 
 		void Texture::resize(const mainframe::math::Vector2i& newsize) {
@@ -107,7 +103,8 @@ namespace mainframe {
 		}
 
 		void Texture::bind() {
-			if (handle != -1) return;
+			auto& glhandle = handle->glHandle;
+			if (glhandle != UINT_MAX) return;
 
 			// textures in GL must be power of 2
 			mainframe::math::Vector2i pow = size;
@@ -136,9 +133,9 @@ namespace mainframe {
 				resize(pow);
 			}
 
-			glGenTextures(1, &handle);
+			glGenTextures(1, &glhandle);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, handle);
+			glBindTexture(GL_TEXTURE_2D, glhandle);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -157,23 +154,25 @@ namespace mainframe {
 		void Texture::upload() {
 			checkPixels();
 
-			if (handle == -1) bind();
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) bind();
 
-			glBindTexture(GL_TEXTURE_2D, handle);
+			glBindTexture(GL_TEXTURE_2D, glhandle);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_FLOAT, pixels.data());
 		}
 
 		void Texture::use() {
-			if (handle == -1) {
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) {
 				upload();
 				return;
 			}
 
-			glBindTexture(GL_TEXTURE_2D, handle);
+			glBindTexture(GL_TEXTURE_2D, glhandle);
 		}
 
 		void Texture::use() const {
-			glBindTexture(GL_TEXTURE_2D, handle);
+			glBindTexture(GL_TEXTURE_2D, getHandle());
 		}
 
 		void Texture::clear(const mainframe::render::Color& bgcol) {

@@ -2,25 +2,34 @@
 
 #include <mainframe/math/vector2.h>
 #include <mainframe/render/color.h>
+#include <memory>
 #include <vector>
 #include <string>
+#include <climits>
 
 namespace mainframe {
 	namespace render {
+		class TextureHandle {
+		public:
+			unsigned int glHandle = UINT_MAX;
+
+			TextureHandle() = default;
+			~TextureHandle();
+		};
+
 		class Texture {
 		private:
 			mainframe::math::Vector2i size;
 			std::vector<Color> pixels;
-			unsigned int handle = -1;
+			std::shared_ptr<TextureHandle> handle = std::make_shared<TextureHandle>();
 
 			void checkPixels() const;
 
 		public:
 			Texture() = default;
-			Texture(const Texture& t);
+			Texture(const Texture& t) = default;
 			Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol = Colors::Transparent);
 			Texture(const std::string& fileName);
-			~Texture();
 
 			const mainframe::math::Vector2i& getSize() const;
 			void resize(const mainframe::math::Vector2i& newsize);

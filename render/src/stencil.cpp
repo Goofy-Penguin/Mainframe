@@ -3,7 +3,7 @@
 #include <mainframe/numbers/pi.h>
 
 #include <GL/glew.h>
-#include <freetype-gl/freetype-gl.h>
+#include <freetype-gl.h>
 #include <stdexcept>
 
 namespace mainframe {
@@ -43,8 +43,8 @@ namespace mainframe {
 		void Stencil::pushVertice(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& uv, const Color& col) {
 			vertices.emplace_back(
 				// pos
-				(pos.x + offset.x) / windowSize.x * 2 - 1,
-				((pos.y + offset.y) / windowSize.y * 2 - 1) * -1,
+				pos.x / windowSize.x * 2 - 1,
+				(pos.y  / windowSize.y * 2 - 1) * -1,
 				0,
 
 				// uv
@@ -148,8 +148,10 @@ namespace mainframe {
 			}
 		}
 
-		void Stencil::drawBoxOutlined(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, float borderSize, Color col) {
+		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, float borderSize, Color col) {
 			if (col.a == 0) return;
+
+			pos += offset;
 
 			setTexture(texPixel);
 			setShader(shader2D);
