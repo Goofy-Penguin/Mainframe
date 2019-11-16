@@ -96,6 +96,7 @@ namespace mainframe {
 			inline auto data() const { return buffer.data(); }
 			inline bool empty() const { return buffer.empty(); }
 			inline const std::vector<uint8_t>& readAll() const { return buffer; }
+			void clear();
 
 			template<class T>
 			void write(const T& obj) {

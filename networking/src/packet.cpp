@@ -35,9 +35,14 @@ namespace mainframe {
 			file.read(fileData.data(), size);
 			file.close();
 
-			buffer.insert(buffer.begin(), fileData.begin(), fileData.end());
+			buffer.insert(buffer.begin() + pos, fileData.begin(), fileData.end());
 
 			return true;
+		}
+
+		void Packet::clear() {
+			buffer.clear();
+			pos = 0;
 		}
 	}
 }
