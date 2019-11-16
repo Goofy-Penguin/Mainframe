@@ -3,7 +3,7 @@
 #include <mainframe/numbers/pi.h>
 
 #include <GL/glew.h>
-#include <freetype-gl.h>
+#include <freetype-gl/freetype-gl.h>
 #include <stdexcept>
 
 namespace mainframe {
