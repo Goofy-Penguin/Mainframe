@@ -14,7 +14,7 @@ namespace mainframe {
 		using OnFocusCallback = mainframe::utils::Event<Window&, bool>;
 		using OnCharCallback = mainframe::utils::Event<Window&, unsigned int>;
 		using OnResizeCallback = mainframe::utils::Event<Window&, const math::Vector2i&>;
-		using OnScrollCallback = mainframe::utils::Event<Window&, const math::Vector2i&>;
+		using OnScrollCallback = mainframe::utils::Event<Window&, const math::Vector2i&, const math::Vector2i&>;
 		using OnMouseMoveCallback = mainframe::utils::Event<Window&, const math::Vector2i&>;
 		using OnKeyCallback = mainframe::utils::Event<Window&, unsigned int, unsigned int, unsigned int, unsigned int>;
 		using OnMouseKeyCallback = mainframe::utils::Event<Window&, const math::Vector2i&, unsigned int, unsigned int, unsigned int>;
@@ -61,7 +61,7 @@ namespace mainframe {
 			// @param callback: std::function<void(Window& win, const math::Vector2i& location)>
 			void addOnMouseMove(OnMouseMoveCallback::Func callback);
 
-			// @param callback: std::function<void(Window& win, const math::Vector2i& offset)>
+			// @param callback: std::function<void(Window& win, const math::Vector2i& location, const math::Vector2i& offset)>
 			void addOnScroll(OnScrollCallback::Func callback);
 
 			// @param callback: std::function<void(Window& win, bool hasFocus)>

@@ -66,7 +66,7 @@ namespace mainframe {
 
 			if (pos.x < 0 || pos.y < 0 || pos.x > size.x || pos.y > size.y) return;
 
-			window.onScroll(window, {static_cast<int>(x * 10), static_cast<int>(y * 10)});
+			window.onScroll(window, pos, {static_cast<int>(x * 10), static_cast<int>(y * 10)});
 		}
 
 		void Window::callbacks_mouseMove(GLFWwindow* whandle, double x, double y) {
@@ -77,6 +77,33 @@ namespace mainframe {
 		void Window::callbacks_focus(GLFWwindow* whandle, int focus) {
 			auto& window = glfwHandleToWindow(whandle);
 			window.hasFocus = focus == 1;
+		}
+
+		void Window::addOnResize(OnResizeCallback::Func callback) {
+		}
+
+		void Window::addOnChar(OnCharCallback::Func callback) {
+			onChar += callback;
+		}
+
+		void Window::addOnKey(OnKeyCallback::Func callback) {
+			onKey += callback;
+		}
+
+		void Window::addOnMouseKey(OnMouseKeyCallback::Func callback) {
+			onMouseKey += callback;
+		}
+
+		void Window::addOnMouseMove(OnMouseMoveCallback::Func callback) {
+			onMouseMove += callback;
+		}
+
+		void Window::addOnScroll(OnScrollCallback::Func callback) {
+			onScroll += callback;
+		}
+
+		void Window::addOnFocus(OnFocusCallback::Func callback) {
+			onFocus += callback;
 		}
 
 		void error_callback(int error, const char* description) {
