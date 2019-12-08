@@ -9,6 +9,23 @@
 
 namespace mainframe {
 	namespace render {
+		int& Stencil::getPixelTextureGetRef() {
+			thread_local int ref = 0;
+			return ref;
+		}
+
+		void Stencil::getPixelTextureIncRef() {
+			getPixelTextureGetRef()++;
+		}
+
+		void Stencil::getPixelTextureDecRef() {
+			auto& ref = getPixelTextureGetRef();
+			ref--;
+
+			if (ref > 0) return;
+			getPixelTexture().getSharedHandle()->reset();
+		}
+
 		Texture& Stencil::getPixelTexture() {
 			thread_local Texture pixel = {{1, 1}, Colors::White};
 			return pixel;
@@ -347,7 +364,7 @@ namespace mainframe {
 
 
 		Stencil::~Stencil() {
-			getPixelTexture().getSharedHandle().reset();
+			getPixelTextureDecRef();
 		}
 
 		Stencil::Stencil() {
@@ -384,6 +401,7 @@ namespace mainframe {
 			initShader(shader2D);
 #endif
 
+			getPixelTextureIncRef();
 			auto& pixel = getPixelTexture();
 			if (pixel.getHandle() == -1) {
 				pixel.upload();

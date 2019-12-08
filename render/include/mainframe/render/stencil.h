@@ -118,6 +118,10 @@ namespace mainframe {
 			bool isClipped(const math::Vector2& pos);
 
 
+			void getPixelTextureIncRef();
+			void getPixelTextureDecRef();
+			int& getPixelTextureGetRef();
+
 			Stencil();
 			~Stencil();
 		};
