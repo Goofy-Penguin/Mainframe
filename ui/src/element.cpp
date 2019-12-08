@@ -32,9 +32,15 @@ namespace mainframe {
 		void Element::drawBefore(render::Stencil& stencil) {}
 		void Element::draw(render::Stencil& stencil) {}
 		void Element::drawAfter(render::Stencil& stencil) {}
+
 		void Element::updateBefore() {}
 		void Element::update() {}
 		void Element::updateAfter() {}
+
+		void Element::show() { hidden = false; }
+		void Element::hide() { hidden = true; }
+		bool Element::isHidden() { return hidden; }
+
 		void Element::mouseDown(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {}
 		void Element::mouseUp(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {}
 		void Element::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {}

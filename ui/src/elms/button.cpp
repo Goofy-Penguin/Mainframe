@@ -8,12 +8,20 @@ namespace mainframe {
 			setAlignment(TextAlignment::Center, TextAlignment::Center);
 		}
 
+		void Button::setHoverColor(render::Color color) {
+			hoverColor = color;
+		}
+
+		const render::Color& Button::getHoverColor() {
+			return hoverColor;
+		}
+
 		void Button::drawAfter(render::Stencil& stencil) {}
 		void Button::draw(render::Stencil& stencil) {
 			auto bsize = getBorderSize();
 
 			stencil.drawBoxOutlined({}, getSize(), static_cast<float>(bsize), getBorderColor());
-			stencil.drawBox(static_cast<float>(bsize), getSize() - bsize * 2, getBackColor());
+			stencil.drawBox(static_cast<float>(bsize), getSize() - bsize * 2, getHovering() ? getBackColor() : getHoverColor());
 
 			auto size = getSize();
 

@@ -24,8 +24,10 @@ namespace mainframe {
 
 			const math::Vector2i& getPos() const;
 			const math::Vector2i& getSize() const;
-			void setPos(const math::Vector2i& pos_);
-			void setSize(const math::Vector2i& size_);
+			virtual void setPos(const math::Vector2i& pos_);
+			virtual void setSize(const math::Vector2i& size_);
+
+			void clearChildren();
 
 			void setRef(const std::shared_ptr<ElementContainer>& ref_);
 

@@ -16,6 +16,12 @@ namespace mainframe {
 			parent.reset();
 		}
 
+		void ElementContainer::clearChildren() {
+			while (!children.empty()) {
+				children.front()->remove();
+			}
+		}
+
 		void ElementContainer::addChild(std::shared_ptr<Element>& elm) {
 			elm->setParent(getRef<ElementContainer>());
 		}

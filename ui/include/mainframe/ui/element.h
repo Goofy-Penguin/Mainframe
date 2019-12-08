@@ -13,6 +13,7 @@ namespace mainframe {
 		private:
 			std::string name;
 			bool hovering = false;
+			bool hidden = false;
 
 		public:
 			math::Vector2i getPosAbsolute() const;
@@ -28,6 +29,10 @@ namespace mainframe {
 			virtual void updateBefore();
 			virtual void update();
 			virtual void updateAfter();
+
+			virtual void show();
+			virtual void hide();
+			bool isHidden();
 
 			virtual void mouseDown(const math::Vector2i& mousePos, unsigned int button, unsigned int mods);
 			virtual void mouseUp(const math::Vector2i& mousePos, unsigned int button, unsigned int mods);

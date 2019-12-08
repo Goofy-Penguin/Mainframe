@@ -37,6 +37,8 @@ namespace mainframe {
 		}
 
 		void Scene::drawElm(Element& elm, render::Stencil& stencil) {
+			if (elm.isHidden()) return;
+
 			stencil.pushOffset(elm.getPos());
 			stencil.pushClipping({{0, 0}, elm.getSize()});
 
@@ -99,6 +101,7 @@ namespace mainframe {
 
 		std::shared_ptr<Element> Scene::findElement(const std::shared_ptr<Element>& elmPtr, const math::Vector2i& mousePos, const math::Vector2i& offset, math::Vector2i& offsetOut) {
 			auto& elm = *elmPtr;
+			if (elm.isHidden()) return nullptr;
 
 			auto& pos = elm.getPos();
 			auto& size = elm.getSize();
