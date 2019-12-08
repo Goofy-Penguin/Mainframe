@@ -70,7 +70,7 @@ public:
 	}
 
 	virtual void update() override {
-		if (window.shouldClose()) {
+		if (window.getShouldClose()) {
 			quit();
 		}
 	}

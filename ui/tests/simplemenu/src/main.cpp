@@ -81,7 +81,7 @@ public:
 
 	virtual void tick() override {
 		Window::pollEvents();
-		//cef.tick();
+		cef.tick();
 	}
 
 	virtual void quit() override {
@@ -92,7 +92,7 @@ public:
 	virtual void update() override {
 		scene->update();
 
-		if (window.shouldClose()) {
+		if (window.getShouldClose()) {
 			quit();
 		}
 	}
@@ -103,13 +103,10 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-	/*
-	auto cefret = cef.init();
-	if (cefret != 0) {
+	if (!cef.init()) {
 		fmt::print("Failed to init CEF\n");
-		return cefret;
+		return -1;
 	}
-	*/
 
 	Window w;
 	if (!w.create(1024, 1024, "mainframe.ui.simple")) {
