@@ -71,7 +71,8 @@ namespace mainframe {
 			void addOnFocus(OnFocusCallback::Func callback);
 
 			bool create(int width, int height, const std::string& title = "", bool fullscreen = false, bool resizable = false, int monitorId = -1);
-			bool shouldClose() const;
+			bool getShouldClose() const;
+			void setShouldClose(bool close) const;
 			void close();
 
 			bool getFocus();

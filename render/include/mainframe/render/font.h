@@ -14,6 +14,8 @@ namespace mainframe {
 		public:
 			ftgl::texture_font_t* glHandle = nullptr;
 
+			void reset();
+
 			FontHandle() = default;
 			~FontHandle();
 		};

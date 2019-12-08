@@ -345,6 +345,11 @@ namespace mainframe {
 			deptDisabled = disabled;
 		}
 
+
+		Stencil::~Stencil() {
+			getPixelTexture().getSharedHandle().reset();
+		}
+
 		Stencil::Stencil() {
 #ifndef MAINFRAME_EGL
 			auto initShader = [&](auto& s) {

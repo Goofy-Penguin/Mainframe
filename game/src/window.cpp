@@ -207,9 +207,14 @@ namespace mainframe {
 			handle = nullptr;
 		}
 
-		bool Window::shouldClose() const {
+		bool Window::getShouldClose() const {
 			if (handle == nullptr) return false;
 			return glfwWindowShouldClose(GLFWHANDLE);
+		}
+
+		void Window::setShouldClose(bool close) const {
+			if (handle == nullptr) return;
+			glfwSetWindowShouldClose(GLFWHANDLE, close ? 1 : 0);
 		}
 
 		void Window::setProperty(int key, int value) {

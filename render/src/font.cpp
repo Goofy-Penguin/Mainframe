@@ -26,11 +26,15 @@ namespace mainframe {
 			}
 		}
 
-		FontHandle::~FontHandle() {
+		void FontHandle::reset() {
 			if (glHandle == nullptr) return;
 
 			texture_font_delete(glHandle);
 			glHandle = nullptr;
+		}
+
+		FontHandle::~FontHandle() {
+			reset();
 		}
 
 		void Font::upload() {

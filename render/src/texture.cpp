@@ -6,9 +6,14 @@
 
 namespace mainframe {
 	namespace render {
-		TextureHandle::~TextureHandle() {
+		void TextureHandle::reset() {
 			if (glHandle == -1) return;
 			glDeleteTextures(1, &glHandle);
+			glHandle = -1;
+		}
+
+		TextureHandle::~TextureHandle() {
+			reset();
 		}
 
 		Texture::Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol) {

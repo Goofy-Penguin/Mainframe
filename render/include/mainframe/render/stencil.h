@@ -119,6 +119,7 @@ namespace mainframe {
 
 
 			Stencil();
+			~Stencil();
 		};
 	}
 }

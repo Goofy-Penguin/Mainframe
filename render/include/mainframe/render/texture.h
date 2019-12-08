@@ -13,6 +13,8 @@ namespace mainframe {
 		public:
 			unsigned int glHandle = UINT_MAX;
 
+			void reset();
+
 			TextureHandle() = default;
 			~TextureHandle();
 		};
