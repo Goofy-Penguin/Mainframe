@@ -4,12 +4,17 @@
 	"include/*.hpp"
 )
 
+set (mf_ui_libs "")
+if (use_cef)
+	set (mf_ui_libs "cefdll_wrapper")
+endif()
+
 # dll
 set(output_target mainframe.ui)
 add_library(${output_target} ${source_files})
 target_include_directories(${output_target} PUBLIC "include")
 target_compile_features(${output_target} PRIVATE cxx_std_17)
-target_link_libraries(${output_target} PRIVATE mainframe.math mainframe.render mainframe.game fmt::fmt glfw GLEW::GLEW opengl32 freetype-gl Freetype::Freetype)
+target_link_libraries(${output_target} PRIVATE mainframe.math mainframe.render mainframe.game fmt::fmt glfw GLEW::GLEW opengl32 freetype-gl Freetype::Freetype ${mf_ui_libs})
 
 if (build_tests)
 	add_subdirectory("tests")

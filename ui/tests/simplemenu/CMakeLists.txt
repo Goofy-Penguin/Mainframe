@@ -7,4 +7,4 @@
 set(output_target simplemenuTest)
 add_executable(${output_target} ${source_files})
 target_compile_features(${output_target} PRIVATE cxx_std_17)
-target_link_libraries(${output_target} PRIVATE mainframe.game mainframe.math mainframe.utils mainframe.render mainframe.ui fmt::fmt glfw GLEW::GLEW opengl32 freetype-gl Freetype::Freetype)
+target_link_libraries(${output_target} PRIVATE mainframe.game mainframe.math mainframe.utils mainframe.render mainframe.ui fmt::fmt glfw GLEW::GLEW opengl32 freetype-gl Freetype::Freetype ${mf_ui_libs})
