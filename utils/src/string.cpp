@@ -29,6 +29,10 @@ namespace mainframe {
 					oldpos = nextpos;
 				}
 
+				if (oldpos != haystack.size()) {
+					ret.emplace_back(haystack.begin() + oldpos, haystack.end());
+				}
+
 				return ret;
 			}
 
