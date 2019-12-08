@@ -4,11 +4,15 @@
 
 #include <GL/glew.h>
 #include <freetype-gl/freetype-gl.h>
+#include <freetype-gl/utf8-utils.h>
 #include <stdexcept>
 
 namespace mainframe {
 	namespace render {
-		Texture Stencil::texPixel({1, 1}, Colors::White);
+		Texture& Stencil::getPixelTexture() {
+			thread_local Texture pixel = {{1, 1}, Colors::White};
+			return pixel;
+		}
 
 		Stencil::VerticeData::VerticeData(float _x, float _y, float _z, float _u, float _v, float _r, float _g, float _b, float _a) : x(_x), y(_y), z(_z), u(_u), v(_v), r(_r), g(_g), b(_b), a(_a) {
 
@@ -45,7 +49,7 @@ namespace mainframe {
 				// pos
 				pos.x / windowSize.x * 2 - 1,
 				(pos.y  / windowSize.y * 2 - 1) * -1,
-				0,
+				0.0f,
 
 				// uv
 				uv.x,
@@ -70,7 +74,7 @@ namespace mainframe {
 		void Stencil::drawTriangle(const mainframe::math::Vector2& a, const mainframe::math::Vector2& aUV, const Color& colA, const mainframe::math::Vector2& b, const mainframe::math::Vector2& bUV, const Color& colB, const mainframe::math::Vector2& c, const mainframe::math::Vector2& cUV, const Color& colC) {
 			if (colA.a == 0 && colB.a == 0 && colC.a == 0) return;
 
-			setTexture(texPixel);
+			setTexture(getPixelTexture());
 			setShader(shader2D);
 
 			pushVertice(a + offset, aUV, colA);
@@ -80,7 +84,7 @@ namespace mainframe {
 		}
 
 		void Stencil::drawPolygon(const Polygon& poly) {
-			setTexture(texPixel);
+			setTexture(getPixelTexture());
 			setShader(shader2D);
 
 			auto spos = vertices.size();
@@ -94,7 +98,7 @@ namespace mainframe {
 		void Stencil::drawCircleOutlined(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, float borderSize, Color col) {
 			if (col.a == 0) return;
 
-			setTexture(texPixel);
+			setTexture(getPixelTexture());
 			setShader(shader2D);
 
 			auto radius = size / 2;
@@ -129,7 +133,7 @@ namespace mainframe {
 		void Stencil::drawCircle(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, Color col) {
 			if (col.a == 0) return;
 
-			setTexture(texPixel);
+			setTexture(getPixelTexture());
 			setShader(shader2D);
 
 			auto radius = size / 2;
@@ -153,7 +157,7 @@ namespace mainframe {
 
 			pos += offset;
 
-			setTexture(texPixel);
+			setTexture(getPixelTexture());
 			setShader(shader2D);
 
 			// top 4
@@ -266,7 +270,7 @@ namespace mainframe {
 		}
 
 		void Stencil::drawBox(const math::Vector2& pos, const math::Vector2& size, Color col) {
-			drawTexture(pos, size, texPixel, col);
+			drawTexture(pos, size, getPixelTexture(), col);
 		}
 
 		void Stencil::drawText(const Font& font, const std::string& text, const math::Vector2& pos, Color col, TextAlignment alignx, TextAlignment aligny, float rotation, const mainframe::math::Vector2& origin) {
@@ -300,7 +304,8 @@ namespace mainframe {
 			auto rotOrigin = origin.isNaN() ? pos + tsize / 2 + offset : origin;
 
 			const ftgl::texture_glyph_t* prevGlyph = nullptr;
-			for (auto l : text) {
+			for (size_t i = 0; i < text.size(); i += ftgl::utf8_surrogate_len(text.c_str() + i)) {
+				uint32_t l = ftgl::utf8_to_utf32(text.c_str() + i);
 				if (l == '\n') {
 					curpos.y += lineheight;
 					curpos.x = startpos.x;
@@ -374,8 +379,9 @@ namespace mainframe {
 			initShader(shader2D);
 #endif
 
-			if (texPixel.getHandle() == -1) {
-				texPixel.upload();
+			auto& pixel = getPixelTexture();
+			if (pixel.getHandle() == -1) {
+				pixel.upload();
 			}
 
 			// filled in later by windowSize

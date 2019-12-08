@@ -40,6 +40,7 @@ namespace mainframe {
 			const mainframe::render::Color& getPixel(const mainframe::math::Vector2i& pos) const;
 
 			void setPixel(const mainframe::math::Vector2i& pos, const mainframe::render::Color& col);
+			void setPixels(const mainframe::math::Vector2i& size_, const std::vector<Color>& data);
 
 			void bind();
 			void upload();
@@ -51,6 +52,8 @@ namespace mainframe {
 			std::vector<Color>& data();
 			const std::vector<Color>& data() const;
 			unsigned int getHandle() const;
+			std::shared_ptr<TextureHandle>& getSharedHandle();
+			void setSharedHandle(std::shared_ptr<TextureHandle>& handle_);
 		};
 	}
 }

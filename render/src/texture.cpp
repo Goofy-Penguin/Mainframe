@@ -52,6 +52,14 @@ namespace mainframe {
 			return handle->glHandle;
 		}
 
+		void Texture::setSharedHandle(std::shared_ptr<TextureHandle>& handle_) {
+			handle = handle_;
+		}
+
+		std::shared_ptr<TextureHandle>& Texture::getSharedHandle() {
+			return handle;
+		}
+
 		void Texture::resize(const mainframe::math::Vector2i& newsize) {
 			std::vector<Color> newpixels;
 			newpixels.resize(newsize.y * newsize.x);
@@ -100,6 +108,11 @@ namespace mainframe {
 
 		void Texture::setPixel(const mainframe::math::Vector2i& pos, const mainframe::render::Color& col) {
 			getPixel(pos) = col;
+		}
+
+		void Texture::setPixels(const mainframe::math::Vector2i& size_, const std::vector<Color>& data) {
+			pixels = data;
+			size = size_;
 		}
 
 		void Texture::bind() {

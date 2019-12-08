@@ -63,7 +63,7 @@ namespace mainframe {
 
 			VIABuffer buffer;
 
-			static Texture texPixel;
+			static Texture& getPixelTexture();
 
 			int currentShaderHandle = -1;
 			unsigned int currentTextureHandle = -1;
