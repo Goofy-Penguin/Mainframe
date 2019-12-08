@@ -19,8 +19,8 @@ namespace mainframe {
 			Vector2_t() = default;
 			Vector2_t(NumberType val) : x(static_cast<NumberType>(val)), y(static_cast<NumberType>(val)) {}
 
-			template <class T>
-			Vector2_t(T _x, T _y) : x(static_cast<NumberType>(_x)), y(static_cast<NumberType>(_y)) {}
+			template <class TX, class TY>
+			Vector2_t(TX _x, TY _y) : x(static_cast<NumberType>(_x)), y(static_cast<NumberType>(_y)) {}
 
 			template<class T>
 			Vector2_t(Vector2_t<T> other) : x(static_cast<NumberType>(other.x)), y(static_cast<NumberType>(other.y)) {}
