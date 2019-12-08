@@ -4,6 +4,7 @@
 #include <map>
 #include <mainframe/utils/event.hpp>
 #include <mainframe/math/vector2.h>
+#include <mainframe/game/desktop.h>
 
 struct GLFWwindow;
 
@@ -44,6 +45,8 @@ namespace mainframe {
 			OnScrollCallback onScroll;
 			OnMouseKeyCallback onMouseKey;
 			OnMouseMoveCallback onMouseMove;
+
+			bool initGlew();
 
 		public:
 			// @param callback: std::function<void(Window& win, const math::Vector2i& size)>
@@ -89,12 +92,21 @@ namespace mainframe {
 			void setPos(const math::Vector2i& pos);
 			void setMousePos(const math::Vector2i& pos);
 
+			void setProperty(int key, int value);
+
+			Monitor getMonitor();
+
+			void center();
+
 			void waitForEvents() const;
 			void swapBuffer() const;
 
 			void use();
 
 			static void pollEvents();
+			static void waitEvents();
+
+			~Window();
 		};
 	}
 }

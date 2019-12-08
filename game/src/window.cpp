@@ -3,6 +3,8 @@
 #ifdef WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <Windows.h>
+#undef max
+#undef min
 #endif
 
 #include <GL/glew.h>
@@ -106,13 +108,13 @@ namespace mainframe {
 			onFocus += callback;
 		}
 
-		void error_callback(int error, const char* description) {
-			printf("GLFW error %d: '%s'\n", error, description);
-		}
-
 		bool Window::setTitle(const std::string& title) {
 			glfwSetWindowTitle(GLFWHANDLE, title.c_str());
 			return true;
+		}
+
+		Window::~Window() {
+			close();
 		}
 
 		math::Vector2i Window::getFrameSize() const {
@@ -199,13 +201,69 @@ namespace mainframe {
 		}
 
 		void Window::close() {
+			if (handle == nullptr) return;
+
 			glfwDestroyWindow(GLFWHANDLE);
-			glfwTerminate();
+			handle = nullptr;
 		}
 
 		bool Window::shouldClose() const {
+			if (handle == nullptr) return false;
 			return glfwWindowShouldClose(GLFWHANDLE);
 		}
+
+		void Window::setProperty(int key, int value) {
+			properties[key] = value;
+		}
+
+		void Window::center() {
+			auto mon = getMonitor();
+			setPos(mon.pos + mon.size / 2 - getSize() / 2);
+		}
+
+		void Window::waitEvents() {
+			glfwWaitEvents();
+		}
+
+		Monitor Window::getMonitor() {
+			// https://stackoverflow.com/a/31526753
+			int nmonitors, i;
+			int wx, wy, ww, wh;
+			int mx, my, mw, mh;
+			int overlap, bestoverlap;
+			GLFWmonitor* bestmonitor;
+			GLFWmonitor** monitors;
+			const GLFWvidmode* mode;
+
+			bool primary = false;
+			bestoverlap = 0;
+			bestmonitor = NULL;
+
+			glfwGetWindowPos(GLFWHANDLE, &wx, &wy);
+			glfwGetWindowSize(GLFWHANDLE, &ww, &wh);
+			monitors = glfwGetMonitors(&nmonitors);
+
+			for (i = 0; i < nmonitors; i++) {
+				mode = glfwGetVideoMode(monitors[i]);
+				glfwGetMonitorPos(monitors[i], &mx, &my);
+				mw = mode->width;
+				mh = mode->height;
+
+				overlap =
+					std::max(0, std::min(wx + ww, mx + mw) - std::max(wx, mx)) *
+					std::max(0, std::min(wy + wh, my + mh) - std::max(wy, my));
+
+				if (bestoverlap < overlap) {
+					bestoverlap = overlap;
+					primary = i == 0;
+					bestmonitor = monitors[i];
+				}
+			}
+
+			if (bestmonitor == nullptr) return {};
+			return {bestmonitor};
+		}
+
 
 #ifdef WIN32
 		void __stdcall OpenglDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
@@ -218,13 +276,27 @@ namespace mainframe {
 			printf("OPENGL DEBUG OUTPUT: source 0x%x, type 0x%x, id %d, severity 0x%x, message %s\n", source, type, id, severity, message);
 		}
 
-		bool Window::create(int w, int h, const std::string& title, bool fullscreen, bool resizable, int monitorId) {
-			if (glfwInit() != GL_TRUE) {
-				printf("glfwInit failed!\n");
+		bool Window::initGlew() {
+			glewExperimental = GL_TRUE;
+			GLenum err = glewInit();
+			if (err != GLEW_OK) {
+				printf("glewInit failed!\n");
+				printf("Error: %s\n", glewGetErrorString(err));
 				return false;
 			}
 
-			glfwSetErrorCallback(error_callback);
+			GLenum currentError = glGetError(); // Glew always throws a silly error, this is to filter that.
+			if (!(currentError == GL_NO_ERROR || currentError == GL_INVALID_ENUM)) {
+				printf("something's wrong with glew...%x\n", currentError);
+				return false;
+			}
+
+			glDebugMessageCallback(OpenglDebugCallback, nullptr);
+			return true;
+		}
+
+		bool Window::create(int w, int h, const std::string& title, bool fullscreen, bool resizable, int monitorId) {
+			Desktop::initGlfw();
 
 			GLFWmonitor* mon = nullptr;
 			bool isborderless = properties.find(GLFW_DECORATED) != properties.end() && properties[GLFW_DECORATED] > 0;
@@ -268,12 +340,10 @@ namespace mainframe {
 				glfwWindowHint(pair.first, pair.second);
 			}
 
-			auto glfwHandle = glfwCreateWindow(w, h, "mainframe.game", fullscreen ? mon : nullptr, nullptr);
+			auto glfwHandle = glfwCreateWindow(w, h, title.c_str(), fullscreen ? mon : nullptr, nullptr);
 			glfwSetWindowUserPointer(glfwHandle, this);
 
 			handle = glfwHandle;
-
-			setTitle(title);
 
 			if (glfwHandle == nullptr) {
 				printf("glfwCreateWindow failed!\n");
@@ -303,28 +373,16 @@ namespace mainframe {
 			::SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
 #endif
 
-
 			setCallbacks();
 
 			glfwMakeContextCurrent(glfwHandle);
 			glfwSwapInterval(1); // 0 == infinite FPS, 1 == 60, 2 == 30
 
-			glewExperimental = GL_TRUE;
-			GLenum err = glewInit();
-			if (err != GLEW_OK) {
-				printf("glewInit failed!\n");
-				printf("Error: %s\n", glewGetErrorString(err));
+			if (!initGlew()) {
+				close();
 				return false;
 			}
 
-			GLenum currentError = glGetError(); // Glew always throws a silly error, this is to filter that.
-			if (!(currentError == GL_NO_ERROR || currentError == GL_INVALID_ENUM)) {
-				printf("something's wrong with glew...%x\n", currentError);
-				return false;
-			}
-
-
-			glDebugMessageCallback(OpenglDebugCallback, nullptr);
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
