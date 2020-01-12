@@ -44,7 +44,9 @@ namespace mainframe {
 
 			elm.drawBefore(stencil);
 			elm.draw(stencil);
-			for (auto elm : elm.getChildren()) {
+
+			auto elms = elm.getChildren();
+			for (auto& elm : elms) {
 				drawElm(*elm, stencil);
 			}
 			elm.drawAfter(stencil);
@@ -54,10 +56,16 @@ namespace mainframe {
 		}
 
 		void Scene::updateElm(Element& elm) {
+			auto& invoker = elm.getInvoker();
+			while (invoker.available()) {
+				invoker.pop()();
+			}
+
 			elm.updateBefore();
 			elm.update();
 
-			for (auto elm : elm.getChildren()) {
+			auto elms = elm.getChildren();
+			for (auto& elm : elms) {
 				updateElm(*elm);
 			}
 
@@ -66,7 +74,7 @@ namespace mainframe {
 
 		void Scene::draw(render::Stencil& stencil) {
 			auto elms = getChildren();
-			for (auto elm : elms) {
+			for (auto& elm : elms) {
 				drawElm(*elm, stencil);
 			}
 
@@ -82,7 +90,8 @@ namespace mainframe {
 
 		std::shared_ptr<Element> Scene::findElement(const math::Vector2i& mousePos) {
 			math::Vector2i offsetOut;
-			for (auto elmPtr : getChildren()) {
+			auto elms = getChildren();
+			for (auto& elmPtr : elms) {
 				auto child = findElement(elmPtr, mousePos, {}, offsetOut);
 				if (child != nullptr) return child;
 			}
@@ -91,7 +100,8 @@ namespace mainframe {
 		}
 
 		std::shared_ptr<Element> Scene::findElement(const math::Vector2i& mousePos, math::Vector2i& offsetOut) {
-			for (auto elmPtr : getChildren()) {
+			auto elms = getChildren();
+			for (auto& elmPtr : elms) {
 				auto child = findElement(elmPtr, mousePos, {}, offsetOut);
 				if (child != nullptr) return child;
 			}
@@ -111,7 +121,8 @@ namespace mainframe {
 			if (mousePos.x >= pos.x + size.x) return nullptr;
 			if (mousePos.y >= pos.y + size.y) return nullptr;
 
-			for (auto child : elm.getChildren()) {
+			auto elms = elm.getChildren();
+			for (auto& child : elms) {
 				auto found = findElement(child, mousePos - pos, offset + pos, offsetOut);
 				if (found != nullptr) return found;
 			}

@@ -14,6 +14,14 @@ namespace mainframe {
 			return hovering;
 		}
 
+		utils::ringbuffer<std::function<void()>>& Element::getInvoker() {
+			return invokes;
+		}
+
+		void Element::invoke(std::function<void()> func) {
+			invokes.push(func);
+		}
+
 		void Element::setHovering(bool hovering_) {
 			hovering = hovering_;
 		}
