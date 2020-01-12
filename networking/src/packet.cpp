@@ -7,14 +7,21 @@ namespace mainframe {
 		LengthType Packet::lengthFormatGlobal = LengthType::UInt16;
 
 		bool Packet::seek(size_t offset) {
-			if (offset > end()) return false;
+			if (offset > size()) return false;
 
 			pos = offset;
 			return true;
 		}
 
+		bool Packet::seek(std::vector<uint8_t>::iterator offset) {
+			if (offset > end()) return false;
+
+			pos = std::distance(buffer.begin(), offset);
+			return true;
+		}
+
 		bool Packet::readToFile(const std::string& filename) {
-			std::fstream  file(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+			std::fstream file(filename, std::ios::out | std::ios::binary | std::ios::trunc);
 			if (!file.is_open()) return false;
 
 			file.write(reinterpret_cast<char*>(buffer.data()) + pos, size() - pos);
