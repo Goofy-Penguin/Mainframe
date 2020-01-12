@@ -9,7 +9,7 @@ namespace mainframe {
 		class Value {
 		public:
 			enum class Type : int {
-				None, String, Int, Long, Float, Double
+				None, String, Int, Long, Float, Double, Bool
 			};
 
 		private:
@@ -49,6 +49,8 @@ namespace mainframe {
 
 			Value(const std::string& value, Type _type);
 			Value(const Value& value);
+
+			Type getType() const;
 		};
 	}
 }

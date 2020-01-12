@@ -20,6 +20,9 @@ namespace mainframe {
 			Row(const std::shared_ptr<std::vector<std::string>>& _columns);
 
 			bool has(const std::string& key) const;
+			std::vector<std::string>::iterator find(const std::string& key) const;
+			std::vector<std::string>::iterator begin() const;
+			std::vector<std::string>::iterator end() const;
 
 			const Value& get(const std::string& key) const;
 			const Value& get(size_t index) const;

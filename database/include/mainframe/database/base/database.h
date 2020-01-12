@@ -3,6 +3,7 @@
 #include <string>
 #include <mainframe/networking/socket.h>
 #include <mainframe/database/base/result.h>
+#include <fmt/format.h>
 
 namespace mainframe {
 	namespace database {
@@ -10,6 +11,11 @@ namespace mainframe {
 			std::string name;
 
 		public:
+			template<typename... CallbackArgs>
+			Result execute(const std::string& query, CallbackArgs... args) {
+				return execute(fmt::format(query, args...));
+			}
+
 			virtual Result execute(const std::string& query) = 0;
 			virtual std::vector<std::string> listTables() = 0;
 
