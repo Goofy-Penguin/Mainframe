@@ -6,7 +6,7 @@
 #include <sstream>
 #include <cstring>
 #include <cstdarg>
-#include <fmt/printf.h>
+#include <fmt/format.h>
 
 #ifdef WIN32
 #include <winsock.h>
