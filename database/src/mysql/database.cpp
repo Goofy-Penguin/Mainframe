@@ -1,5 +1,4 @@
 #include <mainframe/database/mysql/database.h>
-#include "..\..\include\mainframe\database\mysql\database.h"
 
 namespace mainframe {
 	namespace database {
