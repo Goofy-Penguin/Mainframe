@@ -33,8 +33,8 @@ namespace mainframe {
 			if (error != 0) throw std::runtime_error("error loading png");
 
 			pixels.resize(h * w);
-			size.x = static_cast<float>(w);
-			size.y = static_cast<float>(h);
+			size.x = static_cast<int>(w);
+			size.y = static_cast<int>(h);
 
 			for (unsigned y = 0; y < h; y++) {
 				for (unsigned x = 0; x < w; x++) {
