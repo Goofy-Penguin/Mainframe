@@ -11,8 +11,9 @@ namespace mainframe {
 		void fillMonitor(Monitor& obj) {
 			glfwGetMonitorPos(obj.handle, &obj.pos.x, &obj.pos.y);
 
-			const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+			const GLFWvidmode* mode = glfwGetVideoMode(obj.handle);
 			obj.size = {mode->width, mode->height};
+			obj.refreshRate = mode->refreshRate;
 		}
 
 		Monitor::Monitor(GLFWmonitor* handle_) : handle(handle_) {
@@ -20,12 +21,27 @@ namespace mainframe {
 		}
 
 		std::vector<Monitor> Desktop::getMonitors() {
+			initGlfw();
+
 			int count = 0;
+
 			auto monitors = glfwGetMonitors(&count);
 
 			std::vector<Monitor> ret;
 			for (int i = 0; i < count; i++) {
 				Monitor obj = {monitors[i]};
+
+				// GLFW returns duplicates in some cases on linux, so we filter them here.
+				bool duplicate = false;
+				for (int j = 0; j < ret.size(); j++) {
+					auto& copy = ret[j];
+
+					if (copy.size != obj.size || copy.pos != obj.pos) continue;
+					duplicate = true;
+				}
+
+				if (duplicate) continue;
+
 				obj.id = i;
 				obj.primary = i == 0;
 				ret.push_back(obj);

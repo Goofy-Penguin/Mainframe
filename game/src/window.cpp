@@ -142,6 +142,10 @@ namespace mainframe {
 			glfwSetWindowPos(GLFWHANDLE, pos.x, pos.y);
 		}
 
+		void Window::setMonitor(const Monitor& monitor, const math::Vector2i& pos, const math::Vector2i& size) {
+			glfwSetWindowMonitor(GLFWHANDLE, monitor.handle, pos.x, pos.y, size.x, size.y, monitor.refreshRate);
+		}
+
 		void Window::setMousePos(const math::Vector2i& pos) {
 			glfwSetCursorPos(GLFWHANDLE, static_cast<double>(pos.x), static_cast<double>(pos.y));
 		}
@@ -219,6 +223,10 @@ namespace mainframe {
 
 		void Window::setProperty(int key, int value) {
 			properties[key] = value;
+		}
+
+		void Window::restore() {
+			glfwRestoreWindow(GLFWHANDLE);
 		}
 
 		void Window::center() {
