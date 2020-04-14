@@ -39,7 +39,6 @@ namespace mainframe {
 				Right
 			};
 
-		private:
 			class VerticeData {
 			public:
 				float x = 0;
@@ -58,6 +57,23 @@ namespace mainframe {
 				VerticeData(float _x, float _y, float _z, float _u, float _v, float _r, float _g, float _b, float _a);
 			};
 
+			struct RecordingChunk {
+				int shader;
+				unsigned int texture;
+
+				std::vector<VerticeData> vertices;
+				std::vector<unsigned int> indices;
+			};
+
+			class Recording {
+			public:
+				bool supressDraw = false;
+				std::vector<RecordingChunk> chunks;
+
+				Recording(bool supressDraw_ = false) : supressDraw(supressDraw_) {};
+			};
+
+		private:
 			Shader shader2DText;
 			Shader shader2D;
 
@@ -78,14 +94,21 @@ namespace mainframe {
 			std::vector<mainframe::math::Vector2> offsets;
 			std::vector<mainframe::math::AABB> clippingRects;
 
+			std::vector<std::shared_ptr<Recording>> recordings;
+
 			void pushVertice(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& uv, const Color& col);
 			void pushIndices(unsigned int a, unsigned int b, unsigned int c);
 
 		public:
+
+			void drawRecording(const Recording& recording);
+			void drawRecording(const Recording& recording, const mainframe::math::Vector2& pos);
+			void drawRecording(const Recording& recording, const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size);
+
 			void drawPolygon(const Polygon& poly);
 			void drawCircle(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, Color col);
 			void drawCircleOutlined(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, float borderSize, Color col);
-			void drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, float borderSize, Color col);
+			void drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col);
 			void drawBox(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, Color col);
 			void drawText(const Font& font, const std::string& text, const mainframe::math::Vector2& pos, Color col, TextAlignment alignx = TextAlignment::Left, TextAlignment aligny = TextAlignment::Left, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")});
 			void drawTriangle(const mainframe::math::Vector2& a, const mainframe::math::Vector2& aUV, const Color& colA, const mainframe::math::Vector2& b, const mainframe::math::Vector2& bUV, const Color& colB, const mainframe::math::Vector2& c, const mainframe::math::Vector2& cUV, const Color& colC);
@@ -121,6 +144,9 @@ namespace mainframe {
 			void getPixelTextureIncRef();
 			void getPixelTextureDecRef();
 			int& getPixelTextureGetRef();
+
+			void recordStart(bool supressDraw);
+			std::shared_ptr<Recording> recordStop();
 
 			Stencil();
 			~Stencil();

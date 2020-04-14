@@ -3,8 +3,8 @@
 #include <mainframe/numbers/pi.h>
 
 #include <GL/glew.h>
-#include <freetype-gl/freetype-gl.h>
-#include <freetype-gl/utf8-utils.h>
+#include <freetype-gl.h>
+#include <utf8-utils.h>
 #include <stdexcept>
 
 namespace mainframe {
@@ -28,6 +28,7 @@ namespace mainframe {
 
 		Texture& Stencil::getPixelTexture() {
 			thread_local Texture pixel = {{1, 1}, Colors::White};
+
 			return pixel;
 		}
 
@@ -169,7 +170,7 @@ namespace mainframe {
 			}
 		}
 
-		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, float borderSize, Color col) {
+		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col) {
 			if (col.a == 0) return;
 
 			pos += offset;
@@ -181,10 +182,10 @@ namespace mainframe {
 			pushVertice(pos, {0, 0}, col);
 			pushVertice(pos + math::Vector2(size.x, 0), {0, 0}, col);
 			pushVertice(pos + borderSize, {0, 0}, col);
-			pushVertice(pos + math::Vector2(size.x - borderSize, borderSize), {0, 0}, col);
+			pushVertice(pos + math::Vector2(size.x - borderSize.x, borderSize.y), {0, 0}, col);
 
 			// bottom 4
-			pushVertice(pos + math::Vector2(borderSize, size.y - borderSize), {0, 0}, col);
+			pushVertice(pos + math::Vector2(borderSize.x, size.y - borderSize.y), {0, 0}, col);
 			pushVertice(pos + math::Vector2(0, size.y), {0, 0}, col);
 			pushVertice(pos + size - borderSize, {0, 0}, col);
 			pushVertice(pos + size, {0, 0}, col);
@@ -391,13 +392,13 @@ namespace mainframe {
 				glVertexAttribPointer(colAttrib, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 5));
 			};
 
-			shader2DText.attachRaw("#version 150\nout vec4 outColor;\n\nin vec4 output_color;\nin vec2 output_texpos;\n\nuniform sampler2D tex;\n\nvoid main(){outColor = texture(tex, output_texpos) * output_color;\nif (outColor.a == 0.0) discard;\n}\n", GL_FRAGMENT_SHADER);
-			shader2DText.attachRaw("#version 150\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
+			shader2DText.attachRaw("#version 300 es\nprecision mediump float;\nout vec4 outColor;\n\nin vec4 output_color;\nin vec2 output_texpos;\n\nuniform sampler2D tex;\n\nvoid main(){outColor = texture(tex, output_texpos) * output_color;\nif (outColor.a == 0.0) discard;\n}\n", GL_FRAGMENT_SHADER);
+			shader2DText.attachRaw("#version 300 es\nprecision mediump float;\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
 			initShader(shader2DText);
 
 
-			shader2D.attachRaw("#version 150\nout vec4 outColor;\n\nin vec4 output_color;\nin vec2 output_texpos;\n\nuniform sampler2D tex;\n\nvoid main(){\noutColor = texture(tex, output_texpos) * output_color;\n\nif (outColor.a == 0.0) discard;\n}\n", GL_FRAGMENT_SHADER);
-			shader2D.attachRaw("#version 150\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
+			shader2D.attachRaw("#version 300 es\nprecision mediump float;\nout vec4 outColor;\n\nin vec4 output_color;\nin vec2 output_texpos;\n\nuniform sampler2D tex;\n\nvoid main(){\noutColor = texture(tex, output_texpos) * output_color;\n\nif (outColor.a == 0.0) discard;\n}\n", GL_FRAGMENT_SHADER);
+			shader2D.attachRaw("#version 300 es\nprecision mediump float;\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
 			initShader(shader2D);
 #endif
 
@@ -458,28 +459,98 @@ namespace mainframe {
 			return windowSize;
 		}
 
+
+		void Stencil::recordStart(bool supressDraw) {
+			draw();
+			recordings.push_back(std::make_shared<Recording>(supressDraw));
+		}
+
+		std::shared_ptr<Stencil::Recording> Stencil::recordStop() {
+			if (recordings.empty()) throw std::runtime_error("no recordings active");
+
+			auto ret = recordings.back();
+			recordings.pop_back();
+
+			return ret;
+		}
+
+		void Stencil::drawRecording(const Recording& recording) {
+			for (auto& chunk : recording.chunks) {
+				setShader(chunk.shader);
+				setTexture(chunk.texture);
+
+				size_t verticeOffset = indices.size();
+				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
+
+				size_t incideOffset = indices.size();
+				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
+
+				for (size_t i = incideOffset, j = indices.size(); i < j; i++) {
+					indices[i] += verticeOffset;
+				}
+			}
+		}
+
+		void Stencil::drawRecording(const Recording& recording, const mainframe::math::Vector2& pos) {
+			for (auto& chunk : recording.chunks) {
+				setShader(chunk.shader);
+				setTexture(chunk.texture);
+
+				size_t verticeOffset = vertices.size();
+				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
+				for (size_t i = verticeOffset, j = vertices.size(); i < j; i++) {
+					vertices[i].x = (((vertices[i].x + 1) / 2) + pos.x / windowSize.x) * 2 - 1;
+					vertices[i].y = (((vertices[i].y + 1) / 2) + pos.y / windowSize.y * -1) * 2 - 1;
+				}
+
+				size_t incideOffset = indices.size();
+				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
+
+				for (size_t i = incideOffset, j = indices.size(); i < j; i++) {
+					indices[i] += verticeOffset;
+				}
+			}
+		}
+
+		void Stencil::drawRecording(const Recording& recording, const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size) {
+			for (auto& chunk : recording.chunks) {
+				setShader(chunk.shader);
+				setTexture(chunk.texture);
+
+				size_t verticeOffset = vertices.size();
+				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
+				for (size_t i = verticeOffset, j = vertices.size(); i < j; i++) {
+					vertices[i].x = (((vertices[i].x * size.x + 1) / 2) + pos.x / windowSize.x) * 2 - 1;
+					vertices[i].y = (((vertices[i].y * size.y + 1) / 2) + pos.y / windowSize.y) * 2 - 1;
+				}
+
+				size_t indiceOffset = indices.size();
+				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
+
+				for (size_t i = indiceOffset, j = indices.size(); i < j; i++) {
+					indices[i] += verticeOffset;
+				}
+			}
+		}
+
 		void Stencil::draw() {
 			if (vertices.empty()) return;
 
 			if (getDisableDept()) glDisable(GL_DEPTH_TEST);
 
-			/*
-			if (this->CaptureBuffer != nullptr) {
-				RenderBufferChunk c;
-				c.ShaderHandle = this->CurrentShader;
-				c.TextureHandle = this->CurrentTexture;
+			bool suppressed = false;
+			for (auto& recording : recordings) {
+				if (recording->supressDraw) suppressed = true;
 
-				c.VerticeDataCount = this->VerticeDataCount;
-				c.VerticeData = new _vertexData[c.VerticeDataCount];
-				memcpy(c.VerticeData, this->VerticeData, c.VerticeDataCount * sizeof(_vertexData));
-
-				c.IndiceDataCount = this->IndiceDataCount;
-				c.IndiceData = new GLuint[c.IndiceDataCount];
-				memcpy(c.IndiceData, this->IndiceData, c.IndiceDataCount * sizeof(GLuint));
-
-				this->CaptureBuffer->Chunks.Add(c);
+				recording->chunks.push_back({
+					currentShaderHandle,
+					currentTextureHandle,
+					vertices,
+					indices
+				});
 			}
-			*/
+
+			if (suppressed) return;
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, currentTextureHandle);
