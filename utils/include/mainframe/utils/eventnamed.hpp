@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <atomic>
+#include <memory>
 
 namespace mainframe {
 	namespace utils {
