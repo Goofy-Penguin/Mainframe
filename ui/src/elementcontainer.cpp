@@ -22,11 +22,28 @@ namespace mainframe {
 			}
 		}
 
-		void ElementContainer::addChild(std::shared_ptr<Element>& elm) {
+		void ElementContainer::addChild(const std::shared_ptr<Element>& elm) {
 			elm->setParent(getRef<ElementContainer>());
 		}
 
-		void ElementContainer::setParent(std::shared_ptr<ElementContainer>& elm) {
+		std::shared_ptr<Element> ElementContainer::findChildElm(const std::string& name, bool recursive) const {
+			for (auto& c : children) {
+				if (c->getName() != name) {
+					if (!recursive) continue;
+
+					auto recRet = c->findChildElm(name, true);
+					if (recRet == nullptr) continue;
+
+					return recRet;
+				}
+
+				return c;
+			}
+
+			return nullptr;
+		}
+
+		void ElementContainer::setParent(const std::shared_ptr<ElementContainer>& elm) {
 			auto sharedPtr = getRef<Element>();
 
 			if (hasParent()) {

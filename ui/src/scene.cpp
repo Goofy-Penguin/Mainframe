@@ -20,11 +20,11 @@ namespace mainframe {
 			});
 
 			window.addOnKey([this](Window& win, unsigned int key, unsigned int scancode, unsigned int action, unsigned int mods) mutable {
-				keyPress(key, scancode, mods, action);
+				keyPress(key, scancode, static_cast<ModifierKey>(mods), action);
 			});
 
 			window.addOnMouseKey([this](Window& win, const math::Vector2i& location, unsigned int button, unsigned int action, unsigned int mods) mutable {
-				mousePress(location, button, mods, action);
+				mousePress(location, button, static_cast<ModifierKey>(mods), action == 1);
 			});
 
 			window.addOnMouseMove([this](Window& win, const math::Vector2i& location) mutable {
@@ -82,10 +82,23 @@ namespace mainframe {
 		}
 
 		void Scene::update() {
+			auto& invoker = getInvoker();
+			while (invoker.available()) {
+				invoker.pop()();
+			}
+
 			auto elms = getChildren();
 			for (auto elm : elms) {
 				updateElm(*elm);
 			}
+		}
+
+		utils::ringbuffer<std::function<void()>>& Scene::getInvoker() {
+			return invokes;
+		}
+
+		void Scene::invoke(std::function<void()> func) {
+			invokes.push(func);
 		}
 
 		std::shared_ptr<Element> Scene::findElement(const math::Vector2i& mousePos) {
@@ -131,14 +144,20 @@ namespace mainframe {
 			return elmPtr;
 		}
 
-		void Scene::mousePress(const math::Vector2i& mousePos, unsigned int button, unsigned int mods, unsigned int pressed) {
-			if (pressed == 0) {
+		void Scene::mousePress(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods, bool pressed) {
+			if (!pressed) {
 				mousePressCount--;
 
-				if (focusedElement.expired()) return;
+				if (focusedElement.expired()) {
+					onMousePress(mousePos, button, mods, pressed);
+					return;
+				}
 
 				auto focused = focusedElement.lock();
-				if (focused == nullptr) return;
+				if (focused == nullptr) {
+					onMousePress(mousePos, button, mods, pressed);
+					return;
+				}
 
 				focused->mouseUp(mousePos, button, mods);
 				return;
@@ -150,10 +169,16 @@ namespace mainframe {
 			auto target = findElement(mousePos, offsetOut);
 			if (target == nullptr) {
 				focusedElement.reset();
+
+				onMousePress(mousePos, button, mods, pressed);
 				return;
 			}
 
+			if (!focusedElement.expired()) focusedElement.lock()->setfocused(false);
+
+			target->setfocused(true);
 			focusedElement = target;
+
 			target->mouseDown(mousePos - offsetOut, button, mods);
 		}
 
@@ -179,12 +204,56 @@ namespace mainframe {
 				return;
 			}
 
-			if (target == nullptr) return;
+			if (target == nullptr) {
+				onMouseMove(mousePos);
+				return;
+			}
+
 			target->mouseMove(mousePos - offsetOut);
 		}
 
-		void Scene::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {}
-		void Scene::keyPress(unsigned int key, unsigned int scancode, unsigned int mods, unsigned int action) {}
-		void Scene::keyChar(unsigned int key) {}
+		void Scene::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {
+			// TODO: element logic for scrolling
+
+			onMouseScroll(mousePos, offset);
+		}
+
+		void Scene::keyPress(unsigned int key, unsigned int scancode, ModifierKey mods, unsigned int action) {
+			if (focusedElement.expired()) {
+				onKeyPress(key, scancode, mods, action);
+				return;
+			}
+
+			auto elm = focusedElement.lock();
+			switch (action) {
+				case 0: {
+					elm->keyDown(key, mods, false);
+					break;
+				}
+
+				case 1: {
+					elm->keyUp(key, mods);
+					break;
+				}
+
+				case 2: {
+					elm->keyDown(key, mods, true);
+					break;
+				}
+
+				default:
+					throw std::runtime_error("invalid action for keypress");
+			}
+		}
+
+		void Scene::keyChar(unsigned int key) {
+			if (focusedElement.expired()) {
+				onKeyChar(key);
+				return;
+			}
+
+			auto elm = focusedElement.lock();
+			elm->keyChar(key);
+		}
 	}
 }

@@ -48,13 +48,13 @@ namespace mainframe {
 			setPos((getPos() + (mousePos - dragStart)).clamp(p->getPos(), p->getPos() + p->getSize() - getSize()));
 		}
 
-		void Frame::mouseDown(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {
+		void Frame::mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {
 			if (mousePos.y >= titleSize) return;
 			dragging = true;
 			dragStart = mousePos;
 		}
 
-		void Frame::mouseUp(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {
+		void Frame::mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {
 			dragging = false;
 		}
 

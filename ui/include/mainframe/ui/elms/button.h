@@ -22,8 +22,8 @@ namespace mainframe {
 			virtual void drawAfter(render::Stencil& stencil) override;
 			virtual void update() override;
 
-			virtual void mouseDown(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) override;
-			virtual void mouseUp(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) override;
+			virtual void mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) override;
+			virtual void mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) override;
 		};
 	}
 }

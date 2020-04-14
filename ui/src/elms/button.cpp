@@ -50,11 +50,11 @@ namespace mainframe {
 
 		}
 
-		void Button::mouseDown(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {
+		void Button::mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {
 
 		}
 
-		void Button::mouseUp(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {
+		void Button::mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {
 			onClick();
 		}
 	}
