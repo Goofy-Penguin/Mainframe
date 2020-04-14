@@ -1,5 +1,6 @@
 #include <mainframe/database/base/row.h>
 #include <stdexcept>
+#include <algorithm>
 
 namespace mainframe {
 	namespace database {
