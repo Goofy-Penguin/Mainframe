@@ -287,6 +287,27 @@ namespace mainframe {
 			pushIndices(3, 2, 1);
 		}
 
+		void Stencil::drawLine(const mainframe::math::Vector2& from, const mainframe::math::Vector2& to, float width, const Color& col, const mainframe::math::Vector2 uvStart, const mainframe::math::Vector2 uvEnd) {
+			setTexture(getPixelTexture());
+			setShader(shader2D);
+
+			float angle = from.angle(to);
+
+			auto vertA = from + mainframe::math::Vector2::cosSin(angle) * width;
+			auto vertB = from + mainframe::math::Vector2::cosSin(angle) * -width;
+			auto vertC = to + mainframe::math::Vector2::cosSin(angle) * width;
+			auto vertD = to + mainframe::math::Vector2::cosSin(angle) * -width;
+
+			pushVertice(vertA, uvStart, col);
+			pushVertice(vertB, {uvEnd.x, uvStart.y}, col);
+			pushVertice(vertC, {uvStart.x, uvEnd.y}, col);
+			pushVertice(vertD, uvEnd, col);
+
+			pushIndices(4, 3, 2);
+			pushIndices(3, 2, 1);
+		}
+
+
 		void Stencil::drawBox(const math::Vector2& pos, const math::Vector2& size, Color col) {
 			drawTexture(pos, size, getPixelTexture(), col);
 		}
@@ -496,11 +517,14 @@ namespace mainframe {
 				setShader(chunk.shader);
 				setTexture(chunk.texture);
 
+				auto posOffset = pos / windowSize;
+				posOffset.y *= -1;
+
 				size_t verticeOffset = vertices.size();
 				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
 				for (size_t i = verticeOffset, j = vertices.size(); i < j; i++) {
-					vertices[i].x = (((vertices[i].x + 1) / 2) + pos.x / windowSize.x) * 2 - 1;
-					vertices[i].y = (((vertices[i].y + 1) / 2) + pos.y / windowSize.y * -1) * 2 - 1;
+					vertices[i].x = (((vertices[i].x + 1) / 2) + posOffset.x) * 2 - 1;
+					vertices[i].y = (((vertices[i].y - 1) / 2 + 1.0f) + posOffset.y) * 2 - 1;
 				}
 
 				size_t incideOffset = indices.size();
@@ -517,11 +541,14 @@ namespace mainframe {
 				setShader(chunk.shader);
 				setTexture(chunk.texture);
 
+				auto posOffset = pos / windowSize;
+				posOffset.y *= -1;
+
 				size_t verticeOffset = vertices.size();
 				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
 				for (size_t i = verticeOffset, j = vertices.size(); i < j; i++) {
-					vertices[i].x = (((vertices[i].x * size.x + 1) / 2) + pos.x / windowSize.x) * 2 - 1;
-					vertices[i].y = (((vertices[i].y * size.y + 1) / 2) + pos.y / windowSize.y) * 2 - 1;
+					vertices[i].x = (((vertices[i].x + 1) / 2 * size.x) + posOffset.x) * 2 - 1;
+					vertices[i].y = (((vertices[i].y - 1) / 2 * size.y + 1.0f) + posOffset.y) * 2 - 1;
 				}
 
 				size_t indiceOffset = indices.size();
