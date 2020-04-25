@@ -22,12 +22,13 @@ set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
 
 find_package(OpenGL REQUIRED)
-find_package(freetype REQUIRED)
+find_package(Freetype REQUIRED)
 
+set(use_cef false)
 if (use_cef)
 	add_compile_definitions("MAINFRAME_ENABLE_CEF")
 
-	set(CEF_VERSION 75.1.4+g4210896+chromium-75.0.3770.100)
+	set(CEF_VERSION 78.3.4+ge17bba6+chromium-78.0.3904.108)
 
 	include("cmake/cef.cmake")
 	FetchContent_Declare(cefdll_wrapper GIT_REPOSITORY https://github.com/iboB/cef-cmake.git)
@@ -55,14 +56,27 @@ endif()
 FetchContent_Declare(fmtlib GIT_REPOSITORY https://github.com/fmtlib/fmt.git)
 FetchContent_MakeAvailable(fmtlib)
 
-FetchContent_Declare(glfwlib GIT_REPOSITORY https://github.com/glfw/glfw.git)
-FetchContent_MakeAvailable(glfwlib)
+if (WIN32)
+	find_package(glew REQUIRED)
+	find_package(glfw3 REQUIRED)
+else()
+	FetchContent_Declare(glfw3 GIT_REPOSITORY https://github.com/glfw/glfw.git)
+	FetchContent_MakeAvailable(glfw3)
 
-FetchContent_Declare(glewlib GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git)
-FetchContent_MakeAvailable(glewlib)
+	FetchContent_Declare(glew GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git)
+	FetchContent_MakeAvailable(glew)
+
+	add_library(GLEW::GLEW ALIAS libglew_shared)
+endif()
 
 FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/rougier/freetype-gl.git)
 FetchContent_MakeAvailable(freetype-gl)
+
+if (WIN32)
+	set(mf_winlibs opengl32)
+else()
+	set(mf_winlibs png z)
+endif()
 
 # our libs
 add_subdirectory ("utils")
