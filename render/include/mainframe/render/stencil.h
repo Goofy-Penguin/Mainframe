@@ -104,6 +104,7 @@ namespace mainframe {
 			void drawRecording(const Recording& recording);
 			void drawRecording(const Recording& recording, const mainframe::math::Vector2& pos);
 			void drawRecording(const Recording& recording, const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size);
+			void drawRecording(const Recording& recording, const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, float rotation, const mainframe::math::Vector2& origin = {});
 
 			void drawPolygon(const Polygon& poly);
 			void drawCircle(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, Color col);

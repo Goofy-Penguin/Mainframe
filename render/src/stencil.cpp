@@ -560,6 +560,40 @@ namespace mainframe {
 			}
 		}
 
+		void Stencil::drawRecording(const Recording& recording, const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, float rotation, const mainframe::math::Vector2& origin) {
+			auto orginPos = (pos + origin) / windowSize * 2 - 1;
+			orginPos.y *= -1;
+
+			for (auto& chunk : recording.chunks) {
+				setShader(chunk.shader);
+				setTexture(chunk.texture);
+
+				auto posOffset = pos / windowSize;
+				posOffset.y *= -1;
+
+				size_t verticeOffset = vertices.size();
+				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
+				for (size_t i = verticeOffset, j = vertices.size(); i < j; i++) {
+					mainframe::math::Vector2 newpos = {
+						(((vertices[i].x + 1) / 2 * size.x) + posOffset.x) * 2 - 1,
+						(((vertices[i].y - 1) / 2 * size.y + 1.0f) + posOffset.y) * 2 - 1
+					};
+
+					auto rotated = newpos.rotateAroundOrigin(rotation, orginPos);
+
+					vertices[i].x = rotated.x;
+					vertices[i].y = rotated.y;
+				}
+
+				size_t indiceOffset = indices.size();
+				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
+
+				for (size_t i = indiceOffset, j = indices.size(); i < j; i++) {
+					indices[i] += verticeOffset;
+				}
+			}
+		}
+
 		void Stencil::draw() {
 			if (vertices.empty()) return;
 
