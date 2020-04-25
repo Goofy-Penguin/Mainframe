@@ -11,3 +11,6 @@ cmake
 glew:shared=True
 glfw:shared=True
 freetype:shared=True
+
+[imports]
+., *.dll -> ./bin @ keep_path=False

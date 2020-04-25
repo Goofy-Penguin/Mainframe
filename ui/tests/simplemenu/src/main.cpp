@@ -23,9 +23,9 @@ class GameTest : public Engine {
 	Window& window;
 	Stencil stencil;
 	std::shared_ptr<Scene> scene = Scene::create();
-	std::shared_ptr<Font> font = std::make_shared<Font>("fonts/VeraMono.ttf", 15.0f);
-	std::shared_ptr<Font> fontSmall = std::make_shared<Font>("fonts/VeraMono.ttf", 13.0f);
-	Texture tex = Texture("textures/test.png");
+	std::shared_ptr<Font> font = std::make_shared<Font>("fonts/simplemenu/VeraMono.ttf", 15.0f);
+	std::shared_ptr<Font> fontSmall = std::make_shared<Font>("fonts/simplemenu/VeraMono.ttf", 13.0f);
+	Texture tex = Texture("textures/simplemenu/test.png");
 
 public:
 	virtual void init() override {

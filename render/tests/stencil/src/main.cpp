@@ -11,8 +11,8 @@ using namespace mainframe::math;
 class GameTest : public Engine {
 	Window& window;
 	Stencil stencil;
-	Font font = Font("fonts/VeraMono.ttf", 15.0f);
-	Texture tex = Texture("textures/test.png");
+	Font font = Font("fonts/stencil/VeraMono.ttf", 15.0f);
+	Texture tex = Texture("textures/stencil/test.png");
 	float rot = 0;
 
 public:
