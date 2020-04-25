@@ -21,8 +21,8 @@ set(freetype-gl_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
 
-find_package(OpenGL REQUIRED)
-find_package(Freetype REQUIRED)
+ include(conanbuildinfo.cmake)
+ conan_basic_setup()
 
 set(use_cef false)
 if (use_cef)
@@ -51,22 +51,6 @@ if (use_cef)
 	endif()
 
 	include_directories("${cefdll_wrapper_SOURCE_DIR}/${cefName}/include")
-endif()
-
-FetchContent_Declare(fmtlib GIT_REPOSITORY https://github.com/fmtlib/fmt.git)
-FetchContent_MakeAvailable(fmtlib)
-
-if (WIN32)
-	find_package(glew REQUIRED)
-	find_package(glfw3 REQUIRED)
-else()
-	FetchContent_Declare(glfw3 GIT_REPOSITORY https://github.com/glfw/glfw.git)
-	FetchContent_MakeAvailable(glfw3)
-
-	FetchContent_Declare(glew GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git)
-	FetchContent_MakeAvailable(glew)
-
-	add_library(GLEW::GLEW ALIAS libglew_shared)
 endif()
 
 FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/rougier/freetype-gl.git)
