@@ -88,12 +88,19 @@ namespace mainframe {
 			bool writeFromFile(const std::string& filename);
 
 			bool seek(size_t offset);
-			inline size_t begin() const { return 0; }
+			bool seek(std::vector<uint8_t>::iterator offset);
 			inline size_t tell() const { return pos; }
-			inline size_t end() const { return buffer.size(); }
 			inline size_t size() const { return buffer.size(); }
 			inline auto data() { return buffer.data(); }
 			inline auto data() const { return buffer.data(); }
+			inline auto& getBuffer() { return buffer; }
+			inline auto& getBuffer() const { return buffer; }
+
+			inline auto begin() noexcept { return buffer.begin(); }
+			inline auto end() noexcept { return buffer.end(); }
+			inline auto cbegin() const noexcept { return buffer.cbegin(); }
+			inline auto cend() const noexcept { return buffer.cend(); }
+
 			inline bool empty() const { return buffer.empty(); }
 			inline const std::vector<uint8_t>& readAll() const { return buffer; }
 			void clear();
@@ -107,13 +114,13 @@ namespace mainframe {
 			}
 
 			template<class T>
-			void write(const std::string& obj) {
-				write(obj.begin(), obj.end());
+			void write(const std::string& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
 			template<class T>
-			void write(const std::vector<T>& obj) {
-				write(obj.begin(), obj.end());
+			void write(const std::vector<T>& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
 			template<class A, class B>
@@ -123,8 +130,8 @@ namespace mainframe {
 			}
 
 			template<class A, class B>
-			void write(const std::map<A, B>& obj) {
-				write(obj.begin(), obj.end());
+			void write(const std::map<A, B>& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
 			template<class T, size_t size>

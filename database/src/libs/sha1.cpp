@@ -2,6 +2,24 @@
 
 namespace mainframe {
 	namespace sha1 {
+		Hash sha1(const std::string& input) {
+			Hash h(5);
+			h[0] = 0x67452301, h[1] = 0xEFCDAB89,
+				h[2] = 0x98BADCFE, h[3] = 0x10325476,
+				h[4] = 0xC3D2E1F0;
+			Hash raw = sha1(input.data(), input.size() * sizeof(*input.begin()), h);
+			return raw;
+		}
+
+		Hash sha1(const std::vector<unsigned char>& input) {
+			Hash h(5);
+			h[0] = 0x67452301, h[1] = 0xEFCDAB89,
+				h[2] = 0x98BADCFE, h[3] = 0x10325476,
+				h[4] = 0xC3D2E1F0;
+			Hash raw = sha1(input.data(), input.size() * sizeof(*input.begin()), h);
+			return raw;
+		}
+
 		// Mostly based on Paul E. Jones' sha1 implementation
 		Hash sha1(const void* pMem, Basetype iLen, Hash& my_hash) {
 			// if( pMem == 0 || iLen == 0 ) return my_hash;

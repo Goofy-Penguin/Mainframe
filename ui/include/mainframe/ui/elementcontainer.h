@@ -16,10 +16,12 @@ namespace mainframe {
 			math::Vector2i pos;
 			math::Vector2i size;
 
+			std::shared_ptr<Element> findChildElm(const std::string& name, bool recursive = false) const;
+
 		public:
 			virtual void remove(bool childs = true);
-			virtual void addChild(std::shared_ptr<Element>& elm);
-			virtual void setParent(std::shared_ptr<ElementContainer>& elm);
+			virtual void addChild(const std::shared_ptr<Element>& elm);
+			virtual void setParent(const std::shared_ptr<ElementContainer>& elm);
 			virtual bool hasParent() const;
 
 			const math::Vector2i& getPos() const;
@@ -36,20 +38,7 @@ namespace mainframe {
 
 			template<class ChildT>
 			std::shared_ptr<ChildT> findChild(const std::string& name, bool recursive = false) const {
-				for (auto& c : children) {
-					if (c->getName() != name) {
-						if (!recursive) continue;
-
-						auto recRet = c->findChild<ChildT>(name, true);
-						if (recRet == nullptr) continue;
-
-						return std::dynamic_pointer_cast<ChildT>(recRet);
-					}
-
-					return std::dynamic_pointer_cast<ChildT>(c);
-				}
-
-				return nullptr;
+				return std::dynamic_pointer_cast<ChildT>(findChildElm(name, recursive));
 			}
 
 			template<class ChildT>

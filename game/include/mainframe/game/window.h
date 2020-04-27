@@ -92,11 +92,13 @@ namespace mainframe {
 			void setSize(const math::Vector2i& size);
 			void setPos(const math::Vector2i& pos);
 			void setMousePos(const math::Vector2i& pos);
+			void setMonitor(const Monitor& monitor, const math::Vector2i& pos, const math::Vector2i& size);
 
 			void setProperty(int key, int value);
 
 			Monitor getMonitor();
 
+			void restore();
 			void center();
 
 			void waitForEvents() const;

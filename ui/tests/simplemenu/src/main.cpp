@@ -15,15 +15,17 @@ using namespace mainframe::render;
 using namespace mainframe::math;
 using namespace mainframe::ui;
 
+#ifdef MAINFRAME_ENABLE_CEF
 mainframe::cef::Cef cef;
+#endif
 
 class GameTest : public Engine {
 	Window& window;
 	Stencil stencil;
 	std::shared_ptr<Scene> scene = Scene::create();
-	std::shared_ptr<Font> font = std::make_shared<Font>("fonts/VeraMono.ttf", 15.0f);
-	std::shared_ptr<Font> fontSmall = std::make_shared<Font>("fonts/VeraMono.ttf", 13.0f);
-	Texture tex = Texture("textures/test.png");
+	std::shared_ptr<Font> font = std::make_shared<Font>("fonts/simplemenu/VeraMono.ttf", 15.0f);
+	std::shared_ptr<Font> fontSmall = std::make_shared<Font>("fonts/simplemenu/VeraMono.ttf", 13.0f);
+	Texture tex = Texture("textures/simplemenu/test.png");
 
 public:
 	virtual void init() override {
@@ -81,7 +83,9 @@ public:
 
 	virtual void tick() override {
 		Window::pollEvents();
-		//cef.tick();
+#ifdef MAINFRAME_ENABLE_CEF
+		cef.tick();
+#endif
 	}
 
 	virtual void quit() override {
@@ -92,7 +96,7 @@ public:
 	virtual void update() override {
 		scene->update();
 
-		if (window.shouldClose()) {
+		if (window.getShouldClose()) {
 			quit();
 		}
 	}
@@ -103,13 +107,12 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-	/*
-	auto cefret = cef.init();
-	if (cefret != 0) {
+#ifdef MAINFRAME_ENABLE_CEF
+	if (!cef.init()) {
 		fmt::print("Failed to init CEF\n");
-		return cefret;
+		return -1;
 	}
-	*/
+#endif
 
 	Window w;
 	if (!w.create(1024, 1024, "mainframe.ui.simple")) {

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <complex>
 
 namespace mainframe {
 	namespace render {
@@ -41,8 +42,8 @@ namespace mainframe {
 				return ColorType(r + other.r, g + other.g, b + other.b, a + other.a);
 			}
 
-			ColorType operator* (const ColorType& scale) const {
-				return ColorType(r * scale.r, g * scale.g, b * scale.b, a * other.a);
+			ColorType operator* (const ColorType& other) const {
+				return ColorType(r * other.r, g * other.g, b * other.b, a * other.a);
 			}
 
 			ColorType operator/ (const ColorType& other) const {
@@ -58,11 +59,11 @@ namespace mainframe {
 			}
 
 			ColorType operator* (NumberType scale) const {
-				return ColorType(r * scale, g * scale, b * scale, a * other);
+				return ColorType(r * scale, g * scale, b * scale, a * scale);
 			}
 
 			ColorType operator/ (NumberType scale) const {
-				return ColorType(r / scale, g / scale, b / scale, a / other);
+				return ColorType(r / scale, g / scale, b / scale, a / scale);
 			}
 
 			ColorType& operator-= (const ColorType& other) {

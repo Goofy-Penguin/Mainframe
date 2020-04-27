@@ -32,7 +32,7 @@ public:
 	}
 
 	virtual void update() override {
-		if (window.shouldClose() || std::time(nullptr) - initTime > 2) {
+		if (window.getShouldClose() || std::time(nullptr) - initTime > 2) {
 			quit();
 		}
 	}

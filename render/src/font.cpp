@@ -1,7 +1,7 @@
 #include <mainframe/render/font.h>
 
-#include <freetype-gl/freetype-gl.h>
-#include <freetype-gl/utf8-utils.h>
+#include <freetype-gl.h>
+#include <utf8-utils.h>
 #include <stdexcept>
 
 namespace mainframe {
@@ -163,9 +163,11 @@ namespace mainframe {
 						out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
 						out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
 					}
+
 					codepoint = 0;
 				}
 			}
+
 			return out;
 		}
 

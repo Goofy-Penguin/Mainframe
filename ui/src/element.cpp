@@ -14,6 +14,14 @@ namespace mainframe {
 			return hovering;
 		}
 
+		utils::ringbuffer<std::function<void()>>& Element::getInvoker() {
+			return invokes;
+		}
+
+		void Element::invoke(std::function<void()> func) {
+			invokes.push(func);
+		}
+
 		void Element::setHovering(bool hovering_) {
 			hovering = hovering_;
 		}
@@ -41,12 +49,15 @@ namespace mainframe {
 		void Element::hide() { hidden = true; }
 		bool Element::isHidden() { return hidden; }
 
-		void Element::mouseDown(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {}
-		void Element::mouseUp(const math::Vector2i& mousePos, unsigned int button, unsigned int mods) {}
+		bool Element::isfocused() { return focused; }
+		void Element::setfocused(bool focused_) { focused = focused_; }
+
+		void Element::mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
+		void Element::mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
 		void Element::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {}
 		void Element::mouseMove(const math::Vector2i& mousePos) {}
-		void Element::keyDown(unsigned int key, unsigned int mods, unsigned int ctrl, unsigned int mode) {}
-		void Element::keyUp(unsigned int key, unsigned int mods, unsigned int ctrl, unsigned int mode) {}
+		void Element::keyDown(unsigned int key, ModifierKey mods, bool repeating) {}
+		void Element::keyUp(unsigned int key, ModifierKey mods) {}
 		void Element::keyChar(unsigned int key) {}
 	}
 }

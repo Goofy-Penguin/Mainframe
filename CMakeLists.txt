@@ -21,13 +21,14 @@ set(freetype-gl_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
 
-find_package(OpenGL REQUIRED)
-find_package(freetype REQUIRED)
+ include(conanbuildinfo.cmake)
+ conan_basic_setup()
 
+set(use_cef false)
 if (use_cef)
 	add_compile_definitions("MAINFRAME_ENABLE_CEF")
 
-	set(CEF_VERSION 75.1.4+g4210896+chromium-75.0.3770.100)
+	set(CEF_VERSION 78.3.4+ge17bba6+chromium-78.0.3904.108)
 
 	include("cmake/cef.cmake")
 	FetchContent_Declare(cefdll_wrapper GIT_REPOSITORY https://github.com/iboB/cef-cmake.git)
@@ -52,17 +53,35 @@ if (use_cef)
 	include_directories("${cefdll_wrapper_SOURCE_DIR}/${cefName}/include")
 endif()
 
-FetchContent_Declare(fmtlib GIT_REPOSITORY https://github.com/fmtlib/fmt.git)
-FetchContent_MakeAvailable(fmtlib)
-
-FetchContent_Declare(glfwlib GIT_REPOSITORY https://github.com/glfw/glfw.git)
-FetchContent_MakeAvailable(glfwlib)
-
-FetchContent_Declare(glewlib GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git)
-FetchContent_MakeAvailable(glewlib)
-
 FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/rougier/freetype-gl.git)
 FetchContent_MakeAvailable(freetype-gl)
+
+if (WIN32)
+	set(mf_winlibs opengl32)
+else()
+	set(mf_winlibs png z)
+endif()
+
+# helpers
+function(MFAddContent projname filesfilter)
+	file(GLOB_RECURSE fileslst ${filesfilter})
+	foreach(contentfile IN LISTS fileslst)
+		STRING(REGEX REPLACE ${CMAKE_CURRENT_SOURCE_DIR} "" contentfile_stripped ${contentfile})
+		message("detected content:" ${contentfile_stripped})
+
+		add_custom_command(TARGET ${projname} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${contentfile} ${CMAKE_SOURCE_DIR}/bin${contentfile_stripped})
+	endforeach()
+endfunction()
+
+function(MFAddExecutable projname)
+	message("detected exe:" ${CMAKE_BINARY_DIR}/bin/${output_target})
+
+	if (WIN32)
+		add_custom_command(TARGET ${output_target} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/bin/${output_target}.exe ${CMAKE_SOURCE_DIR}/bin/${output_target}.exe)
+	else()
+		add_custom_command(TARGET ${output_target} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/bin/${output_target} ${CMAKE_SOURCE_DIR}/bin/${output_target})
+	endif()
+endfunction()
 
 # our libs
 add_subdirectory ("utils")

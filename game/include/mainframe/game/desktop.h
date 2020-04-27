@@ -10,6 +10,7 @@ namespace mainframe {
 		class Monitor {
 		public:
 			int id = -1;
+			int refreshRate = 0;
 			GLFWmonitor* handle = nullptr;
 			bool primary = false;
 			math::Vector2i pos;
@@ -27,7 +28,6 @@ namespace mainframe {
 			static Monitor getMonitor(int  id = -1);
 
 			static bool initGlfw();
-			static bool initGlew();
 			static void terminateGlfw();
 		};
 	}

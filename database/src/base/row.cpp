@@ -1,9 +1,14 @@
 #include <mainframe/database/base/row.h>
 #include <stdexcept>
+#include <algorithm>
 
 namespace mainframe {
 	namespace database {
 		Row::Row(const std::shared_ptr<std::vector<std::string>>& _columns) : columns(_columns) {
+		}
+
+		bool Row::has(const std::string& key) const {
+			return std::find(columns->begin(), columns->end(), key) != columns->end();
 		}
 
 		const Value& Row::get(size_t index) const {
@@ -27,6 +32,18 @@ namespace mainframe {
 
 		const Value& Row::operator[](size_t index) const {
 			return get(index);
+		}
+
+		std::vector<std::string>::iterator Row::find(const std::string& key) const {
+			return std::find(columns->begin(), columns->end(), key);
+		}
+
+		std::vector<std::string>::iterator Row::begin() const {
+			return columns->begin();
+		}
+
+		std::vector<std::string>::iterator Row::end() const {
+			return columns->end();
 		}
 	}
 }
