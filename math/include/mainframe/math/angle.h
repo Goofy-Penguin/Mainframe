@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <fmt/format.h>
 #include <mainframe/numbers/pi.h>
 
 namespace mainframe {
