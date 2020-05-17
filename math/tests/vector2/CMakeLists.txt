@@ -6,8 +6,7 @@
 
 set(output_target mathVector2Test)
 add_executable(${output_target} ${source_files})
-target_include_directories(${output_target} PRIVATE "../../include")
 target_compile_features(${output_target} PRIVATE cxx_std_17)
-target_link_libraries(${output_target} PRIVATE mainframe.math ${CONAN_LIBS})
+target_link_libraries(${output_target} PRIVATE mainframe.math)
 
 MFAddExecutable(${output_target})
