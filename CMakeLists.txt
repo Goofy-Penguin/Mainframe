@@ -17,10 +17,18 @@ project ("mainframe" VERSION ${MAINFRAME_VERSION})
 hunter_add_package(glfw)
 hunter_add_package(glew)
 hunter_add_package(fmt)
+hunter_add_package(freetype)
+hunter_add_package(PNG)
+hunter_add_package(ZLIB)
+hunter_add_package(BZip2)
 
 find_package(glfw3 REQUIRED)
 find_package(glew REQUIRED)
 find_package(fmt REQUIRED)
+find_package(freetype REQUIRED)
+find_package(PNG REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(BZip2 REQUIRED)
 
 set (build_tests true CACHE BOOL "build tests")
 set (build_samples true CACHE BOOL "build samples")
@@ -41,7 +49,7 @@ set(use_cef false)
 if (use_cef)
 	add_compile_definitions("MAINFRAME_ENABLE_CEF")
 
-	set(CEF_VERSION 78.3.4+ge17bba6+chromium-78.0.3904.108)
+	set(CEF_VERSION 81.2.24+gc0b313d+chromium-81.0.4044.113)
 
 	include("cmake/cef.cmake")
 	FetchContent_Declare(cefdll_wrapper GIT_REPOSITORY https://github.com/iboB/cef-cmake.git)
@@ -85,7 +93,7 @@ function(MFAddContent projname filesfilter)
 		add_custom_command(
 			TARGET ${projname}
 			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${contentfile} ${CMAKE_SOURCE_DIR}/bin${contentfile_stripped})
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${contentfile} ${CMAKE_CURRENT_BINARY_DIR}/bin${contentfile_stripped})
 	endforeach()
 endfunction()
 
@@ -96,7 +104,7 @@ function(MFAddExecutable projname)
 		add_custom_command(
 			TARGET ${output_target}
 			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_BINARY_DIR}/bin/${output_target}.exe ${CMAKE_SOURCE_DIR}/bin/${output_target}.exe)
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/${output_target}.exe ${CMAKE_SOURCE_DIR}/bin/${output_target}.exe)
 	else()
 		add_custom_command(
 			TARGET ${output_target}
