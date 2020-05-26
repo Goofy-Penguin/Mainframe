@@ -8,7 +8,7 @@ namespace mainframe {
 		}
 
 		bool Row::has(const std::string& key) const {
-			return std::find(columns->begin(), columns->end(), key) != columns->end();
+			return find(key) != end();
 		}
 
 		const Value& Row::get(size_t index) const {
