@@ -6,6 +6,7 @@
 #include <array>
 #include <map>
 #include <algorithm>
+#include <stdexcept>
 
 namespace mainframe {
 	namespace networking {
@@ -35,6 +36,10 @@ namespace mainframe {
 
 			template<class T>
 			void read(T& ret) {
+				if (pos + sizeof(T) >= buffer.size()) {
+					throw std::runtime_error("reading past buffer");
+				}
+
 				std::memcpy(&ret, &buffer.at(pos), sizeof(T));
 				pos += sizeof(const T);
 			}
