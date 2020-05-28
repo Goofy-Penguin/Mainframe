@@ -15,12 +15,16 @@ jobs:
     - name: Get latest CMake
       uses: lukka/get-cmake@latest
 
-    # TODO maybe install ninja and use that instead of make
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install libgl1-mesa-glx ninja
+
     - name: Build
       run: |
         mkdir build
         cd build
-        cmake ..
-        make -j2
+        cmake .. -G Ninja
+        ninja
 
     # TODO probably run the tests
