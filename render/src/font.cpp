@@ -129,8 +129,12 @@ namespace mainframe {
 
 		void Font::addChars(const std::string& chars) {
 			if (chars.empty()) return;
+
+			size_t oldcount = handle->glHandle->glyphs->size;
 			texture_font_load_glyphs(handle->glHandle, chars.c_str());
 
+			// dont reupload if it's unchanged
+			if (oldcount == handle->glHandle->glyphs->size) return;
 			upload();
 		}
 
