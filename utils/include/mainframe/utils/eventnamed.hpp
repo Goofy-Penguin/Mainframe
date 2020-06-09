@@ -23,16 +23,12 @@ namespace mainframe {
 
 			public:
 				EventScoped() = default;
-				EventScoped(EventNamed<CallbackArgs...>* map_, const std::string& name_) : map(map_), name(name_) {
-					printf("ADDED %s\n", name.c_str());
-				};
+				EventScoped(EventNamed<CallbackArgs...>* map_, const std::string& name_) : map(map_), name(name_) { };
 
 				~EventScoped() {
 					if (map == nullptr) return;
 					map->remove(name);
 					map = nullptr;
-
-					printf("REMOVED %s\n", name.c_str());
 				}
 
 				void call(CallbackArgs... args) {

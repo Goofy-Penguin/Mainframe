@@ -54,7 +54,19 @@ namespace mainframe {
 			}
 
 			if (!write(query)) return false;
-			return read();
+			auto ret = read();
+			if (!ret.success()) return ret;
+
+			// when inserting, mysql doesn't return the id, so we need to request that if needed
+			const char checklow[] = "insert into";
+			const char checkhigh[] = "INSERT INTO";
+			std::string insertcheck = query.substr(0, sizeof(checklow) - 1);
+			if (insertcheck == checklow || insertcheck == checkhigh) {
+				if (!write("SELECT LAST_INSERT_ID()")) return false;
+				ret = read();
+			}
+
+			return ret;
 		}
 
 		Value::Type Communicator::mysqlTypeToBase(MysqlValueType type) {

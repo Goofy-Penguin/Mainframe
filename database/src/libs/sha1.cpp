@@ -2,22 +2,22 @@
 
 namespace mainframe {
 	namespace sha1 {
+		Hash baseHash = {
+			0x67452301,
+			0xEFCDAB89,
+			0x98BADCFE,
+			0x10325476,
+			0xC3D2E1F0
+		};
+
 		Hash sha1(const std::string& input) {
-			Hash h(5);
-			h[0] = 0x67452301, h[1] = 0xEFCDAB89,
-				h[2] = 0x98BADCFE, h[3] = 0x10325476,
-				h[4] = 0xC3D2E1F0;
-			Hash raw = sha1(input.data(), input.size() * sizeof(*input.begin()), h);
-			return raw;
+			Hash h = baseHash;
+			return sha1(input.data(), static_cast<Basetype>(input.size() * sizeof(*input.begin())), h);
 		}
 
 		Hash sha1(const std::vector<unsigned char>& input) {
-			Hash h(5);
-			h[0] = 0x67452301, h[1] = 0xEFCDAB89,
-				h[2] = 0x98BADCFE, h[3] = 0x10325476,
-				h[4] = 0xC3D2E1F0;
-			Hash raw = sha1(input.data(), input.size() * sizeof(*input.begin()), h);
-			return raw;
+			Hash h = baseHash;
+			return sha1(input.data(), static_cast<Basetype>(input.size() * sizeof(*input.begin())), h);
 		}
 
 		// Mostly based on Paul E. Jones' sha1 implementation
@@ -193,12 +193,8 @@ namespace mainframe {
 		}
 
 		Hash sha1(const void* mem, int len) {
-			Hash h(5);
-			h[0] = 0x67452301, h[1] = 0xEFCDAB89,
-				h[2] = 0x98BADCFE, h[3] = 0x10325476,
-				h[4] = 0xC3D2E1F0;
-			Hash raw = sha1(mem, len, h);
-			return raw;
+			Hash h = baseHash;
+			return sha1(mem, len, h);
 		}
 	}
 }
