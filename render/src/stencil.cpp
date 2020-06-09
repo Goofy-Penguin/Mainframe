@@ -476,10 +476,9 @@ namespace mainframe {
 			r.h = windowSize.y;
 		}
 
-		mainframe::math::Vector2i Stencil::getWindowSize() const {
+		const mainframe::math::Vector2i& Stencil::getWindowSize() const {
 			return windowSize;
 		}
-
 
 		void Stencil::recordStart(bool supressDraw) {
 			draw();

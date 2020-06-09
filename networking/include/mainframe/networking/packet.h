@@ -36,7 +36,7 @@ namespace mainframe {
 
 			template<class T>
 			void read(T& ret) {
-				if (pos + sizeof(T) >= buffer.size()) {
+				if (pos + sizeof(T) > buffer.size()) {
 					throw std::runtime_error("reading past buffer");
 				}
 
