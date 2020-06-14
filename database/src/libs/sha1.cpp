@@ -11,13 +11,11 @@ namespace mainframe {
 		};
 
 		Hash sha1(const std::string& input) {
-			Hash h = baseHash;
-			return sha1(input.data(), static_cast<Basetype>(input.size() * sizeof(*input.begin())), h);
+			return sha1(input.data(), static_cast<Basetype>(input.size() * sizeof(*input.begin())));
 		}
 
 		Hash sha1(const std::vector<unsigned char>& input) {
-			Hash h = baseHash;
-			return sha1(input.data(), static_cast<Basetype>(input.size() * sizeof(*input.begin())), h);
+			return sha1(input.data(), static_cast<Basetype>(input.size() * sizeof(*input.begin())));
 		}
 
 		// Mostly based on Paul E. Jones' sha1 implementation
