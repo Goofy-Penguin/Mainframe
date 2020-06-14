@@ -87,7 +87,7 @@ namespace mainframe {
 			std::vector<VerticeData> vertices;
 			std::vector<unsigned int> indices;
 
-			mainframe::math::Vector2 windowSize;
+			mainframe::math::Vector2i windowSize;
 
 			bool deptDisabled = false;
 			mainframe::math::Vector2 offset;
