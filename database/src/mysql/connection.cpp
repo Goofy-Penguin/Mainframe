@@ -31,7 +31,7 @@ namespace mainframe {
 			sock.create();
 			if (sock.connect(ip, static_cast<unsigned short>(port)) != 0) return communicator->fail("failed to connect");
 
-			auto count = sock.receive(buffer.data(), buffer.size(), 0);
+			auto count = sock.receive(buffer.data(), static_cast<int>(buffer.size()), 0);
 			auto msg = std::string(reinterpret_cast<char*>(buffer.data()) + 5);
 
 			if (buffer[4] < 10) return communicator->fail(msg, "Need MySql > 4.1");
@@ -74,11 +74,11 @@ namespace mainframe {
 			d += 22;
 
 			// calc final packet size and id
-			uint32_t sizeId = (d - buffer.data() - 4) | (1 << 24);
+			uint32_t sizeId = static_cast<uint32_t>((d - buffer.data() - 4) | (1 << 24));
 			std::memcpy(buffer.data(), &sizeId, sizeof(sizeId));
 
 			// send login
-			sock.send(buffer.data(), d - buffer.data());
+			sock.send(buffer.data(), static_cast<uint32_t>(d - buffer.data()));
 
 			// in case of login failure server sends us an error text
 			uint32_t len;
