@@ -126,7 +126,7 @@ namespace mainframe {
 			bool getDisableDept();
 
 			void setWindowSize(const mainframe::math::Vector2i& size);
-			const mainframe::math::Vector2i& getWindowSize() const;
+			mainframe::math::Vector2i getWindowSize() const;
 
 			void setTexture(unsigned int tex);
 			void setTexture(const Texture& tex);

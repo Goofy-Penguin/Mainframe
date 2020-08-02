@@ -2,7 +2,7 @@
 
 #include <mainframe/ui/element.h>
 #include <mainframe/ui/elms/scrollbar.h>
-#include <mainframe/ui/elms/Panel.h>
+#include <mainframe/ui/elms/panel.h>
 
 namespace mainframe {
 	namespace ui {
