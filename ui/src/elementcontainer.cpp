@@ -75,6 +75,10 @@ namespace mainframe {
 			return size;
 		}
 
+		math::AABBi ElementContainer::getAABB() const {
+			return {pos, size};
+		}
+
 
 		const std::vector<std::shared_ptr<Element>>& ElementContainer::getChildren() const {
 			return children;

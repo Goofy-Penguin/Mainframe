@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mainframe/math/vector2.h>
+#include <mainframe/math/aabb.h>
 #include <memory>
 #include <string>
 #include <vector>
@@ -26,6 +27,8 @@ namespace mainframe {
 
 			const math::Vector2i& getPos() const;
 			const math::Vector2i& getSize() const;
+			math::AABBi getAABB() const;
+
 			virtual void setPos(const math::Vector2i& pos_);
 			virtual void setSize(const math::Vector2i& size_);
 

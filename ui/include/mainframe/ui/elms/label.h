@@ -16,7 +16,7 @@ namespace mainframe {
 		public:
 			void setColor(const render::Color color_);
 			virtual void setText(const std::string& text_);
-			void setFont(const std::shared_ptr<render::Font>& font_);
+			virtual void setFont(const std::shared_ptr<render::Font>& font_);
 			void setAlignment(render::Stencil::TextAlignment x, render::Stencil::TextAlignment y);
 			void setAlignmentX(render::Stencil::TextAlignment x);
 			void setAlignmentY(render::Stencil::TextAlignment y);
