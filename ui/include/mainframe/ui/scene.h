@@ -1,6 +1,8 @@
 #pragma once
 
 #include <mainframe/ui/element.h>
+#include <mainframe/ui/keystate.h>
+#include <mainframe/ui/mousestate.h>
 #include <mainframe/utils/event.hpp>
 #include <vector>
 #include <string>
@@ -20,10 +22,10 @@ namespace mainframe {
 			void drawElm(Element& elm, render::Stencil& stencil);
 			void updateElm(Element& elm);
 
-			void mousePress(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods, bool pressed);
+			void mousePress(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods, MouseState state);
 			void mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset);
 			void mouseMove(const math::Vector2i& mousePos);
-			void keyPress(unsigned int key, unsigned int scancode, ModifierKey mods, unsigned int action);
+			void keyPress(unsigned int key, unsigned int scancode, ModifierKey mods, KeyState state);
 			void keyChar(unsigned int key);
 
 			std::shared_ptr<Element> findElement(const math::Vector2i& mousePos);
@@ -33,10 +35,10 @@ namespace mainframe {
 			utils::ringbuffer<std::function<void()>> invokes = {64};
 
 		public:
-			mainframe::utils::Event<const math::Vector2i&, unsigned int, ModifierKey, bool> onMousePress;
+			mainframe::utils::Event<const math::Vector2i&, unsigned int, ModifierKey, MouseState> onMousePress;
 			mainframe::utils::Event<const math::Vector2i&, const math::Vector2i&> onMouseScroll;
 			mainframe::utils::Event<const math::Vector2i&> onMouseMove;
-			mainframe::utils::Event<unsigned int, unsigned int, ModifierKey, unsigned int> onKeyPress;
+			mainframe::utils::Event<unsigned int, unsigned int, ModifierKey, KeyState> onKeyPress;
 			mainframe::utils::Event<unsigned int> onKeyChar;
 
 			utils::ringbuffer<std::function<void()>>& getInvoker();

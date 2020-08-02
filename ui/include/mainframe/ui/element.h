@@ -6,6 +6,7 @@
 #include <mainframe/utils/ringbuffer.hpp>
 #include <mainframe/ui/elementcontainer.h>
 #include <mainframe/ui/modifierkey.h>
+#include <mainframe/utils/event.hpp>
 #include <memory>
 #include <string>
 #include <functional>
@@ -21,6 +22,14 @@ namespace mainframe {
 			utils::ringbuffer<std::function<void()>> invokes = {64};
 
 		public:
+			mainframe::utils::Event<const math::Vector2i&, unsigned int, ModifierKey> onMouseDown;
+			mainframe::utils::Event<const math::Vector2i&, unsigned int, ModifierKey> onMouseUp;
+			mainframe::utils::Event<const math::Vector2i&, const math::Vector2i&> onMouseScroll;
+			mainframe::utils::Event<const math::Vector2i&> onMouseMove;
+			mainframe::utils::Event<unsigned int, ModifierKey, bool> onKeyDown;
+			mainframe::utils::Event<unsigned int, ModifierKey> onKeyUp;
+			mainframe::utils::Event<unsigned int> onKeyChar;
+
 			math::Vector2i getPosAbsolute() const;
 			const std::string& getName() const;
 			bool getHovering() const;
