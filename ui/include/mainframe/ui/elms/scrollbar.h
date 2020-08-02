@@ -187,7 +187,7 @@ namespace mainframe {
 
 			virtual void draw(render::Stencil& stencil) override {
 				stencil.drawBox({0, 0}, getSize(), render::Color(255, 255, 255, 200));
-				stencil.drawBoxOutlined({0, 0}, getSize(), 1, Colors::Black);
+				stencil.drawBoxOutlined({0, 0}, getSize(), 1, render::Colors::Black);
 			}
 		};
 	}
