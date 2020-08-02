@@ -51,8 +51,8 @@ namespace mainframe {
 			for (auto& child : backPanel->getChildren()) {
 				auto aabb = child->getAABB();
 
-				if (aabb.x + aabb.w > offsetSize.x) offsetSize.x = aabb.x + aabb.w;
-				if (aabb.y + aabb.h > offsetSize.y) offsetSize.y = aabb.y + aabb.h;
+				if (aabb.pos.x + aabb.size.x > offsetSize.x) offsetSize.x = aabb.pos.x + aabb.size.x;
+				if (aabb.pos.y + aabb.size.y > offsetSize.y) offsetSize.y = aabb.pos.y + aabb.size.y;
 			}
 		}
 

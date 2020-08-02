@@ -14,8 +14,7 @@ namespace mainframe {
 			std::weak_ptr<ElementContainer> parent;
 			std::weak_ptr<ElementContainer> ref;
 			std::vector<std::shared_ptr<Element>> children;
-			math::Vector2i pos;
-			math::Vector2i size;
+			math::AABBi aabb;
 
 			std::shared_ptr<Element> findChildElm(const std::string& name, bool recursive = false) const;
 
@@ -27,10 +26,11 @@ namespace mainframe {
 
 			const math::Vector2i& getPos() const;
 			const math::Vector2i& getSize() const;
-			math::AABBi getAABB() const;
+			const math::AABBi& getAABB() const;
 
 			virtual void setPos(const math::Vector2i& pos_);
 			virtual void setSize(const math::Vector2i& size_);
+			virtual void setAABB(const math::AABBi& aabb_);
 
 			void clearChildren();
 

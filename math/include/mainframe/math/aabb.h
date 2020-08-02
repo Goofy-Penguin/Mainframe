@@ -12,32 +12,33 @@ namespace mainframe {
 		private:
 
 		public:
-			NumberType x = 0, y = 0, w = 0, h = 0;
+			Vector2_t<NumberType> pos;
+			Vector2_t<NumberType> size;
 
 			AABB_t() = default;
 			~AABB_t() = default;
 
-			AABB_t(NumberType _x, NumberType _y = 0, NumberType _w = 0, NumberType _h = 0) : x(_x), y(_y), w(_w), h(_h) {}
-			AABB_t(const Vector2_t<NumberType>& pos, const Vector2_t<NumberType>& size) : x(pos.x), y(pos.y), w(size.x), h(size.y) {}
+			AABB_t(NumberType x_, NumberType y_ = 0, NumberType w_ = 0, NumberType h_ = 0) : pos(x_, y_), size(w_, h_) {}
+			AABB_t(const Vector2_t<NumberType>& pos_, const Vector2_t<NumberType>& size_) : pos(pos_), size(size_) {}
 
 			AABB_t<NumberType> clamp(const AABB_t<NumberType>& boundries) {
 				AABB_t<NumberType> r = *this;
 
-				if (r.x < boundries.x) {
-					r.w += boundries.x - r.x;
-					r.x = boundries.x;
+				if (r.pos.x < boundries.pos.x) {
+					r.size.x += boundries.pos.x - r.pos.x;
+					r.pos.x = boundries.pos.x;
 				}
 
-				if (r.y < boundries.y) {
-					r.h += boundries.y - r.y;
-					r.y = boundries.y;
+				if (r.pos.y < boundries.pos.y) {
+					r.size.y += boundries.pos.y - r.pos.y;
+					r.pos.y = boundries.pos.y;
 				}
 
-				float wdiff = (r.x + r.w) - (boundries.x + boundries.w);
-				if (wdiff > 0) r.w -= wdiff;
+				float wdiff = (r.pos.x + r.size.x) - (boundries.pos.x + boundries.size.x);
+				if (wdiff > 0) r.size.x -= wdiff;
 
-				float hdiff = (r.y + r.h) - (boundries.y + boundries.h);
-				if (hdiff > 0) r.h -= hdiff;
+				float hdiff = (r.pos.y + r.size.y) - (boundries.pos.y + boundries.size.y);
+				if (hdiff > 0) r.size.y -= hdiff;
 
 				return r;
 			}

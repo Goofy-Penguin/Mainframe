@@ -60,25 +60,29 @@ namespace mainframe {
 		}
 
 		void ElementContainer::setPos(const math::Vector2i& pos_) {
-			pos = pos_;
+			aabb.pos = pos_;
 		}
 
 		void ElementContainer::setSize(const math::Vector2i& size_) {
-			size = size_;
+			aabb.size = size_;
+		}
+
+		void ElementContainer::setAABB(const math::AABBi& aabb_) {
+			setPos(aabb_.pos);
+			setSize(aabb_.size);
 		}
 
 		const math::Vector2i& ElementContainer::getPos() const {
-			return pos;
+			return aabb.pos;
 		}
 
 		const math::Vector2i& ElementContainer::getSize() const {
-			return size;
+			return aabb.size;
 		}
 
-		math::AABBi ElementContainer::getAABB() const {
-			return {pos, size};
+		const math::AABBi& ElementContainer::getAABB() const {
+			return aabb;
 		}
-
 
 		const std::vector<std::shared_ptr<Element>>& ElementContainer::getChildren() const {
 			return children;
