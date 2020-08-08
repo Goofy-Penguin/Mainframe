@@ -148,19 +148,19 @@ namespace mainframe {
 			}
 
 			bool operator< (const VecType& other) const {
-				return x < other.y&& y < other.y;
+				return x < other.x && y < other.y;
 			}
 
 			bool operator<= (const VecType& other) const {
-				return x <= other.y && y <= other.y;
+				return x <= other.x && y <= other.y;
 			}
 
 			bool operator> (const VecType& other) const {
-				return x > other.y&& y > other.y;
+				return x > other.x && y > other.y;
 			}
 
 			bool operator>= (const VecType& other) const {
-				return x >= other.y && y >= other.y;
+				return x >= other.x && y >= other.y;
 			}
 		};
 
