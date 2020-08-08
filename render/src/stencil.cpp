@@ -220,39 +220,39 @@ namespace mainframe {
 				auto& clip = getClippingRect();
 				auto pixelSize = (uvEnd - uvStart) / size;
 
-				if (pos.x > clip.x + clip.w) return;
-				if (pos.y > clip.y + clip.h) return;
-				if (pos.x + size.x < clip.x) return;
-				if (pos.y + size.y < clip.y) return;
+				if (pos.x > clip.pos.x + clip.size.x) return;
+				if (pos.y > clip.pos.y + clip.size.y) return;
+				if (pos.x + size.x < clip.pos.x) return;
+				if (pos.y + size.y < clip.pos.y) return;
 
-				if (pos.x < clip.x) {
-					float diff = clip.x - pos.x;
+				if (pos.x < clip.pos.x) {
+					float diff = clip.pos.x - pos.x;
 
 					uvStart.x += diff * pixelSize.x;
 					size.x -= diff;
-					pos.x = clip.x;
+					pos.x = clip.pos.x;
 				}
 
-				if (pos.y < clip.y) {
-					float diff = clip.y - pos.y;
+				if (pos.y < clip.pos.y) {
+					float diff = clip.pos.y - pos.y;
 
 					uvStart.y += diff * pixelSize.y;
 					size.y -= diff;
-					pos.y = clip.y;
+					pos.y = clip.pos.y;
 				}
 
-				float maxX = (clip.x + clip.w);
-				float maxY = (clip.y + clip.h);
+				float maxX = (clip.pos.x + clip.size.x);
+				float maxY = (clip.pos.y + clip.size.y);
 
 				if (pos.x + size.x > maxX) {
-					float diff = pos.x + size.x - clip.x - clip.w;
+					float diff = pos.x + size.x - clip.pos.x - clip.size.x;
 					size.x = maxX - pos.x;
 
 					uvEnd.x -= diff * pixelSize.x;
 				}
 
 				if (pos.y + size.y > maxY) {
-					float diff = pos.y + size.y - clip.y - clip.h;
+					float diff = pos.y + size.y - clip.pos.y - clip.size.y;
 					size.y = maxY - pos.y;
 
 					uvEnd.y -= diff * pixelSize.y;
@@ -434,7 +434,7 @@ namespace mainframe {
 		}
 
 		void Stencil::pushClipping(const mainframe::math::AABB& rect) {
-			mainframe::math::AABB newrect = {rect.x + offset.x, rect.y + offset.y, rect.w, rect.h};
+			mainframe::math::AABB newrect = {rect.pos.x + offset.x, rect.pos.y + offset.y, rect.size.x, rect.size.y};
 			newrect = newrect.clamp(clippingRects.back());
 
 			clippingRects.push_back(newrect);
@@ -472,8 +472,8 @@ namespace mainframe {
 			windowSize = size;
 
 			auto& r = clippingRects.front();
-			r.w = windowSize.x;
-			r.h = windowSize.y;
+			r.size.x = windowSize.x;
+			r.size.y = windowSize.y;
 		}
 
 		const mainframe::math::Vector2i& Stencil::getWindowSize() const {

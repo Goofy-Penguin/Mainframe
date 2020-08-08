@@ -146,6 +146,22 @@ namespace mainframe {
 			bool operator!= (const VecType& other) const {
 				return !operator==(other);
 			}
+
+			bool operator< (const VecType& other) const {
+				return x < other.x && y < other.y;
+			}
+
+			bool operator<= (const VecType& other) const {
+				return x <= other.x && y <= other.y;
+			}
+
+			bool operator> (const VecType& other) const {
+				return x > other.x && y > other.y;
+			}
+
+			bool operator>= (const VecType& other) const {
+				return x >= other.x && y >= other.y;
+			}
 		};
 
 		using Vector2d = Vector2_t<double>;
