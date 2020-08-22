@@ -9,6 +9,8 @@
 #include <ctype.h>
 #include <cinttypes>
 
+#include <mainframe/networking/enum/errors.h>
+
 #ifdef _MSC_VER
 #define _WINSOCKAPI_
 #include <winsock2.h>
@@ -52,7 +54,7 @@ namespace mainframe {
 			bool bind(unsigned short port);
 			bool listen();
 			bool accept(Socket* socket);
-			int connect(const std::string& host, unsigned short port);
+			_NODISCARD SocketError connect(const std::string& host, unsigned short port);
 			void close();
 
 			uint64_t uAddr();
