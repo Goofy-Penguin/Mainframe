@@ -8,8 +8,8 @@ set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACH
 
 include("cmake/HunterGate.cmake")
 HunterGate(
-    URL "https://github.com/cpp-pm/hunter/archive/v0.23.254.tar.gz"
-    SHA1 "017e688b9848c1f695303e8cfe9f35d40e154112"
+	URL "https://github.com/cpp-pm/hunter/archive/v0.23.254.tar.gz"
+	SHA1 "017e688b9848c1f695303e8cfe9f35d40e154112"
 )
 
 project ("mainframe" VERSION ${MAINFRAME_VERSION})
@@ -21,6 +21,7 @@ hunter_add_package(freetype)
 hunter_add_package(PNG)
 hunter_add_package(ZLIB)
 hunter_add_package(BZip2)
+hunter_add_package(nlohmann_json)
 
 find_package(glfw3 REQUIRED)
 find_package(glew REQUIRED)
@@ -29,6 +30,7 @@ find_package(freetype REQUIRED)
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 set (build_tests true CACHE BOOL "build tests")
 set (build_samples true CACHE BOOL "build samples")
@@ -121,6 +123,7 @@ add_subdirectory ("database")
 add_subdirectory ("game")
 add_subdirectory ("render")
 add_subdirectory ("ui")
+add_subdirectory ("ptalk")
 
 # samples
 if (build_samples)

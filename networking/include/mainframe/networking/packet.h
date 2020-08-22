@@ -106,6 +106,8 @@ namespace mainframe {
 			inline auto cbegin() const noexcept { return buffer.cbegin(); }
 			inline auto cend() const noexcept { return buffer.cend(); }
 
+			inline void resize(size_t size) { buffer.resize(size); }
+
 			inline bool empty() const { return buffer.empty(); }
 			inline const std::vector<uint8_t>& readAll() const { return buffer; }
 			void clear();
