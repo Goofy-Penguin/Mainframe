@@ -4,6 +4,10 @@
 #include <fmt/printf.h>
 #include <chrono>
 
+#ifndef _MSC_VER
+#include <arpa/inet.h>
+#endif
+
 using namespace mainframe::ptalk;
 using namespace mainframe::networking;
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #include <mainframe/networking/packet.h>
 #include <mainframe/ptalk/server.h>
 #include <mainframe/ptalk/client.h>
