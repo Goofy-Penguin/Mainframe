@@ -54,7 +54,7 @@ namespace mainframe {
 			bool bind(unsigned short port);
 			bool listen();
 			bool accept(Socket* socket);
-			_NODISCARD SocketError connect(const std::string& host, unsigned short port);
+			[[nodiscard]] SocketError connect(const std::string& host, unsigned short port);
 			void close();
 
 			uint64_t uAddr();
