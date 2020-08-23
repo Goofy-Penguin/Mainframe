@@ -59,10 +59,13 @@ namespace mainframe {
 		}
 
 		void Client::send(const Message& msg) {
+			std::lock_guard<std::mutex> guard(lock);
 			toSend.push(msg);
 		}
 
 		void Client::send(const Message& msg, OnMessageCallback replyCallback) {
+			std::lock_guard<std::mutex> guard(lock);
+
 			toSend.push(msg);
 			replyCallbacks[msg.getId()] = replyCallback;
 		}
@@ -84,6 +87,7 @@ namespace mainframe {
 		}
 
 		void Client::addMethod(const std::string& name, OnMessageCallback callback) {
+			std::lock_guard<std::mutex> guard(lock);
 			methods[name] = callback;
 		}
 
@@ -120,28 +124,40 @@ namespace mainframe {
 				MessageIncomming msg = receiveMessage();
 				msg.setClient(getRef().lock());
 
+				OnMessageCallback callback;
+
 				// if name is empty, it's an reply to an earlier sent message
 				if (msg.getName().empty()) {
-					auto reply = replyCallbacks.find(msg.getId());
-					if (reply == replyCallbacks.end()) {
-						close();
-						break;
+					{
+						std::lock_guard<std::mutex> guard(lock);
+
+						auto reply = replyCallbacks.find(msg.getId());
+						if (reply == replyCallbacks.end()) {
+							close();
+							break;
+						}
+
+						callback = reply->second;
+						replyCallbacks.erase(reply);
 					}
 
-					auto func = reply->second;
-					replyCallbacks.erase(reply);
-
-					func(msg);
+					callback(msg);
 					continue;
 				}
 
 				onMessage(msg);
 				if (msg.isCancelled()) continue;
 
-				auto method = methods.find(msg.getName());
-				if (method == methods.end()) continue;
+				{
+					std::lock_guard<std::mutex> guard(lock);
 
-				method->second(msg);
+					auto method = methods.find(msg.getName());
+					if (method == methods.end()) continue;
+
+					callback = method->second;
+				}
+
+				callback(msg);
 			}
 		}
 
@@ -163,8 +179,11 @@ namespace mainframe {
 			if (!sock.receiveAll(buff.data(), static_cast<int>(buff.size())))
 				return ret;
 
-			ret.setId(buff.read<int>());
+			buff.setlengthFormat(mainframe::networking::LengthType::UInt16);
+			ret.setId(buff.read<uint32_t>());
 			ret.setName(buff.read<std::string>());
+
+			buff.setlengthFormat(mainframe::networking::LengthType::UInt32);
 			ret.setData(nlohmann::json::from_bson(buff.read<std::vector<uint8_t>>()));
 
 			return ret;
@@ -173,15 +192,18 @@ namespace mainframe {
 		bool Client::sendMessage(const Message& msg) {
 			networking::Packet buff;
 
+			buff.setlengthFormat(mainframe::networking::LengthType::UInt16);
 			buff.write(msg.getId());
 			buff.write(msg.getName());
+
+			buff.setlengthFormat(mainframe::networking::LengthType::UInt32);
 			buff.write(nlohmann::json::to_bson(msg.getData()));
 
 			// seek to begin to insert length in front
 			buff.seek(buff.begin());
 			buff.write(static_cast<uint32_t>(buff.size()));
 
-			return sock.sendAll(buff.data(), buff.size());
+			return sock.sendAll(buff.data(), static_cast<int>(buff.size()));
 		}
 	}
 }

@@ -30,11 +30,11 @@ namespace mainframe {
 			return name;
 		}
 
-		int Message::getId() const {
+		uint32_t Message::getId() const {
 			return id;
 		}
 
-		void Message::setId(int id_) {
+		void Message::setId(uint32_t id_) {
 			id = id_;
 		}
 
@@ -42,8 +42,8 @@ namespace mainframe {
 			return cancelled;
 		}
 
-		int Message::generateUniqueId() {
-			static std::atomic<int> _id;
+		uint32_t Message::generateUniqueId() {
+			static std::atomic<uint32_t> _id;
 			return _id++;;
 		}
 	}

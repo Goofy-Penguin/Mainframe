@@ -8,12 +8,12 @@
 namespace mainframe {
 	namespace ptalk {
 		class Message {
-			int id = 0;
+			uint32_t id = 0;
 			std::string name;
 			nlohmann::json data;
 			bool cancelled = false;
 
-			static int generateUniqueId();
+			static uint32_t generateUniqueId();
 
 		public:
 			Message();
@@ -21,10 +21,10 @@ namespace mainframe {
 
 			void setData(const nlohmann::json& data_);
 			void setName(const std::string& name_);
-			void setId(int id_);
+			void setId(uint32_t id_);
 			void cancel();
 
-			int getId() const;
+			uint32_t getId() const;
 			const std::string& getName() const;
 			const nlohmann::json& getData() const;
 
