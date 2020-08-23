@@ -4,7 +4,7 @@
 namespace mainframe {
 	namespace ptalk {
 		Server::~Server() {
-			close();
+			stop();
 		}
 
 		bool Server::listen(int port) {
@@ -29,7 +29,7 @@ namespace mainframe {
 			return true;
 		}
 
-		void Server::close() {
+		void Server::stop() {
 			listening = false;
 			sock.close();
 

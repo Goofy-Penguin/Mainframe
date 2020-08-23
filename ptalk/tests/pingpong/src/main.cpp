@@ -68,8 +68,8 @@ bool connectToServer() {
 }
 
 void cleanup() {
-	client->close();
-	serv.close();
+	client->disconnect();
+	serv.stop();
 }
 
 bool waitFor(bool& var) {

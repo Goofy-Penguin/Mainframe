@@ -6,7 +6,7 @@
 namespace mainframe {
 	namespace ptalk {
 		Client::~Client() {
-			close();
+			disconnect();
 			cleanupThreads();
 		}
 
@@ -40,7 +40,7 @@ namespace mainframe {
 			threadRecv = new std::thread([this]() { recvLoop(); });
 		}
 
-		void Client::close() {
+		void Client::disconnect() {
 			sock.close();
 		}
 
@@ -70,7 +70,7 @@ namespace mainframe {
 			replyCallbacks[msg.getId()] = replyCallback;
 		}
 
-		void Client::reply(const MessageIncoming& msg, const nlohmann::json& data_) {
+		void Client::respond(const MessageIncoming& msg, const nlohmann::json& data_) {
 			Message answer;
 			answer.setData(data_);
 			answer.setId(msg.getId());
@@ -78,7 +78,7 @@ namespace mainframe {
 			send(answer);
 		}
 
-		void Client::reply(const MessageIncoming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback) {
+		void Client::respond(const MessageIncoming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback) {
 			Message answer;
 			answer.setData(data_);
 			answer.setId(msg.getId());
@@ -113,7 +113,7 @@ namespace mainframe {
 
 				auto msg = toSend.pop();
 				if (!sendMessage(msg)) {
-					close();
+					disconnect();
 					return;
 				}
 			}
@@ -133,7 +133,7 @@ namespace mainframe {
 
 						auto reply = replyCallbacks.find(msg.getId());
 						if (reply == replyCallbacks.end()) {
-							close();
+							disconnect();
 							break;
 						}
 

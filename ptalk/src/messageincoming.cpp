@@ -15,12 +15,12 @@ namespace mainframe {
 			return client;
 		}
 
-		void MessageIncoming::reply(const nlohmann::json& data) {
-			client->reply(*this, data);
+		void MessageIncoming::respond(const nlohmann::json& data) {
+			client->respond(*this, data);
 		}
 
-		void MessageIncoming::reply(const nlohmann::json& data, OnMessageCallback replyCallback) {
-			client->reply(*this, data, replyCallback);
+		void MessageIncoming::respond(const nlohmann::json& data, OnMessageCallback replyCallback) {
+			client->respond(*this, data, replyCallback);
 		}
 	}
 }

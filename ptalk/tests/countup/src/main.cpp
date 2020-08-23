@@ -32,7 +32,7 @@ void countFunc(MessageIncoming& msg) {
 		return;
 	}
 
-	msg.reply({{"num", num++}}, countFunc);
+	msg.respond({{"num", num++}}, countFunc);
 }
 
 bool setupServer() {
@@ -65,8 +65,8 @@ bool connectToServer() {
 }
 
 void cleanup() {
-	client->close();
-	serv.close();
+	client->disconnect();
+	serv.stop();
 }
 
 bool waitFor(bool& var) {

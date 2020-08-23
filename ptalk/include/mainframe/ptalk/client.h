@@ -47,7 +47,7 @@ namespace mainframe {
 			utils::Event<MessageIncoming&> onMessage;
 
 			networking::SocketError connect(const std::string& host, int port);
-			void close();
+			void disconnect();
 			void startThreads();
 
 			void setRef(const std::shared_ptr<Client>& client);
@@ -55,8 +55,8 @@ namespace mainframe {
 
 			void send(const Message& msg);
 			void send(const Message& msg, OnMessageCallback replyCallback);
-			void reply(const MessageIncoming& msg, const nlohmann::json& data_);
-			void reply(const MessageIncoming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback);
+			void respond(const MessageIncoming& msg, const nlohmann::json& data_);
+			void respond(const MessageIncoming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback);
 
 			networking::Socket& getSocket();
 

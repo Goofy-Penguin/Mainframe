@@ -20,8 +20,8 @@ namespace mainframe {
 			void setClient(const std::shared_ptr<Client>& client_);
 			const std::shared_ptr<Client>& getClient() const;
 
-			void reply(const nlohmann::json& data);
-			void reply(const nlohmann::json& data, OnMessageCallback replyCallback);
+			void respond(const nlohmann::json& data);
+			void respond(const nlohmann::json& data, OnMessageCallback replyCallback);
 		};
 	}
 }

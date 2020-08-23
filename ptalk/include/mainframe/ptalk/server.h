@@ -21,7 +21,7 @@ namespace mainframe {
 			~Server();
 
 			bool listen(int port);
-			void close();
+			void stop();
 		};
 	}
 }
