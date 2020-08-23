@@ -28,11 +28,11 @@ bool setupServer() {
 
 		connectedClient = newclient;
 
-		newclient->onMessage += [newclient, ip](MessageIncomming& msg) {
+		newclient->onMessage += [newclient, ip](MessageIncoming& msg) {
 			fmt::print("[server] [{}] recieved '{}'\n", ip, msg.getName());
 		};
 
-		newclient->addMethod("ping", [newclient, ip](MessageIncomming& msg) {
+		newclient->addMethod("ping", [newclient, ip](MessageIncoming& msg) {
 			auto& data = msg.getData();
 			auto timestamp = data["time"].get<time_t>();
 

@@ -20,7 +20,7 @@ std::shared_ptr<Client> connectedClient;
 bool gotCounterUp = false;
 time_t timeoutTimer = 0;
 
-void countFunc(MessageIncomming& msg) {
+void countFunc(MessageIncoming& msg) {
 	auto& data = msg.getData();
 	auto num = data["num"].get<int>();
 	num++;

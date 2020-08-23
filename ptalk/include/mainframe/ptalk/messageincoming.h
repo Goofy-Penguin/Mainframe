@@ -6,16 +6,16 @@
 namespace mainframe {
 	namespace ptalk {
 		class Client;
-		class MessageIncomming;
+		class MessageIncoming;
 
-		using OnMessageCallback = mainframe::utils::Event<MessageIncomming&>::Func;
+		using OnMessageCallback = mainframe::utils::Event<MessageIncoming&>::Func;
 
-		class MessageIncomming : public Message {
+		class MessageIncoming : public Message {
 			std::shared_ptr<Client> client;
 
 		public:
-			MessageIncomming() = default;
-			MessageIncomming(std::shared_ptr<Client> client_, int id_, const std::string& name_, const nlohmann::json& data_);
+			MessageIncoming() = default;
+			MessageIncoming(std::shared_ptr<Client> client_, int id_, const std::string& name_, const nlohmann::json& data_);
 
 			void setClient(const std::shared_ptr<Client>& client_);
 			const std::shared_ptr<Client>& getClient() const;

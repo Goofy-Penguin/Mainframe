@@ -8,7 +8,7 @@
 #include <mainframe/networking/socket.h>
 #include <mainframe/utils/event.hpp>
 #include <mainframe/utils/ringbuffer.hpp>
-#include <mainframe/ptalk/messageincomming.h>
+#include <mainframe/ptalk/messageincoming.h>
 
 namespace mainframe {
 	namespace ptalk {
@@ -34,7 +34,7 @@ namespace mainframe {
 			static void cleanupThread(std::thread*& thread);
 			void cleanupThreads();
 
-			MessageIncomming receiveMessage();
+			MessageIncoming receiveMessage();
 			bool sendMessage(const Message& msg);
 
 		public:
@@ -44,7 +44,7 @@ namespace mainframe {
 			utils::Event<> onClose;
 			utils::Event<> onConnect;
 			utils::Event<networking::SocketError> onConnectFailed;
-			utils::Event<MessageIncomming&> onMessage;
+			utils::Event<MessageIncoming&> onMessage;
 
 			networking::SocketError connect(const std::string& host, int port);
 			void close();
@@ -55,8 +55,8 @@ namespace mainframe {
 
 			void send(const Message& msg);
 			void send(const Message& msg, OnMessageCallback replyCallback);
-			void reply(const MessageIncomming& msg, const nlohmann::json& data_);
-			void reply(const MessageIncomming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback);
+			void reply(const MessageIncoming& msg, const nlohmann::json& data_);
+			void reply(const MessageIncoming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback);
 
 			networking::Socket& getSocket();
 

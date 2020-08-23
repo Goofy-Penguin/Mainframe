@@ -70,7 +70,7 @@ namespace mainframe {
 			replyCallbacks[msg.getId()] = replyCallback;
 		}
 
-		void Client::reply(const MessageIncomming& msg, const nlohmann::json& data_) {
+		void Client::reply(const MessageIncoming& msg, const nlohmann::json& data_) {
 			Message answer;
 			answer.setData(data_);
 			answer.setId(msg.getId());
@@ -78,7 +78,7 @@ namespace mainframe {
 			send(answer);
 		}
 
-		void Client::reply(const MessageIncomming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback) {
+		void Client::reply(const MessageIncoming& msg, const nlohmann::json& data_, OnMessageCallback replyCallback) {
 			Message answer;
 			answer.setData(data_);
 			answer.setId(msg.getId());
@@ -121,7 +121,7 @@ namespace mainframe {
 
 		void Client::recvLoop() {
 			while (sock.state == networking::Socket::SockState::skCONNECTED) {
-				MessageIncomming msg = receiveMessage();
+				MessageIncoming msg = receiveMessage();
 				msg.setClient(getRef().lock());
 
 				OnMessageCallback callback;
@@ -161,8 +161,8 @@ namespace mainframe {
 			}
 		}
 
-		MessageIncomming Client::receiveMessage() {
-			MessageIncomming ret;
+		MessageIncoming Client::receiveMessage() {
+			MessageIncoming ret;
 			networking::Packet buff;
 
 			// find out how big the message is
