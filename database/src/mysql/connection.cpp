@@ -29,7 +29,7 @@ namespace mainframe {
 
 			sock.close();
 			sock.create();
-			if (sock.connect(ip, static_cast<unsigned short>(port)) != 0) return communicator->fail("failed to connect");
+			if (sock.connect(ip, static_cast<unsigned short>(port)) != networking::SocketError::success) return communicator->fail("failed to connect");
 
 			auto count = sock.receive(buffer.data(), static_cast<int>(buffer.size()), 0);
 			auto msg = std::string(reinterpret_cast<char*>(buffer.data()) + 5);

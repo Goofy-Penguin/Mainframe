@@ -127,9 +127,11 @@ namespace mainframe {
 			return addr.sin_addr.s_addr;
 		}
 
-		int Socket::connect(const std::string& host, unsigned short port) {
+		SocketError Socket::connect(const std::string& host, unsigned short port) {
 			if (!check())
-				return 1;
+				return SocketError::invalidSocket;
+
+			host.empty();
 
 #pragma warning( push )
 #pragma warning( disable: 4996)
@@ -137,7 +139,7 @@ namespace mainframe {
 #pragma warning( pop )
 
 			if (phe == nullptr)
-				return 2;
+				return SocketError::invalidHostname;
 
 			memcpy(&addr.sin_addr, phe->h_addr, sizeof(struct in_addr));
 
@@ -145,10 +147,10 @@ namespace mainframe {
 			addr.sin_port = htons(port);
 
 			if (::connect(sock, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR)
-				return 3;
+				return SocketError::failed;
 
 			state = SockState::skCONNECTED;
-			return 0;
+			return SocketError::success;
 		}
 
 		bool Socket::canRead() {
