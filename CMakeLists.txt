@@ -123,7 +123,6 @@ add_subdirectory ("database")
 add_subdirectory ("game")
 add_subdirectory ("render")
 add_subdirectory ("ui")
-add_subdirectory ("ptalk")
 
 # samples
 if (build_samples)
