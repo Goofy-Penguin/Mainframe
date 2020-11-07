@@ -50,6 +50,7 @@ namespace mainframe {
 
 			virtual std::vector<std::string> listDatabases() override;
 			virtual std::shared_ptr<Database> getDatabase(const std::string& name) override;
+			std::shared_ptr<Communicator> getCommunicator() const;
 
 			virtual const std::string& getLastError() const override;
 
