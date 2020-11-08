@@ -12,6 +12,10 @@ namespace mainframe {
 			return communicator->getLastError();
 		}
 
+		std::shared_ptr<Communicator> ConnectionMysql::getCommunicator() const {
+			return communicator;
+		}
+
 		bool ConnectionMysql::connect(const std::string& ip, int port, const std::string& user, const std::string& pass) {
 			Connection::connect(ip, port, user, pass);
 

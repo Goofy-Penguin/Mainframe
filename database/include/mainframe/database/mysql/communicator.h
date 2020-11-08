@@ -24,7 +24,7 @@ namespace mainframe {
 			std::string lastError;
 			std::mutex lock;
 
-			Result execute(const std::string& query, DatabaseMysql* db);
+			Result execute(const std::string& query, DatabaseMysql* db = nullptr);
 
 			bool fail(const std::string& err);
 			bool fail(const std::string& err, const std::string& title);
