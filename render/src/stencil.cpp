@@ -208,6 +208,10 @@ namespace mainframe {
 		}
 
 		void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, const Texture& tex, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
+			drawTexture(pos, size, tex.getHandle(), col, uvStart, uvEnd, rotation, origin);
+		}
+
+		void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
 			if (col.a == 0) return;
 
 			pos += offset;
@@ -267,7 +271,7 @@ namespace mainframe {
 			b.x += size.x;
 			c.y += size.y;
 
-			setTexture(tex);
+			setTexture(rawTextureHandle);
 			setShader(shader2D);
 
 			auto rotOrigin = origin.isNaN() ? pos + size / 2 : origin + offset;
