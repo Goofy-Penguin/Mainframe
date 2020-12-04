@@ -5,7 +5,10 @@ namespace mainframe {
 		enum class ModifierKey {
 			none = 0,
 			shift = 1,
-			ctrl = 2
+			ctrl = 2,
+			alt = 4,
+			isLeft = 8,
+			isRight = 16
 		};
 
 		inline constexpr ModifierKey operator&(ModifierKey x, ModifierKey y) {
@@ -39,20 +42,28 @@ namespace mainframe {
 			return x;
 		}
 
-		inline constexpr bool operator>=(ModifierKey& x, unsigned int y) {
+		inline bool operator>=(ModifierKey& x, unsigned int y) {
 			return static_cast<unsigned int>(x) >= y;
 		}
 
-		inline constexpr bool operator>(ModifierKey& x, unsigned int y) {
+		inline bool operator>(ModifierKey& x, unsigned int y) {
 			return static_cast<unsigned int>(x) > y;
 		}
 
-		inline constexpr bool operator<=(ModifierKey& x, unsigned int y) {
+		inline bool operator<=(ModifierKey& x, unsigned int y) {
 			return static_cast<unsigned int>(x) >= y;
 		}
 
-		inline constexpr bool operator<(ModifierKey& x, unsigned int y) {
+		inline bool operator<(ModifierKey& x, unsigned int y) {
 			return static_cast<unsigned int>(x) > y;
+		}
+
+		inline bool operator==(ModifierKey& x, unsigned int y) {
+			return static_cast<unsigned int>(x) == y;
+		}
+
+		inline bool operator!=(ModifierKey& x, unsigned int y) {
+			return static_cast<unsigned int>(x) != y;
 		}
 	}
 }

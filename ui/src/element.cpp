@@ -50,7 +50,11 @@ namespace mainframe {
 		bool Element::isHidden() { return hidden; }
 
 		bool Element::isfocused() { return focused; }
-		void Element::setfocused(bool focused_) { focused = focused_; }
+		void Element::setFocused(bool focused_) { focused = focused_; }
+
+		bool Element::hitTest(const math::Vector2i& mousePos) {
+			return getAABB().contains(mousePos);
+		}
 
 		void Element::mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
 		void Element::mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
