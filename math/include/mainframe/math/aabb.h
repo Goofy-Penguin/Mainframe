@@ -42,6 +42,17 @@ namespace mainframe {
 
 				return r;
 			}
+
+			NumberType surfaceArea() const {
+				return size.x * size.y;
+			}
+
+			bool contains(const Vector2_t<NumberType>& pos_) const {
+				return pos_.x >= pos.x && // left
+					pos_.y >= pos.y && // top
+					pos_.x <= pos.x + size.x && // right
+					pos_.y <= pos.y + size.y; // bottom
+			}
 		};
 
 		using AABBd = AABB_t<double>;
