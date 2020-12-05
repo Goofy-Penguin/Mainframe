@@ -135,9 +135,11 @@ namespace mainframe {
 			if (!elm.hitTest(mousePos)) return nullptr;
 
 			auto& pos = elm.getPos();
+
 			auto elms = elm.getChildren();
-			for (auto& child : elms) {
-				auto found = findElement(child, mousePos - pos, offset + pos, offsetOut);
+			size_t count = elms.size();
+			for (size_t i = count; i > 0; i--) {
+				auto found = findElement(elms[i - 1], mousePos - pos, offset + pos, offsetOut);
 				if (found != nullptr) return found;
 			}
 
