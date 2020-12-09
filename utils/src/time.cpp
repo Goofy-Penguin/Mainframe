@@ -8,7 +8,7 @@
 #include <cstdarg>
 #include <fmt/format.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <winsock.h>
 #include <time.h>
 #include <windows.h>
@@ -23,7 +23,6 @@
 #else
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
 #endif
-
 
 namespace mainframe {
 	namespace utils {

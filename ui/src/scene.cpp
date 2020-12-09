@@ -132,18 +132,14 @@ namespace mainframe {
 		std::shared_ptr<Element> Scene::findElement(const std::shared_ptr<Element>& elmPtr, const math::Vector2i& mousePos, const math::Vector2i& offset, math::Vector2i& offsetOut) {
 			auto& elm = *elmPtr;
 			if (elm.isHidden()) return nullptr;
+			if (!elm.hitTest(mousePos)) return nullptr;
 
 			auto& pos = elm.getPos();
-			auto& size = elm.getSize();
-
-			if (mousePos.x < pos.x) return nullptr;
-			if (mousePos.y < pos.y) return nullptr;
-			if (mousePos.x >= pos.x + size.x) return nullptr;
-			if (mousePos.y >= pos.y + size.y) return nullptr;
 
 			auto elms = elm.getChildren();
-			for (auto& child : elms) {
-				auto found = findElement(child, mousePos - pos, offset + pos, offsetOut);
+			size_t count = elms.size();
+			for (size_t i = count; i > 0; i--) {
+				auto found = findElement(elms[i - 1], mousePos - pos, offset + pos, offsetOut);
 				if (found != nullptr) return found;
 			}
 
@@ -182,9 +178,9 @@ namespace mainframe {
 				return;
 			}
 
-			if (!focusedElement.expired()) focusedElement.lock()->setfocused(false);
+			if (!focusedElement.expired()) focusedElement.lock()->setFocused(false);
 
-			target->setfocused(true);
+			target->setFocused(true);
 			focusedElement = target;
 
 			target->mouseDown(mousePos - offsetOut, button, mods);
@@ -223,7 +219,12 @@ namespace mainframe {
 		}
 
 		void Scene::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {
-			// TODO: element logic for scrolling
+			if (!hoveredElement.expired()) {
+				auto elm = hoveredElement.lock();
+				elm->mouseScroll(mousePos, offset);
+
+				return;
+			}
 
 			onMouseScroll(mousePos, offset);
 		}

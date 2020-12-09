@@ -158,8 +158,13 @@ namespace mainframe {
 						uint16_t len;
 						memcpy(&len, buffer.data() + 1, 2);
 
-						auto str = reinterpret_cast<const char*>(buffer.data());
-						return fail({str, str + len});
+						auto str = reinterpret_cast<const char*>(buffer.data() + 4);
+						auto endPtr = str;
+						while (*(endPtr + 1) != 0x00) {
+							endPtr++;
+						}
+
+						return fail({str, endPtr});
 					}
 				}
 

@@ -131,8 +131,6 @@ namespace mainframe {
 			if (!check())
 				return SocketError::invalidSocket;
 
-			host.empty();
-
 #pragma warning( push )
 #pragma warning( disable: 4996)
 			hostent* phe = gethostbyname(host.c_str());

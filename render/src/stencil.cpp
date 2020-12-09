@@ -1,6 +1,5 @@
 #include <mainframe/render/stencil.h>
 #include <mainframe/render/font.h>
-#include <mainframe/numbers/pi.h>
 
 #include <GL/glew.h>
 #include <freetype-gl.h>
@@ -113,7 +112,7 @@ namespace mainframe {
 				indices.push_back(spos + i);
 		}
 
-		void Stencil::drawCircleOutlined(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, float borderSize, Color col) {
+		void Stencil::drawCircleOutline(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, float borderSize, Color col, float angleStart, float maxAngle) {
 			if (col.a == 0) return;
 
 			setTexture(getPixelTexture());
@@ -125,14 +124,16 @@ namespace mainframe {
 
 			float space = numbers::pi<float> / roundness * 2;
 
-
 			for (size_t i = 0; i < roundness;) {
-				math::Vector2 a = targetPos + math::Vector2::cosSin(space * i) * radiusBorder;
-				math::Vector2 b = targetPos + math::Vector2::cosSin(space * i) * radius;
+				auto angStart = space * i++ + angleStart;
+				auto angEnd = angStart + space;
+				if (angEnd > maxAngle) break;
 
-				i++;
-				math::Vector2 c = targetPos + math::Vector2::cosSin(space * i) * radiusBorder;
-				math::Vector2 d = targetPos + math::Vector2::cosSin(space * i) * radius;
+				math::Vector2 a = targetPos + math::Vector2::cosSin(angStart) * radiusBorder;
+				math::Vector2 b = targetPos + math::Vector2::cosSin(angStart) * radius;
+
+				math::Vector2 c = targetPos + math::Vector2::cosSin(angEnd) * radiusBorder;
+				math::Vector2 d = targetPos + math::Vector2::cosSin(angEnd) * radius;
 
 				drawTriangle(
 					a, {}, col,
@@ -148,7 +149,7 @@ namespace mainframe {
 			}
 		}
 
-		void Stencil::drawCircle(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, Color col) {
+		void Stencil::drawCircle(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, Color col, float angleStart, float maxAngle) {
 			if (col.a == 0) return;
 
 			setTexture(getPixelTexture());
@@ -160,8 +161,11 @@ namespace mainframe {
 			float space = numbers::pi<float> / roundness * 2;
 
 			for (size_t i = 0; i < roundness;) {
-				math::Vector2 b = targetPos + math::Vector2::cosSin(space * i) * radius;
-				math::Vector2 c = targetPos + math::Vector2::cosSin(space * ++i) * radius;
+				auto ang = space * i++ + angleStart;
+				if (ang + space > maxAngle) break;
+
+				math::Vector2 b = targetPos + math::Vector2::cosSin(ang) * radius;
+				math::Vector2 c = targetPos + math::Vector2::cosSin(ang + space) * radius;
 
 				drawTriangle(
 					targetPos, {}, col,
@@ -208,6 +212,10 @@ namespace mainframe {
 		}
 
 		void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, const Texture& tex, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
+			drawTexture(pos, size, tex.getHandle(), col, uvStart, uvEnd, rotation, origin);
+		}
+
+		void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
 			if (col.a == 0) return;
 
 			pos += offset;
@@ -267,7 +275,7 @@ namespace mainframe {
 			b.x += size.x;
 			c.y += size.y;
 
-			setTexture(tex);
+			setTexture(rawTextureHandle);
 			setShader(shader2D);
 
 			auto rotOrigin = origin.isNaN() ? pos + size / 2 : origin + offset;

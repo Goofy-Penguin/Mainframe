@@ -19,6 +19,10 @@ namespace mainframe {
 			return ret;
 		}
 
+		std::shared_ptr<Communicator> DatabaseMysql::getCommunicator() const {
+			return communicator;
+		}
+
 		DatabaseMysql::DatabaseMysql(const std::string& name, const std::shared_ptr<Communicator>& _communicator) : communicator(_communicator), Database(name) { }
 	}
 }

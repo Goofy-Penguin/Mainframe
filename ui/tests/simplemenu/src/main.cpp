@@ -8,16 +8,11 @@
 #include <mainframe/ui/elms/button.h>
 #include <mainframe/ui/elms/image.h>
 #include <fmt/printf.h>
-#include <mainframe/libs/cef/cef.h>
 
 using namespace mainframe::game;
 using namespace mainframe::render;
 using namespace mainframe::math;
 using namespace mainframe::ui;
-
-#ifdef MAINFRAME_ENABLE_CEF
-mainframe::cef::Cef cef;
-#endif
 
 class GameTest : public Engine {
 	Window& window;
@@ -83,9 +78,6 @@ public:
 
 	virtual void tick() override {
 		Window::pollEvents();
-#ifdef MAINFRAME_ENABLE_CEF
-		cef.tick();
-#endif
 	}
 
 	virtual void quit() override {
@@ -107,13 +99,6 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-#ifdef MAINFRAME_ENABLE_CEF
-	if (!cef.init()) {
-		fmt::print("Failed to init CEF\n");
-		return -1;
-	}
-#endif
-
 	Window w;
 	if (!w.create(1024, 1024, "mainframe.ui.simple")) {
 		fmt::print("Failed to create window\n");

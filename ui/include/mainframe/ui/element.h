@@ -35,7 +35,7 @@ namespace mainframe {
 			bool getHovering() const;
 
 			void setName(const std::string& name_);
-			void setHovering(bool hovering_);
+			virtual void setHovering(bool hovering_);
 
 			utils::ringbuffer<std::function<void()>>& getInvoker();
 
@@ -51,10 +51,11 @@ namespace mainframe {
 			bool isHidden();
 
 			bool isfocused();
-			void setfocused(bool focused_);
+			virtual void setFocused(bool focused_);
 
 			void invoke(std::function<void()> func);
 
+			virtual bool hitTest(const math::Vector2i& mousePos);
 			virtual void mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods);
 			virtual void mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods);
 			virtual void mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset);

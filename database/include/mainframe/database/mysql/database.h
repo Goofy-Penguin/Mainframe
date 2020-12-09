@@ -14,6 +14,7 @@ namespace mainframe {
 			virtual Result execute(const std::string& query) override;
 			virtual std::vector<std::string> listTables() override;
 
+			std::shared_ptr<Communicator> getCommunicator() const;
 			DatabaseMysql(const std::string& name, const std::shared_ptr<Communicator>& _communicator);
 		};
 	}
