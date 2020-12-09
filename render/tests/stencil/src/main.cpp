@@ -34,7 +34,7 @@ public:
 		stencil.drawBoxOutlined({350, 100}, {100, 100}, 10, Colors::Gray);
 		stencil.drawBox({350, 200}, {100, 100}, Colors::Orange);
 		stencil.drawTexture({350, 300}, {100, 100}, tex, Colors::White);
-		stencil.drawCircleOutlined({450, 100}, {100, 100}, 60, 10, Colors::Orange);
+		stencil.drawCircleOutline({450, 100}, {100, 100}, 60, 10, Colors::Orange);
 		stencil.drawCircle({450, 200}, {100, 100}, 60, Colors::Orange);
 
 		stencil.drawText(font, "Hello world", {100, 100}, Colors::Red, Stencil::TextAlignment::Center, Stencil::TextAlignment::Center, rot);
