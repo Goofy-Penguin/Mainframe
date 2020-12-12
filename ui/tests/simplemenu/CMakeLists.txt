@@ -2,6 +2,7 @@
     "src/*.cpp"
     "src/*.c"
     "include/*.hpp"
+    "include/*.h"
 )
 
 set(output_target simplemenuTest)
