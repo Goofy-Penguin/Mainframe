@@ -34,7 +34,6 @@ find_package(nlohmann_json REQUIRED)
 
 set (build_tests true CACHE BOOL "build tests")
 set (build_samples true CACHE BOOL "build samples")
-set (use_cef false CACHE BOOL "use cef for UI Web element")
 
 # libraries 3th party
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -45,36 +44,6 @@ set(freetype-gl_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
-
-
-set(use_cef false)
-if (use_cef)
-	add_compile_definitions("MAINFRAME_ENABLE_CEF")
-
-	set(CEF_VERSION 81.2.24+gc0b313d+chromium-81.0.4044.113)
-
-	include("cmake/cef.cmake")
-	FetchContent_Declare(cefdll_wrapper GIT_REPOSITORY https://github.com/iboB/cef-cmake.git)
-	FetchContent_MakeAvailable(cefdll_wrapper)
-
-	if(CEF_CMAKE_OS_LINUX)
-		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-			set(cefName cef_binary_${CEF_VERSION}_linux64)
-		else()
-			set(cefName cef_binary_${CEF_VERSION}_linux32)
-		endif()
-	elseif(CEF_CMAKE_OS_WINDOWS)
-		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-			set(cefName cef_binary_${CEF_VERSION}_windows64)
-		else()
-			set(cefName cef_binary_${CEF_VERSION}_windows32)
-		endif()
-	else()
-		message(FATAL_ERROR "CEF-CMake: Download platform not supported yet")
-	endif()
-
-	include_directories("${cefdll_wrapper_SOURCE_DIR}/${cefName}/include")
-endif()
 
 FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/rougier/freetype-gl.git)
 FetchContent_MakeAvailable(freetype-gl)
