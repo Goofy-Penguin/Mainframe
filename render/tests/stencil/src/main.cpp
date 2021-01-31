@@ -2,6 +2,7 @@
 #include <mainframe/game/window.h>
 #include <mainframe/render/stencil.h>
 #include <mainframe/render/font.h>
+#include <mainframe/math/vector2.h>
 #include <fmt/printf.h>
 
 using namespace mainframe::game;

@@ -1,7 +1,6 @@
 ﻿file(GLOB_RECURSE source_files
 	"src/*.cpp"
 	"src/*.c"
-	"include/*.hpp"
 )
 
 set(output_target mainframe.utils)
