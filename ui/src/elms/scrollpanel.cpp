@@ -5,9 +5,8 @@ namespace mainframe {
 		using namespace mainframe::render;
 
 		void ScrollPanel::draw(render::Stencil& stencil) {
-			stencil.drawBox({0, 0}, getSize(), render::Color(255, 255, 255, 200));
-			stencil.drawBoxOutlined({0, 0}, getSize(), 1, Colors::Black);
-			stencil.drawBox(1, getSize() - 2, Color(255, 255, 255, 217));
+			stencil.drawBoxOutlined({0, 0}, getSize(), borderSize, colorBorder);
+			stencil.drawBox(borderSize, getSize() - borderSize * 2, colorBackground);
 		}
 
 		const std::shared_ptr<ScrollPanelBack>& ScrollPanel::getPanel() const {
@@ -16,6 +15,18 @@ namespace mainframe {
 
 		void ScrollPanel::setButtons(bool buttons) {
 			showButtons = buttons;
+		}
+
+		void ScrollPanel::setBackgroundColor(const render::Color& color) {
+			colorBackground = color;
+		}
+
+		void ScrollPanel::setBackgroundBorderColor(const render::Color& color) {
+			colorBorder = color;
+		}
+
+		void ScrollPanel::setBorderSize(int size) {
+			borderSize = size;
 		}
 
 		void ScrollPanel::setBars(bool v, bool h) {
