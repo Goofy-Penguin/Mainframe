@@ -23,7 +23,7 @@ namespace mainframe {
 
 		public:
 			mainframe::utils::Event<> onRemoved;
-			ElementContainer() : threadId(std::this_thread::get_id()) {}
+			ElementContainer();
 
 			virtual void remove(bool childs = true);
 			virtual void addChild(const std::shared_ptr<Element>& elm);
