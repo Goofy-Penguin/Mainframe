@@ -2,6 +2,7 @@
 
 #include <mainframe/math/vector2.h>
 #include <mainframe/math/aabb.h>
+#include <mainframe/utils/event.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,6 +20,8 @@ namespace mainframe {
 			std::shared_ptr<Element> findChildElm(const std::string& name, bool recursive = false) const;
 
 		public:
+			mainframe::utils::Event<> onRemoved;
+
 			virtual void remove(bool childs = true);
 			virtual void addChild(const std::shared_ptr<Element>& elm);
 			virtual void setParent(const std::shared_ptr<ElementContainer>& elm);
