@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <thread>
 
 namespace mainframe {
 	namespace ui {
@@ -16,11 +17,13 @@ namespace mainframe {
 			std::weak_ptr<ElementContainer> ref;
 			std::vector<std::shared_ptr<Element>> children;
 			math::AABBi aabb;
+			std::thread::id threadId;
 
 			std::shared_ptr<Element> findChildElm(const std::string& name, bool recursive = false) const;
 
 		public:
 			mainframe::utils::Event<> onRemoved;
+			ElementContainer() : threadId(std::this_thread::get_id()) {}
 
 			virtual void remove(bool childs = true);
 			virtual void addChild(const std::shared_ptr<Element>& elm);
@@ -62,6 +65,10 @@ namespace mainframe {
 				auto child = std::make_shared<T>(std::forward<CallbackArgs>(args)...);
 				child->setRef(child);
 				addChild(std::dynamic_pointer_cast<Element>(child));
+
+				if (threadId != child->threadId) {
+					throw std::runtime_error("invalid thread");
+				}
 
 				return child;
 			}
