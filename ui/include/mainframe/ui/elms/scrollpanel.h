@@ -15,6 +15,10 @@ namespace mainframe {
 			bool showButtons = false;
 			int barSize = 20;
 
+			render::Color colorBackground = {255, 255, 255, 200};
+			render::Color colorBorder = render::Colors::Black;
+			int borderSize = 1;
+
 			void updateOffsetSize();
 
 		public:
@@ -25,6 +29,10 @@ namespace mainframe {
 			void setButtons(bool buttons);
 			void setBars(bool v, bool h = false);
 			void updateBars();
+
+			void setBackgroundColor(const render::Color& color);
+			void setBackgroundBorderColor(const render::Color& color);
+			void setBorderSize(int size);
 
 			const std::shared_ptr<ScrollPanelBack>& getPanel() const;
 		};
