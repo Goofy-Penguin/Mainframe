@@ -6,7 +6,10 @@ namespace mainframe {
 		void ElementContainer::remove(bool childs) {
 			while (childs && !children.empty()) children.front()->remove();
 
-			if (!hasParent()) return;
+			if (!hasParent()) {
+				onRemoved();
+				return;
+			}
 
 			auto p = parent.lock();
 			auto& parentChilds = p->getChildren();
@@ -14,6 +17,7 @@ namespace mainframe {
 			parentChilds.erase(std::find(parentChilds.begin(), parentChilds.end(), sharedPtr));
 
 			parent.reset();
+			onRemoved();
 		}
 
 		void ElementContainer::clearChildren() {
