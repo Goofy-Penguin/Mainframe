@@ -20,6 +20,8 @@ namespace mainframe {
 		}
 
 		void Window::callbacks_resize(GLFWwindow* whandle, int width, int height) {
+			glViewport(0, 0, width, height);
+
 			auto& window = glfwHandleToWindow(whandle);
 			window.onResize(window, {width, height});
 		}
@@ -82,6 +84,7 @@ namespace mainframe {
 		}
 
 		void Window::addOnResize(OnResizeCallback::Func callback) {
+			onResize += callback;
 		}
 
 		void Window::addOnChar(OnCharCallback::Func callback) {
