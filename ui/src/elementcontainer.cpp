@@ -5,6 +5,10 @@ namespace mainframe {
 	namespace ui {
 		ElementContainer::ElementContainer() : threadId(std::this_thread::get_id()) {}
 
+		std::thread::id ElementContainer::getThreadId() {
+			return threadId;
+		}
+
 		void ElementContainer::remove(bool childs) {
 			while (childs && !children.empty()) children.front()->remove();
 

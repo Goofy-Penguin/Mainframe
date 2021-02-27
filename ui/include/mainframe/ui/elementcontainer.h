@@ -25,6 +25,8 @@ namespace mainframe {
 			mainframe::utils::Event<> onRemoved;
 			ElementContainer();
 
+			std::thread::id getThreadId();
+
 			virtual void remove(bool childs = true);
 			virtual void addChild(const std::shared_ptr<Element>& elm);
 			virtual void setParent(const std::shared_ptr<ElementContainer>& elm);
