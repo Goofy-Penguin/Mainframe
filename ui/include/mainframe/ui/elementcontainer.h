@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <thread>
+#include <stdexcept>
 
 namespace mainframe {
 	namespace ui {
