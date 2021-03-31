@@ -19,6 +19,10 @@ namespace mainframe {
 			values = other.values;
 		}
 
+		Matrix::Matrix(const std::array<float, 16>& values_) {
+			values = values_;
+		}
+
 		Matrix::Matrix(Matrix&& other) {
 			values = other.values;
 			other.values = {};
@@ -227,12 +231,20 @@ namespace mainframe {
 			return retVal;
 		}
 
+		const std::array<float, 16>& Matrix::getValues() const {
+			return values;
+		}
+
 		Vector3 Matrix::translate(float x, float y, float z) const {
 			Vector3 retVal = Vector3();
 			retVal.x = values[0] * x + values[1] * y + values[2] * z + values[3];
 			retVal.y = values[4] * x + values[5] * y + values[6] * z + values[7];
 			retVal.z = values[8] * x + values[9] * y + values[10] * z + values[11];
 			return retVal;
+		}
+
+		Vector3 Matrix::translate(const Vector3& input) const {
+			return translate(input.x, input.y, input.z);
 		}
 
 		Matrix Matrix::operator*(const Matrix& other) const {
