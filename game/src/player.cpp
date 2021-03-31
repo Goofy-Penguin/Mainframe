@@ -1,14 +1,31 @@
 #include <mainframe/game/player.h>
+#include <fmt/printf.h>
 
 namespace mainframe {
 	namespace game {
-		Player::Player(Server& server_, std::unique_ptr<networking::Socket> socket_) : server(server_), socket(std::move(socket_)) {
+		Player::Player(std::unique_ptr<networking::Socket> socket_) : Player(nullptr, std::move(socket_)) {
+
+		}
+
+		Player::Player(Server* server_, std::unique_ptr<networking::Socket> socket_) : server(server_) {
+			setSocket(std::move(socket_));
+		}
+
+		const std::string& Player::getName() {
+			return name;
+		}
+
+		void Player::setName(const std::string& name_) {
+			name = name_;
+		}
+
+		void Player::setSocket(std::unique_ptr<networking::Socket> socket_) {
+			socket = std::move(socket_);
+
 			sender = new std::thread([this]() {
 				while (!disconnected) {
 					auto message = outgoing.pop();
-
-					message->construct();
-					socket->sendAll(message->getBuffer().data(), message->size());
+					socket->sendAll(message->data(), message->size());
 				}
 			});
 
@@ -24,30 +41,75 @@ namespace mainframe {
 					uint32_t msgId = *reinterpret_cast<uint32_t*>(&buffer.front());
 
 					auto msg = createIncommingMessage(msgId);
-					msg->resize(msglen);
-					msg->write(buffer.begin() + 4, buffer.end(), false);
-					msg->seek(msg->begin());
-					msg->parse();
+					if (msg == nullptr) continue;
+
+					auto& msgbuff = msg->getReader().getBuffer();
+					msgbuff.insert(msgbuff.begin(), buffer.begin() + 4, buffer.end());
+
+					if (!msg->read()) {
+						fmt::print("Error reading packet {} from player", msgId);
+						continue;
+					}
 
 					incomming.push(msg);
 				}
 			});
 		}
 
+		void Player::joinAndCleanThreads() {
+			if (sender) {
+				if (sender->joinable()) sender->join();
+				delete sender;
+				sender = nullptr;
+			}
+
+			if (receiver) {
+				if (receiver->joinable()) receiver->join();
+				delete receiver;
+				receiver = nullptr;
+			}
+		}
+
+
+		networking::Socket& Player::getSocket() {
+			return *socket;
+		}
+
 		void Player::disconnect() {
 			if (disconnected) return;
 			disconnected = true;
 
-			socket->close();
+			if (socket) socket->close();
 		}
 
 		Player::~Player() {
 			disconnect();
+			joinAndCleanThreads();
+		}
+
+		bool Player::onMessage(MessageIncomming* message) {
+			return true;
+		}
+
+		void Player::send(std::shared_ptr<MessageOutgoing> message) {
+			if (!message->isConstructed()) {
+				message->construct();
+
+				message->seek(message->begin());
+				message->write(static_cast<uint32_t>(message->size()));
+			}
+
+			outgoing.push(message);
 		}
 
 		void Player::tick() {
 			while (incomming.available()) {
-				incomming.pop()->process(this);
+				auto msg = incomming.pop();
+				msg->setPlayer(this);
+				msg->setServer(server);
+
+				if (!onMessage(msg.get())) continue;
+				msg->execute();
 			}
 		}
 
