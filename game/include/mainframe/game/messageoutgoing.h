@@ -6,8 +6,11 @@
 namespace mainframe {
 	namespace game {
 		class MessageOutgoing : public networking::Packet {
+			bool constructed = false;
+
 		public:
-			virtual void construct() const;
+			bool isConstructed();
+			virtual void construct();
 		};
 	}
 }
