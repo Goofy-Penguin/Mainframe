@@ -22,11 +22,10 @@ namespace mainframe {
 			static Matrix createPerspective(float fovy, float aspect, float zNear, float zFar);
 			static Matrix createOrthographic(float l, float r, float t, float b, float n, float f);
 
-			~Matrix();
 			Matrix();
 			Matrix(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44);
 			Matrix(float values);
-			Matrix(std::array<float, 16> values);
+			Matrix(const std::array<float, 16>& values_);
 
 			Matrix(const Matrix& other);
 			Matrix(Matrix&& other);
@@ -48,6 +47,8 @@ namespace mainframe {
 			Matrix& operator= (const Matrix& rhs);
 			Matrix operator*(const Matrix& other) const;
 			void operator*=(const Matrix& other) { *this = *this * other; }
+
+			const std::array<float, 16>& getValues() const;
 		};
 	}
 }
