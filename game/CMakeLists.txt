@@ -1,6 +1,7 @@
 ﻿file(GLOB_RECURSE source_files
 	"src/*.cpp"
 	"src/*.c"
+	"include/*.h"
 )
 
 # dll
