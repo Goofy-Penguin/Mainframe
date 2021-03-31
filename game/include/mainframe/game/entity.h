@@ -9,22 +9,26 @@ namespace mainframe {
 		class World;
 
 		class Entity {
-			World& world;
+			World* world;
 			mainframe::math::Matrix matrix;
-			std::weak_ptr<Entity> reference;
 			size_t id;
 
 		public:
-			Entity(World& world_);
-			~Entity();
+			Entity(World* world_);
+			virtual ~Entity();
 
 			void remove();
 
+			void setId(size_t id_);
 			size_t getId() const;
 			mainframe::math::Matrix& getMatrix();
-			const std::weak_ptr<Entity>& getReference() const;
 
-			void setReference(const std::weak_ptr<Entity>& reference_);
+			void generateUniqueId();
+
+			template<class T>
+			T* getWorld() {
+				return dynamic_cast<T*>(world);
+			}
 		};
 	}
 }
