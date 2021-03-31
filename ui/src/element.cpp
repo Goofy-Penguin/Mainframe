@@ -60,8 +60,8 @@ namespace mainframe {
 		void Element::mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
 		void Element::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {}
 		void Element::mouseMove(const math::Vector2i& mousePos) {}
-		void Element::keyDown(unsigned int key, ModifierKey mods, bool repeating) {}
-		void Element::keyUp(unsigned int key, ModifierKey mods) {}
+		void Element::keyDown(unsigned int key, unsigned int scancode, ModifierKey mods, bool repeating) {}
+		void Element::keyUp(unsigned int key, unsigned int scancode, ModifierKey mods) {}
 		void Element::keyChar(unsigned int key) {}
 	}
 }

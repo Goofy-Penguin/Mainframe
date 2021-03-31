@@ -238,20 +238,20 @@ namespace mainframe {
 			auto elm = focusedElement.lock();
 			switch (state) {
 				case KeyState::inactive: {
-					elm->keyDown(key, mods, false);
-					elm->onKeyDown(key, mods, false);
+					elm->keyDown(key, scancode, mods, false);
+					elm->onKeyDown(key, scancode, mods, false);
 					break;
 				}
 
 				case KeyState::active: {
-					elm->keyUp(key, mods);
-					elm->onKeyUp(key, mods);
+					elm->keyUp(key, scancode, mods);
+					elm->onKeyUp(key, scancode, mods);
 					break;
 				}
 
 				case KeyState::repeating: {
-					elm->keyDown(key, mods, true);
-					elm->onKeyDown(key, mods, true);
+					elm->keyDown(key, scancode, mods, true);
+					elm->onKeyDown(key, scancode, mods, true);
 					break;
 				}
 

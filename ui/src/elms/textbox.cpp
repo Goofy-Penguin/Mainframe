@@ -84,7 +84,7 @@ namespace mainframe {
 			stencil.drawText(*font, masked, start - font->getStringSize(masked) / 2, getColor());
 		}
 
-		void Textbox::keyDown(unsigned int key, ModifierKey mods, bool repeating) {
+		void Textbox::keyDown(unsigned int key, unsigned int scancode, ModifierKey mods, bool repeating) {
 			if (key == GLFW_KEY_V && (mods & ModifierKey::ctrl) != ModifierKey::none) { combo_paste(); return; } // ctrl V
 			if (key == GLFW_KEY_BACKSPACE) { combo_backspace(mods); return; }
 			if (key == GLFW_KEY_DELETE) { combo_delete(mods); return; }
