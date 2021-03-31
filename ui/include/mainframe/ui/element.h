@@ -26,8 +26,8 @@ namespace mainframe {
 			mainframe::utils::Event<const math::Vector2i&, unsigned int, ModifierKey> onMouseUp;
 			mainframe::utils::Event<const math::Vector2i&, const math::Vector2i&> onMouseScroll;
 			mainframe::utils::Event<const math::Vector2i&> onMouseMove;
-			mainframe::utils::Event<unsigned int, ModifierKey, bool> onKeyDown;
-			mainframe::utils::Event<unsigned int, ModifierKey> onKeyUp;
+			mainframe::utils::Event<unsigned int, unsigned int, ModifierKey, bool> onKeyDown;
+			mainframe::utils::Event<unsigned int, unsigned int, ModifierKey> onKeyUp;
 			mainframe::utils::Event<unsigned int> onKeyChar;
 
 			math::Vector2i getPosAbsolute() const;
@@ -60,8 +60,8 @@ namespace mainframe {
 			virtual void mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods);
 			virtual void mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset);
 			virtual void mouseMove(const math::Vector2i& mousePos);
-			virtual void keyDown(unsigned int key, ModifierKey mods, bool repeating);
-			virtual void keyUp(unsigned int key, ModifierKey mods);
+			virtual void keyDown(unsigned int key, unsigned int scancode, ModifierKey mods, bool repeating);
+			virtual void keyUp(unsigned int key, unsigned int scancode, ModifierKey mods);
 			virtual void keyChar(unsigned int key);
 		};
 	}

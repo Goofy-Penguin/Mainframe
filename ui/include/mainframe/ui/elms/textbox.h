@@ -42,7 +42,7 @@ namespace mainframe {
 
 			virtual void setText(const std::string& text_);
 			virtual void draw(render::Stencil& stencil) override;
-			virtual void keyDown(unsigned int key, ModifierKey mods, bool repeating) override;
+			virtual void keyDown(unsigned int key, unsigned int scancode, ModifierKey mods, bool repeating) override;
 			virtual void keyChar(unsigned int key) override;
 		};
 	}
