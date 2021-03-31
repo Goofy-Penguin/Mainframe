@@ -7,8 +7,9 @@ namespace mainframe {
 			shift = 1,
 			ctrl = 2,
 			alt = 4,
-			isLeft = 8,
-			isRight = 16
+			super = 8,
+			isLeft = 16,
+			isRight = 32
 		};
 
 		inline constexpr ModifierKey operator&(ModifierKey x, ModifierKey y) {
