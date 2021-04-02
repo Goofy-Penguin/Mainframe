@@ -56,31 +56,33 @@ endif()
 
 # helpers
 function(MFAddContent projname filesfilter)
-	file(GLOB_RECURSE fileslst ${filesfilter})
-	foreach(contentfile IN LISTS fileslst)
-		STRING(REGEX REPLACE ${CMAKE_CURRENT_SOURCE_DIR} "" contentfile_stripped ${contentfile})
-		message("detected content:" ${contentfile_stripped})
+	message("TODO: Fix me brom (MFAddContent)")
 
-		add_custom_command(
-			TARGET ${projname}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${contentfile} ${CMAKE_CURRENT_BINARY_DIR}/bin${contentfile_stripped})
-	endforeach()
+	#file(GLOB_RECURSE fileslst ${filesfilter})
+	#foreach(contentfile IN LISTS fileslst)
+	#	STRING(REGEX REPLACE ${CMAKE_CURRENT_SOURCE_DIR} "" contentfile_stripped ${contentfile})
+	#	message("detected content:" ${contentfile_stripped})
+#
+	#	add_custom_command(
+	#		TARGET ${projname}
+	#		POST_BUILD
+	#		COMMAND ${CMAKE_COMMAND} -E copy_if_different ${contentfile} ${CMAKE_CURRENT_BINARY_DIR}/bin${contentfile_stripped})
+	#endforeach()
 endfunction()
 
 function(MFAddExecutable projname)
 	message("detected exe:" ${CMAKE_BINARY_DIR}/bin/${output_target})
-
+	
 	if (WIN32)
-		add_custom_command(
-			TARGET ${output_target}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/${output_target}.exe ${CMAKE_SOURCE_DIR}/bin/${output_target}.exe)
+		#add_custom_command(
+		#	TARGET ${output_target}
+		#	POST_BUILD
+		#	COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/${output_target}.exe ${CMAKE_SOURCE_DIR}/bin/${output_target}.exe)
 	else()
-		add_custom_command(
-			TARGET ${output_target}
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${output_target} ${CMAKE_SOURCE_DIR}/bin/${output_target})
+		#add_custom_command(
+		#	TARGET ${output_target}
+		#	POST_BUILD
+		#	COMMAND ${CMAKE_COMMAND} -E copy_if_different ${output_target} ${CMAKE_SOURCE_DIR}/bin/${output_target})
 	endif()
 endfunction()
 
