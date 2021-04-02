@@ -69,7 +69,7 @@ namespace mainframe {
 			std::vector<Color> newpixels;
 			newpixels.resize(newsize.y * newsize.x);
 
-			if (size.x > 0 && size.y > 0) {
+			if (!pixels.empty() && size.x > 0 && size.y > 0) {
 				auto wperc = static_cast<float>(newsize.x) / static_cast<float>(size.x);
 				auto hperc = static_cast<float>(newsize.y) / static_cast<float>(size.y);
 
