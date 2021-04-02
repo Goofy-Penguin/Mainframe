@@ -49,6 +49,7 @@ namespace mainframe {
 			}
 
 			tex.upload();
+			tex.unloadPixels();
 		}
 
 		const ftgl::texture_glyph_t* Font::getGlyph(uint32_t character) const {
