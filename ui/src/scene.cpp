@@ -160,8 +160,8 @@ namespace mainframe {
 					return;
 				}
 
-				focused->mouseUp(mousePos, button, mods);
-				focused->onMouseUp(mousePos, button, mods);
+				focused->mouseUp(mousePos - focused->getPos(), button, mods);
+				focused->onMouseUp(mousePos - focused->getPos(), button, mods);
 				return;
 			}
 
