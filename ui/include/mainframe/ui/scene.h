@@ -15,7 +15,6 @@ namespace mainframe {
 	namespace ui {
 		class Scene : public ElementContainer {
 		private:
-			int mousePressCount = 0;
 			std::weak_ptr<Element> focusedElement;
 			std::weak_ptr<Element> hoveredElement;
 
