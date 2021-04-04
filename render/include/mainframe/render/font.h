@@ -37,6 +37,7 @@ namespace mainframe {
 			void addChars(const std::wstring& chars);
 			void upload();
 
+			bool loadFile(const std::string& file, float size, bool loadDefaulChars = true);
 
 			const ftgl::texture_glyph_t* getGlyph(uint32_t character) const;
 			float getKerning(const ftgl::texture_glyph_t* glyph, const ftgl::texture_glyph_t* prevGlyph) const;

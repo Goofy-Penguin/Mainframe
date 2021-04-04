@@ -12,6 +12,12 @@ namespace mainframe {
 		}
 
 		Font::Font(const std::string& file, float size, bool loadDefaulChars) {
+			if (!loadFile(file, size, loadDefaulChars)) {
+				throw std::runtime_error("error loading font");
+			}
+		}
+
+		bool Font::loadFile(const std::string& file, float size, bool loadDefaulChars) {
 			auto& atlas = getAtlas();
 
 			if (atlas == nullptr) {
@@ -19,11 +25,13 @@ namespace mainframe {
 			}
 
 			handle->glHandle = texture_font_new_from_file(atlas, size, file.c_str());
-			if (handle->glHandle == nullptr) throw std::runtime_error("error loading font");
+			if (handle->glHandle == nullptr) return false;
 
 			if (loadDefaulChars) {
-				addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][”“’\n");
+				addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][ï¿½ï¿½ï¿½\n");
 			}
+
+			return true;
 		}
 
 		void FontHandle::reset() {
