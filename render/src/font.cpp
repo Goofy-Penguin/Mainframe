@@ -28,7 +28,7 @@ namespace mainframe {
 			if (handle->glHandle == nullptr) return false;
 
 			if (loadDefaulChars) {
-				addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][���\n");
+				addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n");
 			}
 
 			return true;
