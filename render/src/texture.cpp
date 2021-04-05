@@ -24,6 +24,37 @@ namespace mainframe {
 			}
 		}
 
+		void Texture::fromRGBABytes(std::vector<uint8_t> buff) {
+			if (buff.size() / 4 != pixels.size()) {
+				throw std::runtime_error("RGBA buffer does not match image size");
+			}
+
+			for (size_t i = 0; i < buff.size(); i += 4) {
+				auto& col = pixels[i / 4];
+
+				col.r = static_cast<float>(buff[i + 0]) / 255.0f;
+				col.g = static_cast<float>(buff[i + 1]) / 255.0f;
+				col.b = static_cast<float>(buff[i + 2]) / 255.0f;
+				col.a = static_cast<float>(buff[i + 3]) / 255.0f;
+			}
+		}
+
+		std::vector<uint8_t> Texture::toRGBABytes() {
+			std::vector<uint8_t> ret;
+			ret.resize(size.x * size.y * 4);
+
+			for (size_t i = 0; i < ret.size(); i += 4) {
+				auto& col = pixels[i / 4];
+
+				ret[i + 0] = static_cast<uint8_t>(col.r * 255);
+				ret[i + 1] = static_cast<uint8_t>(col.g * 255);
+				ret[i + 2] = static_cast<uint8_t>(col.b * 255);
+				ret[i + 3] = static_cast<uint8_t>(col.a * 255);
+			}
+
+			return ret;
+		}
+
 		Texture::Texture(const std::string& fileName) {
 			unsigned w = static_cast<unsigned>(size.x);
 			unsigned h = static_cast<unsigned>(size.y);
