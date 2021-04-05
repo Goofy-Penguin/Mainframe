@@ -84,8 +84,8 @@ namespace mainframe {
 				return VecType(x + other.x, y + other.y, z + other.z);
 			}
 
-			VecType operator* (const VecType& scale) const {
-				return VecType(x * scale.x, y * scale.y, z * scale.z);
+			VecType operator* (const VecType& other) const {
+				return VecType(x * other.x, y * other.y, z * other.z);
 			}
 
 			VecType operator/ (const VecType& other) const {
@@ -100,12 +100,12 @@ namespace mainframe {
 				return VecType(x + other, y + other, z + other);
 			}
 
-			VecType operator* (NumberType scale) const {
-				return VecType(x * scale, y * scale, z * scale);
+			VecType operator* (NumberType other) const {
+				return VecType(x * other, y * other, z * other);
 			}
 
-			VecType operator/ (NumberType scale) const {
-				return VecType(x / scale, y / scale, z / scale);
+			VecType operator/ (NumberType other) const {
+				return VecType(x / other, y / other, z / other);
 			}
 
 			VecType& operator-= (const VecType& other) {
