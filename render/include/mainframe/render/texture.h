@@ -51,6 +51,9 @@ namespace mainframe {
 			void clear(const mainframe::render::Color& bgcol = Colors::Transparent);
 			void unloadPixels();
 
+			std::vector<uint8_t> toRGBABytes();
+			void fromRGBABytes(std::vector<uint8_t> buff);
+
 			std::vector<Color>& data();
 			const std::vector<Color>& data() const;
 			unsigned int getHandle() const;
