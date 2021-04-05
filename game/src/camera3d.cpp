@@ -104,7 +104,7 @@ namespace mainframe::game {
 	}
 
 	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos, const math::Vector2i& winsize) {
-		GLint viewport[] = {0, 0, winsize.x, winsize.y};
+		int viewport[] = {0, 0, winsize.x, winsize.y};
 
 		math::Matrix view = this->mat;
 		math::Matrix proj = this->projmat;
