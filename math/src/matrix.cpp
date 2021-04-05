@@ -166,7 +166,7 @@ namespace mainframe {
 		}
 
 		Vector3 Matrix::getTranslation() const {
-			return this->translate({});
+			return translate(math::Vector3{});
 		}
 
 		Vector3 Matrix::getScale() const {
@@ -245,6 +245,19 @@ namespace mainframe {
 
 		Vector3 Matrix::translate(const Vector3& input) const {
 			return translate(input.x, input.y, input.z);
+		}
+
+		Vector4 Matrix::translate(float x, float y, float z, float w) const {
+			Vector4 retVal;
+			retVal.x = values[0] * x + values[1] * y + values[2] * z + values[3] * w;
+			retVal.y = values[4] * x + values[5] * y + values[6] * z + values[7] * w;
+			retVal.z = values[8] * x + values[9] * y + values[10] * z + values[11] * w;
+			retVal.w = values[12] * x + values[13] * y + values[14] * z + values[15] * w;
+			return retVal;
+		}
+
+		Vector4 Matrix::translate(const Vector4& input) const {
+			return translate(input.x, input.y, input.z, input.w);
 		}
 
 		Matrix Matrix::operator*(const Matrix& other) const {
