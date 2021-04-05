@@ -2,6 +2,7 @@
 
 #include <array>
 #include <mainframe/math/vector3.h>
+#include <mainframe/math/vector4.h>
 
 namespace mainframe {
 	namespace math {
@@ -34,6 +35,9 @@ namespace mainframe {
 
 			Vector3 translate(float x, float y, float z) const;
 			Vector3 translate(const Vector3& input) const;
+
+			Vector4 translate(float x, float y, float z, float w) const;
+			Vector4 translate(const Vector4& input) const;
 
 			Vector3 getTranslation() const;
 			Vector3 getScale() const;
