@@ -16,31 +16,31 @@ namespace mainframe::game {
 		updateLookat();
 	}
 
-	math::Vector3 Camera3D::getForward() {
+	math::Vector3 Camera3D::getForward() const {
 		return {
-			sinf(angle.x) * cosf(angle.y),
-			sinf(angle.x) * sinf(angle.y),
-			cosf(angle.x)
+			std::sin(angle.x) * std::cos(angle.y),
+			std::sin(angle.x) * std::sin(angle.y),
+			std::cos(angle.x)
 		};
 	}
 
-	const math::Vector3& Camera3D::getLocation() {
+	const math::Vector3& Camera3D::getLocation() const {
 		return location;
 	}
 
-	const math::Vector3& Camera3D::getLookAt() {
+	const math::Vector3& Camera3D::getLookAt() const {
 		return lookAt;
 	}
 
-	const math::Vector2& Camera3D::getAngle() {
+	const math::Vector2& Camera3D::getAngle() const {
 		return angle;
 	}
 
-	const math::Matrix& Camera3D::getViewMatrix() {
+	const math::Matrix& Camera3D::getViewMatrix() const {
 		return mat;
 	}
 
-	const math::Matrix& Camera3D::getProjMatrix() {
+	const math::Matrix& Camera3D::getProjMatrix() const {
 		return projmat;
 	}
 
@@ -103,23 +103,17 @@ namespace mainframe::game {
 		return 1;
 	}
 
-	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos, const math::Vector2i& winsize) {
+	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos, const math::Vector2i& winsize) const {
 		int viewport[] = {0, 0, winsize.x, winsize.y};
 
-		math::Matrix view = this->mat;
-		math::Matrix proj = this->projmat;
-
 		math::Vector3 sp;
-		glhProjectf(pos.x, pos.y, pos.z, view.getValues(), proj.getValues(), viewport, (float*)&sp);
+		glhProjectf(pos.x, pos.y, pos.z, mat.getValues(), projmat.getValues(), viewport, (float*)&sp);
 
 		return sp;
 	}
 
-	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos, const math::Vector2i& winsize) {
-		math::Matrix& view = this->mat;
-		math::Matrix& proj = this->projmat;
-
-		math::Matrix viewproj_inv = (proj * view).inverted();
+	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos, const math::Vector2i& winsize) const {
+		math::Matrix viewproj_inv = (projmat * mat).inverted();
 
 		float screenx_clip = 2 * (screen_pos.x / winsize.x) - 1;
 		float screeny_clip = -(1 - 2 * (screen_pos.y) / winsize.y);
