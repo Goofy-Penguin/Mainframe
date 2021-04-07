@@ -3,13 +3,13 @@
 
 namespace mainframe::game {
 	void Camera3D::updateLookat() {
-		lookAt = {
+		lookPos = {
 			location.x + std::sin(angle.x) * std::cos(angle.y),
 			location.y + std::sin(angle.x) * std::sin(angle.y),
 			location.z + std::cos(angle.y)
 		};
 
-		this->mat = math::Matrix::createLookAt(location, lookAt, {0.0, 1.0, 0.0});
+		this->mat = math::Matrix::createLookAt(location, lookPos, {0.0, 1.0, 0.0});
 	}
 
 	Camera3D::Camera3D() : location(0, 4, 0), angle(numbers::pi<float> / 2, numbers::pi<float> / 2) {
@@ -28,8 +28,8 @@ namespace mainframe::game {
 		return location;
 	}
 
-	const math::Vector3& Camera3D::getLookAt() const {
-		return lookAt;
+	const math::Vector3& Camera3D::getLookPos() const {
+		return lookPos;
 	}
 
 	const math::Vector2& Camera3D::getAngle() const {
@@ -54,8 +54,8 @@ namespace mainframe::game {
 		updateLookat();
 	}
 
-	void Camera3D::setLookAt(const math::Vector3& pos) {
-		lookAt = pos;
+	void Camera3D::lookAt(const math::Vector3& pos) {
+		this->mat = math::Matrix::createLookAt(location, pos, {0.0, 1.0, 0.0});
 	}
 
 	void Camera3D::setAngle(const math::Vector2& angles) {
