@@ -10,7 +10,7 @@ namespace mainframe::game {
 
 	class Camera3D {
 		math::Vector3 location;
-		math::Vector3 lookAt;
+		math::Vector3 lookPos;
 		math::Vector2 angle;
 
 		float nearClippingPlane;
@@ -24,7 +24,7 @@ namespace mainframe::game {
 	public:
 		math::Vector3 getForward() const;
 		const math::Vector3& getLocation() const;
-		const math::Vector3& getLookAt() const;
+		const math::Vector3& getLookPos() const;
 		const math::Vector2& getAngle() const;
 		const math::Matrix& getViewMatrix() const;
 		const math::Matrix& getProjMatrix() const;
@@ -32,7 +32,7 @@ namespace mainframe::game {
 		void moveLocation(const math::Vector3& offset);
 
 		void setLocation(const math::Vector3& pos);
-		void setLookAt(const math::Vector3& pos);
+		void lookAt(const math::Vector3& pos);
 		void setAngle(const math::Vector2& angles);
 		void setViewMatrix(const math::Matrix& matrix);
 		void setProjMatrix(const math::Matrix& matrix);
