@@ -34,15 +34,16 @@ namespace mainframe {
 			std::ifstream file(filename, std::ios::in | std::ios::binary | std::ios::ate);
 			if (!file.is_open()) return false;
 
-			auto size = file.tellg();
+			auto size = static_cast<size_t>(file.tellg());
 			std::vector<char> fileData;
-			fileData.resize(static_cast<size_t>(size));
+			fileData.resize(size);
 
 			file.seekg(0, std::ios::beg);
 			file.read(fileData.data(), size);
 			file.close();
 
 			buffer.insert(buffer.begin() + pos, fileData.begin(), fileData.end());
+			pos += size;
 
 			return true;
 		}
