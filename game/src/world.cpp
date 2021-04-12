@@ -14,5 +14,11 @@ namespace mainframe {
 		void World::removeEntity(Entity* ent) {
 			removeEntity(ent->getId());
 		}
+
+		void World::update() {
+			for (auto& ent : entities) {
+				ent->update();
+			}
+		}
 	}
 }
