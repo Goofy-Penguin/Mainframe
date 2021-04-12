@@ -82,20 +82,20 @@ namespace mainframe {
 			return {
 				num23 * num27,
 				-(values[1] * num17 - values[2] * num18 + values[3] * num19) * num27,
-				(values[1] * num28 - values[2] * num29 + values[3] * num30)* num27,
+				(values[1] * num28 - values[2] * num29 + values[3] * num30) * num27,
 				-(values[1] * num34 - values[2] * num35 + values[3] * num36) * num27,
 				num24 * num27,
-				(values[0] * num17 - values[2] * num20 + values[3] * num21)* num27,
+				(values[0] * num17 - values[2] * num20 + values[3] * num21) * num27,
 				-(values[0] * num28 - values[2] * num31 + values[3] * num32) * num27,
-				(values[0] * num34 - values[2] * num37 + values[3] * num38)* num27,
+				(values[0] * num34 - values[2] * num37 + values[3] * num38) * num27,
 				num25 * num27,
 				-(values[0] * num18 - values[1] * num20 + values[3] * num22) * num27,
-				 (values[0] * num29 - values[1] * num31 + values[3] * num33)* num27,
+				 (values[0] * num29 - values[1] * num31 + values[3] * num33) * num27,
 				 -(values[0] * num35 - values[1] * num37 + values[3] * num39) * num27,
 				 num26 * num27,
-				 (values[0] * num19 - values[1] * num21 + values[2 ]* num22)* num27,
+				 (values[0] * num19 - values[1] * num21 + values[2] * num22) * num27,
 				 -(values[0] * num30 - values[1] * num32 + values[2] * num33) * num27,
-				 (values[0] * num36 - values[1] * num38 + values[2] * num39)* num27
+				 (values[0] * num36 - values[1] * num38 + values[2] * num39) * num27
 			};
 		}
 
@@ -166,12 +166,30 @@ namespace mainframe {
 		}
 
 		Vector3 Matrix::getTranslation() const {
-			return translate(math::Vector3{});
+			return translate(math::Vector3 {});
 		}
 
 		Vector3 Matrix::getScale() const {
 			return Vector3(values[0], values[5], values[10]);
 		}
+
+		Vector3 Matrix::getRotation() const {
+			// https://gamedev.stackexchange.com/a/50968
+			if (values[0] == 1.0f || values[0] == -1.0f) {
+				return {
+					std::atan2(values[2], values[11]),
+					0,
+					0
+				};
+			}
+
+			return {
+				std::atan2(values[2], values[11]),
+				std::asin(values[4]),
+				std::atan2(values[6], values[5]),
+			};
+		}
+
 
 		Matrix Matrix::createLookAt(float eyex, float eyey, float eyez, float targetx, float targety, float targetz, float upx, float upy, float upz) {
 			return createLookAt({eyex, eyey, eyez}, {targetx, targety, targetz}, {upx, upy, upz});
