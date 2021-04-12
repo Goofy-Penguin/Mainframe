@@ -8,10 +8,12 @@ namespace mainframe {
 	namespace game {
 		class World;
 
+		using EntityIdType = uint32_t;
+
 		class Entity {
 			World* world;
 			mainframe::math::Matrix matrix;
-			size_t id;
+			EntityIdType id = 0xFFFFFFFF;
 
 		public:
 			Entity(World* world_);
@@ -19,11 +21,20 @@ namespace mainframe {
 
 			void remove();
 
-			void setId(size_t id_);
-			size_t getId() const;
+			void setId(EntityIdType id_);
+			EntityIdType getId() const;
+
 			mainframe::math::Matrix& getMatrix();
+			mainframe::math::Vector3 getPosition() const;
+			mainframe::math::Vector3 getScale() const;
+			mainframe::math::Vector3 getRotation() const;
+
+			virtual void initialize();
+			virtual void update();
 
 			void generateUniqueId();
+
+			std::vector<EntityIdType> getParentTreeList() const;
 
 			template<class T>
 			T* getWorld() {
