@@ -3,11 +3,12 @@
 #include <mainframe/game/entity.h>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 namespace mainframe {
 	namespace game {
 		class World {
-			std::vector<std::shared_ptr<Entity>> entities;
+			std::vector<std::unique_ptr<Entity>> entities;
 
 		public:
 			virtual ~World() = default;
@@ -16,10 +17,13 @@ namespace mainframe {
 			void removeEntity(size_t id);
 
 			template<class T = Entity>
-			const std::vector<std::shared_ptr<T>> getEntities() {
-				std::vector<std::shared_ptr<T>> ret;
+			const std::vector<T*> getEntities() {
+				std::vector<T*> ret;
 				for (auto& ent : entities) {
-					ret.push_back(std::dynamic_pointer_cast<T>(ent));
+					auto ptr = dynamic_cast<T*>(ent.get());
+					if (ptr == nullptr) continue;
+
+					ret.push_back(ptr);
 				}
 
 				return ret;
@@ -27,22 +31,34 @@ namespace mainframe {
 
 			template<class T, class WType, class... Args>
 			T& createEntity(Args... args) {
-				auto ent = std::make_shared<T>(dynamic_cast<WType*>(this), args...);
+				auto ent = std::make_unique<T>(dynamic_cast<WType*>(this), args...);
 				ent->generateUniqueId();
 
-				entities.push_back(ent);
-				return *ent;
+				T& retEnt = *ent;
+				entities.push_back(std::move(ent));
+
+				return retEnt;
 			}
 
-			template<class T>
-			std::shared_ptr<T> findEntity(size_t id) const {
+			bool hasEntity(size_t id) const {
 				for (auto& ent : entities) {
 					if (ent->getId() == id) {
-						return std::dynamic_pointer_cast<T>(ent);
+						return true;
 					}
 				}
 
-				return {};
+				return false;
+			}
+
+			template<class T>
+			T& findEntity(size_t id) const {
+				for (auto& ent : entities) {
+					if (ent->getId() == id) {
+						return *dynamic_cast<T*>(ent.get());
+					}
+				}
+
+				throw std::runtime_error("no entity by id found in entitites list");
 			}
 		};
 	}
