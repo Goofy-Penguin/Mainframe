@@ -54,6 +54,10 @@ namespace mainframe {
 				return {x, z, y};
 			}
 
+			VecType floor() const {
+				return {std::floor(x), std::floor(y), std::floor(z)};
+			}
+
 			VecType getRotated(const VecType& ang, const VecType& orgin) const {
 				// TODO: when importing matrix
 				//Matrix rotmat = Matrix::CreateRotationz(ang.x) * Matrix::CreateRotationy(ang.z) * Matrix::CreateRotationx(ang.y) * Matrix::CreateTranslation(orgin);
