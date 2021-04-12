@@ -21,18 +21,24 @@ namespace mainframe {
 
 		void Player::setSocket(std::unique_ptr<networking::Socket> socket_) {
 			socket = std::move(socket_);
+			if (socket == nullptr) return;
 
 			sender = new std::thread([this]() {
 				while (!disconnected) {
 					auto message = outgoing.pop();
-					socket->sendAll(message->data(), message->size());
+					if (!socket->sendAll(message->data(), message->size())) {
+						disconnect();
+					}
 				}
 			});
 
 			receiver = new std::thread([this]() {
 				while (!disconnected) {
 					uint32_t msglen = 0;
-					if (!socket->receiveAll(reinterpret_cast<unsigned char*>(&msglen), sizeof(msglen))) continue;
+					if (!socket->receiveAll(reinterpret_cast<unsigned char*>(&msglen), sizeof(msglen))) {
+						disconnect();
+						break;
+					}
 
 					std::vector<unsigned char> buffer;
 					buffer.resize(msglen);
