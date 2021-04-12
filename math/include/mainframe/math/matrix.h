@@ -41,6 +41,7 @@ namespace mainframe {
 
 			Vector3 getTranslation() const;
 			Vector3 getScale() const;
+			Vector3 getRotation() const;
 
 			Matrix lerp(const Matrix& other, float timestep);
 			Matrix inverted();
