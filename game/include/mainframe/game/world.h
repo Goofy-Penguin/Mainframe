@@ -16,6 +16,8 @@ namespace mainframe {
 			void removeEntity(Entity* ent);
 			void removeEntity(size_t id);
 
+			virtual void update();
+
 			template<class T = Entity>
 			const std::vector<T*> getEntities() {
 				std::vector<T*> ret;
