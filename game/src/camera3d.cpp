@@ -4,8 +4,8 @@
 namespace mainframe::game {
 	void Camera3D::updateLookat() {
 		lookPos = {
-			location.x + std::sin(angle.x) * std::cos(angle.y),
-			location.y + std::sin(angle.x) * std::sin(angle.y),
+			location.x + std::sin(angle.y) * std::cos(angle.x),
+			location.y + std::sin(angle.y) * std::sin(angle.x),
 			location.z + std::cos(angle.y)
 		};
 
@@ -19,8 +19,8 @@ namespace mainframe::game {
 	math::Vector3 Camera3D::getForward() const {
 		return {
 			std::sin(angle.x) * std::cos(angle.y),
-			std::sin(angle.x) * std::sin(angle.y),
-			std::cos(angle.x)
+			std::cos(angle.x),
+			std::sin(angle.x) * std::sin(angle.y)
 		};
 	}
 
