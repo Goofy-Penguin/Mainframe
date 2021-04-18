@@ -73,6 +73,7 @@ namespace mainframe {
 					throw std::runtime_error("invalid thread");
 				}
 
+				child->initialize();
 				return child;
 			}
 		};

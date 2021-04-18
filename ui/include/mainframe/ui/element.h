@@ -45,6 +45,7 @@ namespace mainframe {
 			virtual void updateBefore();
 			virtual void update();
 			virtual void updateAfter();
+			virtual void initialize();
 
 			virtual void show();
 			virtual void hide();
