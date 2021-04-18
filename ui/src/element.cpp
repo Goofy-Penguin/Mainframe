@@ -56,6 +56,7 @@ namespace mainframe {
 			return getAABB().contains(mousePos);
 		}
 
+		void Element::initialize() {}
 		void Element::mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
 		void Element::mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {}
 		void Element::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {}
