@@ -278,7 +278,7 @@ namespace mainframe {
 			setTexture(rawTextureHandle);
 			setShader(shader2D);
 
-			auto rotOrigin = origin.isNaN() ? pos + size / 2 : origin + offset;
+			auto rotOrigin = origin.isNaN() ? pos + size / 2 : pos + origin;
 
 			auto vertA = pos.rotateAroundOrigin(rotation, rotOrigin);
 			auto vertB = b.rotateAroundOrigin(rotation, rotOrigin);
