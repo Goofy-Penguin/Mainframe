@@ -82,7 +82,7 @@ namespace mainframe {
 				if (rads == 0) return *this;
 
 				VecType u = *this - origin;
-				if (u == VecType()) return u;
+				if (u == VecType()) return *this;
 
 				u = cosSin(u.atan2() + rads) * u.length();
 				u.x += origin.x;
