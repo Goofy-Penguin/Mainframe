@@ -17,7 +17,7 @@ namespace mainframe {
 #define F(x) G(x) G(x +   4)
 #define G(x) H(x) H(x +   2)
 #define H(x) I(x) I(x +   1)
-#define I(x) f<x>::value ,
+#define I(x) static_cast<unsigned int>(f<x>::value) ,
 
 			unsigned crc_table[] = {A(0)};
 

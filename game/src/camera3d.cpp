@@ -115,8 +115,8 @@ namespace mainframe::game {
 	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos, const math::Vector2i& winsize) const {
 		math::Matrix viewproj_inv = (projmat * mat).inverted();
 
-		float screenx_clip = 2 * (screen_pos.x / winsize.x) - 1;
-		float screeny_clip = -(1 - 2 * (screen_pos.y) / winsize.y);
+		float screenx_clip = 2 * (static_cast<float>(screen_pos.x) / static_cast<float>(winsize.x)) - 1;
+		float screeny_clip = -(1 - 2 * static_cast<float>(screen_pos.y) / static_cast<float>(winsize.y));
 
 		math::Vector4 screen_clip = {screenx_clip, screeny_clip, -1, 1};
 		math::Vector4 world_pos = viewproj_inv.translate(screen_clip);
