@@ -712,7 +712,7 @@ unsigned lodepng_huffman_code_lengths(unsigned* lengths, const unsigned* frequen
 		init_coins(prev_row, coinmem);
 
 		/*first row, lowest denominator*/
-		error = append_symbol_coins(coins, frequencies, numcodes, sum);
+		error = append_symbol_coins(coins, frequencies, static_cast<unsigned int>(numcodes), sum);
 		numcoins = numpresent;
 		qsort(coins, numcoins, sizeof(Coin), coin_compare);
 		if (!error) {
@@ -723,7 +723,7 @@ unsigned lodepng_huffman_code_lengths(unsigned* lengths, const unsigned* frequen
 				Coin* tempcoins;
 				/*swap prev_row and coins, and their amounts*/
 				tempcoins = prev_row; prev_row = coins; coins = tempcoins;
-				tempnum = numprev; numprev = numcoins; numcoins = tempnum;
+				tempnum = numprev; numprev = static_cast<unsigned int>(numcoins); numcoins = tempnum;
 
 				cleanup_coins(coins, numcoins);
 				init_coins(coins, numcoins);
@@ -739,7 +739,7 @@ unsigned lodepng_huffman_code_lengths(unsigned* lengths, const unsigned* frequen
 				}
 				/*fill in all the original symbols again*/
 				if (j < maxbitlen) {
-					error = append_symbol_coins(coins + numcoins, frequencies, numcodes, sum);
+					error = append_symbol_coins(coins + numcoins, frequencies, static_cast<unsigned int>(numcodes), sum);
 					numcoins += numpresent;
 				}
 				qsort(coins, numcoins, sizeof(Coin), coin_compare);
@@ -1296,11 +1296,11 @@ static unsigned countZeros(const unsigned char* data, size_t size, size_t pos) {
 static void updateHashChain(Hash* hash, size_t wpos, unsigned hashval, unsigned short numzeros) {
 	hash->val[wpos] = (int)hashval;
 	if (hash->head[hashval] != -1) hash->chain[wpos] = hash->head[hashval];
-	hash->head[hashval] = wpos;
+	hash->head[hashval] = static_cast<int>(wpos);
 
 	hash->zeros[wpos] = numzeros;
 	if (hash->headz[numzeros] != -1) hash->chainz[wpos] = hash->headz[numzeros];
-	hash->headz[numzeros] = wpos;
+	hash->headz[numzeros] = static_cast<int>(wpos);
 }
 
 /*
@@ -1366,7 +1366,7 @@ static unsigned encodeLZ77(uivector* out, Hash* hash,
 		prev_offset = 0;
 		for (;;) {
 			if (chainlength++ >= maxchainlength) break;
-			current_offset = hashpos <= wpos ? wpos - hashpos : wpos - hashpos + windowsize;
+			current_offset = hashpos <= wpos ? static_cast<unsigned int>(wpos) - hashpos : static_cast<unsigned int>(wpos) - hashpos + windowsize;
 
 			if (current_offset < prev_offset) break; /*stop when went completely around the circular buffer*/
 			prev_offset = current_offset;
@@ -3024,12 +3024,12 @@ unsigned lodepng_convert(unsigned char* out, const unsigned char* in,
 	}
 
 	if (mode_out->colortype == LCT_PALETTE) {
-		size_t palsize = 1u << mode_out->bitdepth;
+		size_t palsize = size_t(1) << static_cast<size_t>(mode_out->bitdepth);
 		if (mode_out->palettesize < palsize) palsize = mode_out->palettesize;
 		color_tree_init(&tree);
 		for (i = 0; i < palsize; i++) {
 			unsigned char* p = &mode_out->palette[i * 4];
-			color_tree_add(&tree, p[0], p[1], p[2], p[3], i);
+			color_tree_add(&tree, p[0], p[1], p[2], p[3], static_cast<unsigned int>(i));
 		}
 	}
 
@@ -3716,7 +3716,7 @@ static unsigned readChunk_tEXt(LodePNGInfo* info, const unsigned char* data, siz
 
 		string2_begin = length + 1; /*skip keyword null terminator*/
 
-		length = chunkLength < string2_begin ? 0 : chunkLength - string2_begin;
+		length = chunkLength < string2_begin ? 0 : static_cast<unsigned int>(chunkLength) - string2_begin;
 		str = (char*)lodepng_malloc(length + 1);
 		if (!str) CERROR_BREAK(error, 83); /*alloc fail*/
 
@@ -3763,7 +3763,7 @@ static unsigned readChunk_zTXt(LodePNGInfo* info, const LodePNGDecompressSetting
 		string2_begin = length + 2;
 		if (string2_begin > chunkLength) CERROR_BREAK(error, 75); /*no null termination, corrupt?*/
 
-		length = chunkLength - string2_begin;
+		length = static_cast<unsigned int>(chunkLength) - string2_begin;
 		/*will fail if zlib error, e.g. if length is too small*/
 		error = zlib_decompress(&decoded.data, &decoded.size,
 			(unsigned char*)(&data[string2_begin]),
@@ -3842,7 +3842,7 @@ static unsigned readChunk_iTXt(LodePNGInfo* info, const LodePNGDecompressSetting
 		/*read the actual text*/
 		begin += length + 1;
 
-		length = chunkLength < begin ? 0 : chunkLength - begin;
+		length = chunkLength < begin ? 0 : static_cast<unsigned int>(chunkLength) - begin;
 
 		if (compressed) {
 			/*will fail if zlib error, e.g. if length is too small*/
@@ -4644,7 +4644,7 @@ static unsigned filter(unsigned char* out, const unsigned char* in, unsigned w, 
 		for (y = 0; y < h; y++) /*try the 5 filter types*/
 		{
 			for (type = 0; type < 5; type++) {
-				unsigned testsize = attempt[type].size;
+				unsigned testsize = static_cast<unsigned>(attempt[type].size);
 				/*if(testsize > 8) testsize /= 8;*/ /*it already works good enough by testing a part of the row*/
 
 				filterScanline(attempt[type].data, &in[y * linebytes], prevline, linebytes, bytewidth, type);
