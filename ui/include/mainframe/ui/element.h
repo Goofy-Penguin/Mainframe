@@ -47,6 +47,8 @@ namespace mainframe {
 			virtual void updateAfter();
 			virtual void initialize();
 
+			virtual void bringToFront();
+
 			virtual void show();
 			virtual void hide();
 			bool isHidden();

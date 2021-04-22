@@ -37,6 +37,16 @@ namespace mainframe {
 			return ret + getPos();
 		}
 
+		void Element::bringToFront() {
+			auto& children = this->getParent<ElementContainer>()->getChildren();
+			auto pivot = std::find_if(children.begin(), children.end(), [this](std::shared_ptr<mainframe::ui::Element> el) -> bool {
+				return el.get() == this;
+			});
+
+			if(pivot == children.end()) return;
+			std::rotate(pivot, pivot + 1, children.end());
+		}
+
 		void Element::drawBefore(render::Stencil& stencil) {}
 		void Element::draw(render::Stencil& stencil) {}
 		void Element::drawAfter(render::Stencil& stencil) {}
