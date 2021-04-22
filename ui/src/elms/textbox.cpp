@@ -25,6 +25,10 @@ namespace mainframe {
 			sizeCharet = size;
 		}
 
+		const math::Vector2& Textbox::getCharetPos() {
+			return charetPosXY;
+		}
+
 		const render::Color& Textbox::getBorderColor() {
 			return colBorder;
 		}
@@ -39,6 +43,11 @@ namespace mainframe {
 
 		void Textbox::setBackgroundColor(const render::Color& col) {
 			colBackground = col;
+		}
+
+		void Textbox::clear() {
+			Label::setText("");
+			charetPosXY.x = 0;
 		}
 
 		void Textbox::setText(const std::string& text_) {
