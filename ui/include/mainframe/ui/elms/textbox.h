@@ -27,7 +27,10 @@ namespace mainframe {
 		public:
 			Textbox();
 
+			void clear();
+
 			const math::Vector2& getBorderSize();
+			const math::Vector2& getCharetPos();
 			const math::Vector2& getCharetSize();
 			const render::Color& getBorderColor();
 			const render::Color& getBackgroundColor();
