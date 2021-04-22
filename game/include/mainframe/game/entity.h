@@ -37,7 +37,7 @@ namespace mainframe {
 			std::vector<EntityIdType> getParentTreeList() const;
 
 			template<class T>
-			T* getWorld() {
+			T* getWorld() const {
 				return dynamic_cast<T*>(world);
 			}
 		};

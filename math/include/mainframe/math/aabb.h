@@ -47,11 +47,44 @@ namespace mainframe {
 				return size.x * size.y;
 			}
 
+			NumberType top() const {
+				return pos.y;
+			}
+
+			NumberType right() const {
+				return pos.x + size.x;
+			}
+
+			NumberType left() const {
+				return pos.x;
+			}
+
+			NumberType bottom() const {
+				return pos.y + size.y;
+			}
+
 			bool contains(const Vector2_t<NumberType>& pos_) const {
 				return pos_.x >= pos.x && // left
 					pos_.y >= pos.y && // top
 					pos_.x <= pos.x + size.x && // right
 					pos_.y <= pos.y + size.y; // bottom
+			}
+
+			AABB_t<NumberType> mask(const AABB_t<NumberType>& other) const {
+				auto masked = *this;
+
+				if (masked.right() < other.left()) masked =  {other.left(), other.top(), 0.0f, 0.0f};
+				if (masked.bottom() < other.top()) masked =  {other.left(), other.top(), 0.0f, 0.0f};
+				if (masked.top() > other.bottom()) masked =  {other.left(), other.top(), 0.0f, 0.0f};
+				if (masked.left() > other.right()) masked =  {other.left(), other.top(), 0.0f, 0.0f};
+
+				if (masked.left() < other.left()) { masked.size.x -= other.left() - std::abs(masked.left()); masked.pos.x = other.left(); }
+				if (masked.top() < other.top())   { masked.size.y -= other.top()  - std::abs(masked.top());  masked.pos.y = other.top();  }
+
+				if (masked.right() > other.right())   masked.size.x = other.right()  - masked.left();
+				if (masked.bottom() > other.bottom()) masked.size.y = other.bottom() - masked.top();
+
+				return masked;
 			}
 		};
 

@@ -395,7 +395,7 @@ namespace mainframe {
 			setCallbacks();
 
 			glfwMakeContextCurrent(glfwHandle);
-			glfwSwapInterval(1); // 0 == infinite FPS, 1 == 60, 2 == 30
+			glfwSwapInterval(0);
 
 			if (!initGlew()) {
 				close();
