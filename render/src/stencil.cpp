@@ -81,7 +81,7 @@ namespace mainframe {
 		}
 
 		void Stencil::pushIndices(unsigned int a, unsigned int b, unsigned int c) {
-			auto pos = vertices.size();
+			auto pos = static_cast<unsigned int>(vertices.size());
 
 			indices.push_back(pos - a);
 			indices.push_back(pos - b);
@@ -104,7 +104,7 @@ namespace mainframe {
 			setTexture(getPixelTexture());
 			setShader(shader2D);
 
-			auto spos = vertices.size();
+			auto spos = static_cast<unsigned int>(vertices.size());
 			for (auto v : poly.verts)
 				pushVertice(v.pos + offset, v.uv, v.col);
 
@@ -278,7 +278,7 @@ namespace mainframe {
 			setTexture(rawTextureHandle);
 			setShader(shader2D);
 
-			auto rotOrigin = origin.isNaN() ? pos + size / 2 : origin + offset;
+			auto rotOrigin = origin.isNaN() ? pos + size / 2 : pos + origin;
 
 			auto vertA = pos.rotateAroundOrigin(rotation, rotOrigin);
 			auto vertB = b.rotateAroundOrigin(rotation, rotOrigin);
@@ -480,8 +480,8 @@ namespace mainframe {
 			windowSize = size;
 
 			auto& r = clippingRects.front();
-			r.size.x = windowSize.x;
-			r.size.y = windowSize.y;
+			r.size.x = static_cast<float>(windowSize.x);
+			r.size.y = static_cast<float>(windowSize.y);
 		}
 
 		const mainframe::math::Vector2i& Stencil::getWindowSize() const {
@@ -508,7 +508,7 @@ namespace mainframe {
 				setShader(chunk.shader);
 				setTexture(chunk.texture);
 
-				size_t verticeOffset = indices.size();
+				auto verticeOffset = static_cast<unsigned int>(indices.size());
 				vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
 
 				size_t incideOffset = indices.size();
@@ -539,7 +539,7 @@ namespace mainframe {
 				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
 
 				for (size_t i = incideOffset, j = indices.size(); i < j; i++) {
-					indices[i] += verticeOffset;
+					indices[i] += static_cast<unsigned int>(verticeOffset);
 				}
 			}
 		}
@@ -563,7 +563,7 @@ namespace mainframe {
 				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
 
 				for (size_t i = indiceOffset, j = indices.size(); i < j; i++) {
-					indices[i] += verticeOffset;
+					indices[i] += static_cast<unsigned int>(verticeOffset);
 				}
 			}
 		}
@@ -597,7 +597,7 @@ namespace mainframe {
 				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
 
 				for (size_t i = indiceOffset, j = indices.size(); i < j; i++) {
-					indices[i] += verticeOffset;
+					indices[i] += static_cast<unsigned int>(verticeOffset);;
 				}
 			}
 		}
@@ -636,7 +636,7 @@ namespace mainframe {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.getEbo());
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STREAM_DRAW);
 
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 #else
 			glLoadIdentity();
 

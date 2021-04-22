@@ -30,7 +30,7 @@ namespace mainframe {
 			}
 
 			NumberType length() const {
-				return std::sqrt(std::pow(x, 2) + std::pow(y, 2));
+				return static_cast<NumberType>(std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
 			}
 
 			NumberType angle(const VecType& target) const {
@@ -82,9 +82,9 @@ namespace mainframe {
 				if (rads == 0) return *this;
 
 				VecType u = *this - origin;
-				if (u == VecType()) return u;
+				if (u == VecType()) return *this;
 
-				u = cosSin(u.atan2() + rads) * u.length();
+				u = cosSin(u.atan2() + rads) * static_cast<NumberType>(u.length());
 				u.x += origin.x;
 				u.y += origin.y;
 
@@ -93,6 +93,11 @@ namespace mainframe {
 
 			VecType yx() const {
 				return VecType(y, x);
+			}
+
+			template<class ReturnType>
+			Vector2_t<ReturnType> cast() const {
+				return {static_cast<ReturnType>(x), static_cast<ReturnType>(y)};
 			}
 
 			VecType operator- (const VecType& other) const {

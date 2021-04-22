@@ -15,6 +15,40 @@ namespace mainframe {
 		public:
 			NumberType r = 0, g = 0, b = 0, a = 1;
 
+			static Color_t<NumberType> RGBAHex(uint32_t x) {
+				if constexpr(std::is_same<NumberType, float>::value) {
+					return {
+						((x >> 24) & 0xFF) / 255.0f,
+						((x >> 16) & 0xFF) / 255.0f,
+						((x >> 8) & 0xFF) / 255.0f,
+						((x) & 0xFF) / 255.0f
+					};
+				} else {
+					return {
+						((x >> 24) & 0xFF),
+						((x >> 16) & 0xFF),
+						((x >> 8) & 0xFF),
+						((x) & 0xFF)
+					};
+				}
+			}
+
+			static Color_t<NumberType> RGBHex(uint32_t x) {
+				if constexpr(std::is_same<NumberType, float>::value) {
+					return {
+						((x >> 16) & 0xFF) / 255.0f,
+						((x >> 8) & 0xFF) / 255.0f,
+						((x) & 0xFF) / 255.0f
+					};
+				} else {
+					return {
+						((x >> 16) & 0xFF),
+						((x >> 8) & 0xFF),
+						((x) & 0xFF)
+					};
+				}
+			}
+
 			Color_t() = default;
 			Color_t(NumberType _r, NumberType _g = 0, NumberType _b = 0, NumberType _a = 1) : r(_r), g(_g), b(_b), a(_a) {}
 
@@ -143,7 +177,6 @@ namespace mainframe {
 			}
 		};
 
-		using Colord = Color_t<double>;
 		using Colorf = Color_t<float>;
 		using Colori = Color_t<int>;
 		using Color = Colorf;
@@ -166,7 +199,6 @@ namespace mainframe {
 			inline const static ColorType Transparent = ColorType(0, 0, 0, 0);
 		};
 
-		using Colorsd = Colors_t<double>;
 		using Colorsf = Colors_t<float>;
 		using Colorsi = Colors_t<int>;
 		using Colors = Colorsf;

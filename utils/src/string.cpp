@@ -21,6 +21,7 @@ namespace mainframe {
 
 			std::vector<std::string> split(const std::string& haystack, const std::string& needle) {
 				std::vector<std::string> ret;
+				if(haystack.empty()) return ret;
 
 				size_t oldpos = 0;
 				while (true) {

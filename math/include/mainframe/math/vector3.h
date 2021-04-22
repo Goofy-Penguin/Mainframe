@@ -39,7 +39,7 @@ namespace mainframe {
 			}
 
 			NumberType length() const {
-				return std::sqrt(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2));
+				return static_cast<NumberType>(std::sqrt(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2)));
 			}
 
 			VecType normalized() const {

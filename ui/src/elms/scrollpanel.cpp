@@ -5,8 +5,8 @@ namespace mainframe {
 		using namespace mainframe::render;
 
 		void ScrollPanel::draw(render::Stencil& stencil) {
-			stencil.drawBoxOutlined({0, 0}, getSize(), borderSize, colorBorder);
-			stencil.drawBox(borderSize, getSize() - borderSize * 2, colorBackground);
+			stencil.drawBoxOutlined({0, 0}, getSize().cast<float>(), static_cast<float>(borderSize), colorBorder);
+			stencil.drawBox(static_cast<float>(borderSize), getSize().cast<float>() - static_cast<float>(borderSize) * 2, colorBackground);
 		}
 
 		const std::shared_ptr<ScrollPanelBack>& ScrollPanel::getPanel() const {
@@ -75,14 +75,14 @@ namespace mainframe {
 			if (barHorizontal) size.y -= barSize;
 
 			if (barVertical) {
-				float max = 0;
+				int max = 0;
 				if (offsetSize.y > size.y) max = offsetSize.y - size.y;
 
 				barVertical->setMax(max);
 			}
 
 			if (barHorizontal) {
-				float max = 0;
+				int max = 0;
 				if (offsetSize.x > size.x) max = offsetSize.x - size.x;
 
 				barHorizontal->setMax(max);
