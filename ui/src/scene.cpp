@@ -11,6 +11,15 @@ namespace mainframe {
 			return ret;
 		}
 
+		std::shared_ptr<Element> Scene::getFocus() {
+			if (focusedElement.expired()) return {};
+			return focusedElement.lock();
+		}
+
+		void Scene::setFocus(std::shared_ptr<Element> elm) {
+			focusedElement = elm;
+		}
+
 		void Scene::setWindow(game::Window& window) {
 			setPos(0);
 			setSize(window.getSize());

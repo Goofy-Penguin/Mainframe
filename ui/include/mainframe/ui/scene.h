@@ -48,6 +48,9 @@ namespace mainframe {
 
 			void setWindow(game::Window& window);
 
+			std::shared_ptr<Element> getFocus();
+			void setFocus(std::shared_ptr<Element> elm);
+
 			static std::shared_ptr<Scene> create();
 		};
 	}
