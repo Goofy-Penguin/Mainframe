@@ -411,6 +411,9 @@ namespace mainframe {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+			// when a window is created it gains focus from the window manager
+			hasFocus = true;
+
 			return true;
 		}
 	}
