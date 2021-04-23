@@ -32,8 +32,8 @@ namespace mainframe {
 			}
 
 			template<class T, class WType, class... Args>
-			T& createEntity(Args... args) {
-				auto ent = std::make_unique<T>(dynamic_cast<WType*>(this), args...);
+			T& createEntity(Args&&... args) {
+				auto ent = std::make_unique<T>(dynamic_cast<WType*>(this), std::forward<Args>(args)...);
 				ent->generateUniqueId();
 
 				T& retEnt = *ent;
