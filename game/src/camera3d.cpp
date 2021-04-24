@@ -24,15 +24,15 @@ namespace mainframe::game {
 		};
 	}
 
-	const math::Vector3& Camera3D::getLocation() const {
-		return location;
+	math::Vector3 Camera3D::getLocation() const {
+		return location.xzy();
 	}
 
 	const math::Vector3& Camera3D::getLookPos() const {
 		return lookPos;
 	}
 
-	const math::Vector2& Camera3D::getAngle() const {
+	math::Vector2 Camera3D::getAngle() const {
 		return angle;
 	}
 
@@ -45,12 +45,12 @@ namespace mainframe::game {
 	}
 
 	void Camera3D::moveLocation(const math::Vector3& offset) {
-		location += offset;
+		location += offset.xzy();
 		updateLookat();
 	}
 
 	void Camera3D::setLocation(const math::Vector3& pos) {
-		location = pos;
+		location = pos.xzy();
 		updateLookat();
 	}
 
@@ -69,6 +69,10 @@ namespace mainframe::game {
 
 	void Camera3D::setProjMatrix(const math::Matrix& matrix) {
 		projmat = matrix;
+	}
+
+	void Camera3D::setWindowSize(const math::Vector2i& winsize) {
+		windowSize = winsize;
 	}
 
 	int glhProjectf(float objx, float objy, float objz, std::array<float, 16> modelview, std::array<float, 16> projection, int* viewport, float* windowCoordinate) {
@@ -103,20 +107,20 @@ namespace mainframe::game {
 		return 1;
 	}
 
-	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos, const math::Vector2i& winsize) const {
-		int viewport[] = {0, 0, winsize.x, winsize.y};
+	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos) const {
+		int viewport[] = {0, 0, (int)windowSize.x, (int)windowSize.y};
 
 		math::Vector3 sp;
-		glhProjectf(pos.x, pos.y, pos.z, mat.getValues(), projmat.getValues(), viewport, (float*)&sp);
+		glhProjectf(pos.x, pos.z, pos.y, mat.getValues(), projmat.getValues(), viewport, (float*)&sp);
 
 		return sp;
 	}
 
-	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos, const math::Vector2i& winsize) const {
+	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos) const {
 		math::Matrix viewproj_inv = (projmat * mat).inverted();
 
-		float screenx_clip = 2 * (static_cast<float>(screen_pos.x) / static_cast<float>(winsize.x)) - 1;
-		float screeny_clip = -(1 - 2 * static_cast<float>(screen_pos.y) / static_cast<float>(winsize.y));
+		float screenx_clip = 2 * (static_cast<float>(screen_pos.x) / static_cast<float>(windowSize.x)) - 1;
+		float screeny_clip = -(1 - 2 * static_cast<float>(screen_pos.y) / static_cast<float>(windowSize.y));
 
 		math::Vector4 screen_clip = {screenx_clip, screeny_clip, -1, 1};
 		math::Vector4 world_pos = viewproj_inv.translate(screen_clip);
