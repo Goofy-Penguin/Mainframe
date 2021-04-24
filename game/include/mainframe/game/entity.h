@@ -13,6 +13,7 @@ namespace mainframe {
 		class Entity {
 			World* world;
 			mainframe::math::Matrix matrix;
+			mainframe::math::Vector3 velocity;
 			EntityIdType id = 0xFFFFFFFF;
 
 		public:
@@ -25,9 +26,16 @@ namespace mainframe {
 			EntityIdType getId() const;
 
 			mainframe::math::Matrix& getMatrix();
-			mainframe::math::Vector3 getPosition() const;
-			mainframe::math::Vector3 getScale() const;
-			mainframe::math::Vector3 getRotation() const;
+			const mainframe::math::Matrix& getMatrix() const;
+			virtual mainframe::math::Vector3 getPosition() const;
+			virtual mainframe::math::Vector3 getScale() const;
+			virtual mainframe::math::Vector3 getRotation() const;
+			virtual mainframe::math::Vector3 getVelocity() const;
+
+			virtual void setVelocity(const mainframe::math::Vector3& force);
+			virtual void setPosition(const mainframe::math::Vector3& pos);
+			virtual void setScale(const mainframe::math::Vector3& scale);
+			virtual void setRotation(const mainframe::math::Vector3& rot);
 
 			virtual void initialize();
 			virtual void update();
