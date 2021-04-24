@@ -17,6 +17,7 @@ namespace mainframe {
 
 			Vector3_t() = default;
 			Vector3_t(NumberType val) : x(val), y(val), z(val) {}
+			explicit Vector3_t(Vector2_t<NumberType> xy, NumberType _z = 0) : x(xy.x), y(xy.y), z(_z) {}
 			Vector3_t(NumberType _x, NumberType _y, NumberType _z = 0) : x(_x), y(_y), z(_z) {}
 
 			//TODO: fix to use vector2 or update function to work in 3d space
