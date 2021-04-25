@@ -49,6 +49,25 @@ namespace mainframe {
 				}
 			}
 
+			template<class ReturnType>
+			Color_t<ReturnType> cast() const {
+				if constexpr(std::is_same<NumberType, int>::value) {
+					return {
+						static_cast<ReturnType>(r) / 255.0f,
+						static_cast<ReturnType>(g) / 255.0f,
+						static_cast<ReturnType>(b) / 255.0f,
+						static_cast<ReturnType>(a) / 255.0f
+					};
+				} else {
+					return {
+						static_cast<ReturnType>(r * 255.0f),
+						static_cast<ReturnType>(g * 255.0f),
+						static_cast<ReturnType>(b * 255.0f),
+						static_cast<ReturnType>(a * 255.0f)
+					};
+				}
+			}
+
 			Color_t() = default;
 			Color_t(NumberType _r, NumberType _g = 0, NumberType _b = 0, NumberType _a = 1) : r(_r), g(_g), b(_b), a(_a) {}
 
@@ -62,6 +81,10 @@ namespace mainframe {
 
 			ColorType normalized() const {
 				return (*this) / length();
+			}
+
+			std::string toString() const {
+				return fmt::format("{},{},{},{}", r, g, b, a);
 			}
 
 			NumberType dot(const ColorType& other) const {
