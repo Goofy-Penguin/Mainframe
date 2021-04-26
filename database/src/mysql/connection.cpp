@@ -67,7 +67,11 @@ namespace mainframe {
 
 			// write user
 			auto userbuff = reinterpret_cast<char*>(d);
-			std::strcpy(userbuff, user.c_str()); d += 1 + user.size();
+			std::memcpy(userbuff, user.data(), user.size());
+			userbuff[user.size()] = 0;
+
+			// move buffer forward
+			d += user.size() + 1;
 
 			// write XOR encrypt response
 			*d = 20; d += 1;
