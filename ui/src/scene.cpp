@@ -17,7 +17,15 @@ namespace mainframe {
 		}
 
 		void Scene::setFocus(std::shared_ptr<Element> elm) {
+			if (!focusedElement.expired()) {
+				focusedElement.lock()->setFocused(false);
+			}
+
 			focusedElement = elm;
+
+			if (elm != nullptr) {
+				elm->setFocused(true);
+			}
 		}
 
 		void Scene::setWindow(game::Window& window) {
