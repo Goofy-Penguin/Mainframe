@@ -30,6 +30,7 @@ namespace mainframe {
 			Player(Server* server_, std::unique_ptr<networking::Socket> socket_);
 			virtual ~Player();
 
+			Server* getServer() const;
 			networking::Socket& getSocket();
 			void setSocket(std::unique_ptr<networking::Socket> socket_);
 			void joinAndCleanThreads();
