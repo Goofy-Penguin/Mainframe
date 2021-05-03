@@ -97,6 +97,10 @@ namespace mainframe {
 			return true;
 		}
 
+		Server* Player::getServer() const {
+			return server;
+		}
+
 		void Player::send(std::shared_ptr<MessageOutgoing> message) {
 			if (!message->isConstructed()) {
 				message->construct();
