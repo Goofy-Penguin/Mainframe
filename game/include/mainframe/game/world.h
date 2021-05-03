@@ -31,6 +31,23 @@ namespace mainframe {
 				return ret;
 			}
 
+			template<class T = Entity>
+			const std::vector<T*> getEntitiesInRange(const mainframe::math::Vector3& pos, float maxdistance, float mindistance = 0) {
+				std::vector<T*> ret;
+
+				for (auto& ent : entities) {
+					auto ptr = dynamic_cast<T*>(ent.get());
+					if (ptr == nullptr) continue;
+
+					float dist = ptr->getPosition().distance(pos);
+					if (dist <= mindistance || dist >= maxdistance) continue;
+
+					ret.push_back(ptr);
+				}
+
+				return ret;
+			}
+
 			template<class T, class WType, class... Args>
 			T& createEntity(Args&&... args) {
 				auto ent = std::make_unique<T>(dynamic_cast<WType*>(this), std::forward<Args>(args)...);
