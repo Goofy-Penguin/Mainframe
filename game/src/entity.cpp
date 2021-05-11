@@ -1,6 +1,8 @@
 #include <mainframe/game/entity.h>
 #include <mainframe/game/world.h>
 
+using namespace mainframe::math;
+
 namespace mainframe {
 	namespace game {
 		Entity::Entity(World* world_) : world(world_) {
@@ -61,6 +63,10 @@ namespace mainframe {
 			return matrix;
 		}
 
+		const mainframe::math::Matrix& Entity::getMatrix() const {
+			return matrix;
+		}
+
 		mainframe::math::Vector3 Entity::getPosition() const {
 			return matrix.getTranslation();
 		}
@@ -83,7 +89,7 @@ namespace mainframe {
 
 		void Entity::setPosition(const mainframe::math::Vector3& pos) {
 			auto rot = getRotation();
-
+			
 			matrix = mainframe::math::Matrix::createTranslation(pos) *
 				mainframe::math::Matrix::createRotationZ(rot.z) *
 				mainframe::math::Matrix::createRotationX(rot.x) *
