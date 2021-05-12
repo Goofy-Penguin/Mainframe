@@ -25,10 +25,14 @@ namespace mainframe {
 
 			sender = new std::thread([this]() {
 				while (!disconnected) {
-					auto message = outgoing.pop();
-					if (!socket->sendAll(message->data(), message->size())) {
-						disconnect();
+					while (outgoing.available()) {
+						auto message = outgoing.pop();
+						if (!socket->sendAll(message->data(), message->size())) {
+							disconnect();
+						}
 					}
+
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
 			});
 
