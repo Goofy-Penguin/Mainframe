@@ -20,7 +20,7 @@ namespace mainframe {
 			Entity(World* world_);
 			virtual ~Entity();
 
-			void remove();
+			virtual void remove();
 
 			void setId(EntityIdType id_);
 			EntityIdType getId() const;
