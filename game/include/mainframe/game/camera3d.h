@@ -12,6 +12,7 @@ namespace mainframe::game {
 		math::Vector3 location;
 		math::Vector3 lookPos;
 		math::Vector2 angle;
+		math::Vector2i windowSize;
 
 		float nearClippingPlane;
 		float farClippingPlane;
@@ -23,9 +24,9 @@ namespace mainframe::game {
 
 	public:
 		math::Vector3 getForward() const;
-		const math::Vector3& getLocation() const;
+		math::Vector3 getLocation() const;
 		const math::Vector3& getLookPos() const;
-		const math::Vector2& getAngle() const;
+		math::Vector2 getAngle() const;
 		const math::Matrix& getViewMatrix() const;
 		const math::Matrix& getProjMatrix() const;
 
@@ -37,8 +38,10 @@ namespace mainframe::game {
 		void setViewMatrix(const math::Matrix& matrix);
 		void setProjMatrix(const math::Matrix& matrix);
 
-		math::Vector3 worldToScreen(const math::Vector3& pos, const math::Vector2i& winsize) const;
-		math::Vector3 screenToWorld(const math::Vector2i& screen_pos, const math::Vector2i& winsize) const;
+		void setWindowSize(const math::Vector2i& winsize);
+
+		math::Vector3 worldToScreen(const math::Vector3& pos) const;
+		math::Vector3 screenToWorld(const math::Vector2i& screen_pos) const;
 
 		void insertViewMatrix(int location) const;
 
