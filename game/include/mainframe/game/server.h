@@ -22,6 +22,7 @@ namespace mainframe {
 			virtual void tick() override;
 			virtual void init() override;
 			virtual void run() override;
+			virtual void quit() override;
 
 			virtual void registerClient(std::unique_ptr<networking::Socket> socket);
 
@@ -40,7 +41,6 @@ namespace mainframe {
 				return ret;
 			}
 
-			void shutdown();
 			~Server();
 		};
 	}
