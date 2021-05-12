@@ -81,6 +81,7 @@ namespace mainframe {
 		void Window::callbacks_focus(GLFWwindow* whandle, int focus) {
 			auto& window = glfwHandleToWindow(whandle);
 			window.hasFocus = focus == 1;
+			window.onFocus(window, focus);
 		}
 
 		void Window::addOnResize(OnResizeCallback::Func callback) {
@@ -130,6 +131,13 @@ namespace mainframe {
 		math::Vector2i Window::getSize() const {
 			math::Vector2i ret;
 			glfwGetWindowSize(GLFWHANDLE, &ret.x, &ret.y);
+
+			return ret;
+		}
+
+		math::Vector2i Window::getPos() const {
+			math::Vector2i ret;
+			glfwGetWindowPos(GLFWHANDLE, &ret.x, &ret.y);
 
 			return ret;
 		}
