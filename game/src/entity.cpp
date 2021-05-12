@@ -1,6 +1,8 @@
 #include <mainframe/game/entity.h>
 #include <mainframe/game/world.h>
 
+using namespace mainframe::math;
+
 namespace mainframe {
 	namespace game {
 		Entity::Entity(World* world_) : world(world_) {
@@ -61,6 +63,10 @@ namespace mainframe {
 			return matrix;
 		}
 
+		const mainframe::math::Matrix& Entity::getMatrix() const {
+			return matrix;
+		}
+
 		mainframe::math::Vector3 Entity::getPosition() const {
 			return matrix.getTranslation();
 		}
@@ -71,6 +77,42 @@ namespace mainframe {
 
 		mainframe::math::Vector3 Entity::getRotation() const {
 			return matrix.getRotation();
+		}
+
+		mainframe::math::Vector3 Entity::getVelocity() const {
+			return velocity;
+		}
+
+		void Entity::setVelocity(const mainframe::math::Vector3& force) {
+			velocity = force;
+		}
+
+		void Entity::setPosition(const mainframe::math::Vector3& pos) {
+			auto rot = getRotation();
+			
+			matrix = mainframe::math::Matrix::createTranslation(pos) *
+				mainframe::math::Matrix::createRotationZ(rot.z) *
+				mainframe::math::Matrix::createRotationX(rot.x) *
+				mainframe::math::Matrix::createRotationY(rot.y) *
+				mainframe::math::Matrix::createScale(getScale());
+		}
+
+		void Entity::setScale(const mainframe::math::Vector3& scale) {
+			auto rot = getRotation();
+
+			matrix = mainframe::math::Matrix::createTranslation(getPosition()) *
+				mainframe::math::Matrix::createRotationZ(rot.z) *
+				mainframe::math::Matrix::createRotationX(rot.x) *
+				mainframe::math::Matrix::createRotationY(rot.y) *
+				mainframe::math::Matrix::createScale(scale);
+		}
+
+		void Entity::setRotation(const mainframe::math::Vector3& rot){
+			matrix = mainframe::math::Matrix::createTranslation(getPosition()) *
+				mainframe::math::Matrix::createRotationZ(rot.z) *
+				mainframe::math::Matrix::createRotationX(rot.x) *
+				mainframe::math::Matrix::createRotationY(rot.y) *
+				mainframe::math::Matrix::createScale(getScale());
 		}
 	}
 }

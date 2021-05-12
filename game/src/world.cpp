@@ -16,8 +16,16 @@ namespace mainframe {
 		}
 
 		void World::update() {
-			for (auto& ent : entities) {
+			auto oldsize = entities.size();
+			for (size_t i = 0; i < oldsize; i++) {
+				auto& ent = entities[i];
+
 				ent->update();
+
+				if (entities.size() != oldsize) {
+					i--;
+					oldsize = entities.size();
+				}
 			}
 		}
 	}
