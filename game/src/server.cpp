@@ -48,10 +48,12 @@ namespace mainframe {
 		}
 
 		Server::~Server() {
-			shutdown();
+			quit();
 		}
 
-		void Server::shutdown() {
+		void Server::quit() {
+			mainframe::game::Engine::quit();
+
 			shuttingdown = true;
 			socket.close();
 		}

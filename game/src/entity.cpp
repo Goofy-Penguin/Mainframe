@@ -59,60 +59,60 @@ namespace mainframe {
 
 		}
 
-		mainframe::math::Matrix& Entity::getMatrix() {
+		Matrix& Entity::getMatrix() {
 			return matrix;
 		}
 
-		const mainframe::math::Matrix& Entity::getMatrix() const {
+		const Matrix& Entity::getMatrix() const {
 			return matrix;
 		}
 
-		mainframe::math::Vector3 Entity::getPosition() const {
+		Vector3 Entity::getPosition() const {
 			return matrix.getTranslation();
 		}
 
-		mainframe::math::Vector3 Entity::getScale() const {
+		Vector3 Entity::getScale() const {
 			return matrix.getScale();
 		}
 
-		mainframe::math::Vector3 Entity::getRotation() const {
+		Vector3 Entity::getRotation() const {
 			return matrix.getRotation();
 		}
 
-		mainframe::math::Vector3 Entity::getVelocity() const {
+		Vector3 Entity::getVelocity() const {
 			return velocity;
 		}
 
-		void Entity::setVelocity(const mainframe::math::Vector3& force) {
+		void Entity::setVelocity(const Vector3& force) {
 			velocity = force;
 		}
 
-		void Entity::setPosition(const mainframe::math::Vector3& pos) {
-			auto rot = getRotation();
-			
-			matrix = mainframe::math::Matrix::createTranslation(pos) *
-				mainframe::math::Matrix::createRotationZ(rot.z) *
-				mainframe::math::Matrix::createRotationX(rot.x) *
-				mainframe::math::Matrix::createRotationY(rot.y) *
-				mainframe::math::Matrix::createScale(getScale());
-		}
-
-		void Entity::setScale(const mainframe::math::Vector3& scale) {
+		void Entity::setPosition(const Vector3& pos) {
 			auto rot = getRotation();
 
-			matrix = mainframe::math::Matrix::createTranslation(getPosition()) *
-				mainframe::math::Matrix::createRotationZ(rot.z) *
-				mainframe::math::Matrix::createRotationX(rot.x) *
-				mainframe::math::Matrix::createRotationY(rot.y) *
-				mainframe::math::Matrix::createScale(scale);
+			matrix = Matrix::createTranslation(pos) *
+				Matrix::createRotationZ(rot.z) *
+				Matrix::createRotationX(rot.x) *
+				Matrix::createRotationY(rot.y) *
+				Matrix::createScale(getScale());
 		}
 
-		void Entity::setRotation(const mainframe::math::Vector3& rot){
-			matrix = mainframe::math::Matrix::createTranslation(getPosition()) *
-				mainframe::math::Matrix::createRotationZ(rot.z) *
-				mainframe::math::Matrix::createRotationX(rot.x) *
-				mainframe::math::Matrix::createRotationY(rot.y) *
-				mainframe::math::Matrix::createScale(getScale());
+		void Entity::setScale(const Vector3& scale) {
+			auto rot = getRotation();
+
+			matrix = Matrix::createTranslation(getPosition()) *
+				Matrix::createRotationZ(rot.z) *
+				Matrix::createRotationX(rot.x) *
+				Matrix::createRotationY(rot.y) *
+				Matrix::createScale(scale);
+		}
+
+		void Entity::setRotation(const Vector3& rot){
+			matrix = Matrix::createTranslation(getPosition()) *
+				Matrix::createRotationZ(rot.z) *
+				Matrix::createRotationX(rot.x) *
+				Matrix::createRotationY(rot.y) *
+				Matrix::createScale(getScale());
 		}
 	}
 }
