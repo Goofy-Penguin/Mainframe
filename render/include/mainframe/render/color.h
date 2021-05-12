@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <complex>
+#include <fmt/format.h>
 
 namespace mainframe {
 	namespace render {
