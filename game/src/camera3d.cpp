@@ -107,6 +107,10 @@ namespace mainframe::game {
 		return 1;
 	}
 
+	const math::Vector2i& Camera3D::getWindowSize() {
+		return windowSize;
+	}
+
 	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos) const {
 		int viewport[] = {0, 0, (int)windowSize.x, (int)windowSize.y};
 
