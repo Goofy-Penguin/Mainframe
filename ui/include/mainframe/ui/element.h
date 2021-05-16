@@ -29,6 +29,7 @@ namespace mainframe {
 			mainframe::utils::Event<unsigned int, unsigned int, ModifierKey, bool> onKeyDown;
 			mainframe::utils::Event<unsigned int, unsigned int, ModifierKey> onKeyUp;
 			mainframe::utils::Event<unsigned int> onKeyChar;
+			mainframe::utils::Event<bool> onFocusChange;
 
 			math::Vector2i getPosAbsolute() const;
 			const std::string& getName() const;
