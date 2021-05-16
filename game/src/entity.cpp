@@ -9,6 +9,10 @@ namespace mainframe {
 
 		}
 
+		void Entity::setWorld(World* world_) {
+			world = world_;
+		}
+
 		std::vector<EntityIdType> Entity::getParentTreeList() const {
 			std::vector<EntityIdType> ret;
 
