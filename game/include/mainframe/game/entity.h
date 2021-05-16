@@ -49,6 +49,8 @@ namespace mainframe {
 			T* getWorld() const {
 				return dynamic_cast<T*>(world);
 			}
+
+			void setWorld(World* world_);
 		};
 	}
 }

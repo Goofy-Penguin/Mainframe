@@ -13,8 +13,8 @@ namespace mainframe {
 		public:
 			virtual ~World() = default;
 
-			void removeEntity(Entity* ent);
-			void removeEntity(size_t id);
+			std::unique_ptr<Entity> removeEntity(Entity* ent);
+			std::unique_ptr<Entity> removeEntity(size_t id);
 
 			virtual void update();
 
@@ -57,6 +57,12 @@ namespace mainframe {
 				entities.push_back(std::move(ent));
 
 				return retEnt;
+			}
+
+			template<class T>
+			void addEntity(std::unique_ptr<T>&& ent) {
+				ent->setWorld(this);
+				entities.push_back(std::move(ent));
 			}
 
 			bool hasEntity(size_t id) const {

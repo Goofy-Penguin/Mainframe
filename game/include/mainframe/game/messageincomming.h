@@ -11,7 +11,6 @@ namespace mainframe {
 			mainframe::networking::Packet packet;
 			World* world = nullptr;
 			Server* server = nullptr;
-			Player* player = nullptr;
 
 		public:
 			void setBuffer(std::vector<uint8_t> buff);
@@ -28,26 +27,15 @@ namespace mainframe {
 			}
 
 			template<class T>
-			T* getPlayer() {
-				return dynamic_cast<T*>(player);
-			}
-
-			template<class T>
 			void setServer(T* serv) {
-				server = dynamic_cast<Server*>(serv);
+				server = static_cast<Server*>(serv);
 				if (serv != nullptr && server == nullptr) throw std::runtime_error("server dynamic cast failed");
 			}
 
 			template<class T>
 			void setWorld(T* world_) {
-				world = dynamic_cast<World*>(world_);
+				world = static_cast<World*>(world_);
 				if (world_ != nullptr && world == nullptr) throw std::runtime_error("world dynamic cast failed");
-			}
-
-			template<class T>
-			void setPlayer(T* ply) {
-				player = dynamic_cast<Player*>(ply);
-				if (ply != nullptr && player == nullptr) throw std::runtime_error("player dynamic cast failed");
 			}
 
 			virtual bool read() = 0;
