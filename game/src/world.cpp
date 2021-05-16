@@ -2,17 +2,21 @@
 
 namespace mainframe {
 	namespace game {
-		void World::removeEntity(size_t id) {
+		std::unique_ptr<Entity> World::removeEntity(size_t id) {
 			for (size_t i = 0; i < entities.size(); i++) {
-				auto& ent = entities[i];
-				if (ent->getId() != id) continue;
+				if (entities[i]->getId() != id) continue;
 
+				auto ent = std::move(entities[i]);
 				entities.erase(entities.begin() + i);
+
+				return ent;
 			}
+
+			return nullptr;
 		}
 
-		void World::removeEntity(Entity* ent) {
-			removeEntity(ent->getId());
+		std::unique_ptr<Entity> World::removeEntity(Entity* ent) {
+			return std::move(removeEntity(ent->getId()));
 		}
 
 		void World::update() {
