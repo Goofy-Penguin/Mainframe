@@ -28,6 +28,9 @@ namespace mainframe {
 			// starts the game loop and blocks until quit is called and is handled
 			virtual void run();
 
+			// returns true after quit() is called
+			bool isQuiting();
+
 			void setFPS(float count);
 		};
 	}
