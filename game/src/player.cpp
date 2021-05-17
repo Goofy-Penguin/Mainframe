@@ -119,7 +119,6 @@ namespace mainframe {
 		void Player::tick() {
 			while (incomming.available()) {
 				auto msg = incomming.pop();
-				msg->setPlayer(this);
 				msg->setServer(server);
 
 				if (!onMessage(msg.get())) continue;
