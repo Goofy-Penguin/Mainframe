@@ -29,7 +29,7 @@ namespace mainframe {
 			virtual void run();
 
 			// returns true after quit() is called
-			bool isQuiting();
+			bool isQuitting();
 
 			void setFPS(float count);
 		};
