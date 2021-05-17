@@ -53,7 +53,7 @@ namespace mainframe {
 			shouldShutdown = true;
 		}
 
-		bool Engine::isQuiting() {
+		bool Engine::isQuitting() {
 			return shouldShutdown;
 		}
 
