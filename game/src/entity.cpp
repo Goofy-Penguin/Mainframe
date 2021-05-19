@@ -38,7 +38,10 @@ namespace mainframe {
 		}
 
 		void Entity::remove() {
+			if (world == nullptr) return;
+
 			world->removeEntity(this);
+			world = nullptr;
 		}
 
 		EntityIdType Entity::getId() const {
