@@ -58,7 +58,7 @@ namespace mainframe {
 			}
 
 			NumberType length() const {
-				return std::sqrt(std::pow(r, 2) + std::pow(g, 2) + std::pow(b, 2) + std::pow(a, 2));
+				return static_cast<NumberType>(std::sqrt(std::pow(r, 2) + std::pow(g, 2) + std::pow(b, 2) + std::pow(a, 2)));
 			}
 
 			ColorType normalized() const {
