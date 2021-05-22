@@ -54,7 +54,7 @@ namespace mainframe {
 			Color_t(NumberType _r, NumberType _g = 0, NumberType _b = 0, NumberType _a = 1) : r(_r), g(_g), b(_b), a(_a) {}
 
 			NumberType distance(const ColorType& other) const {
-				return std::sqrt(((r - other.r) * (r - other.r)) + ((g - other.g) * (g - other.g)) + ((b - other.b) * (b - other.b)) + ((a - other.a) * (a - other.a)));
+				return static_cast<NumberType>(std::sqrt(((r - other.r) * (r - other.r)) + ((g - other.g) * (g - other.g)) + ((b - other.b) * (b - other.b)) + ((a - other.a) * (a - other.a))));
 			}
 
 			NumberType length() const {
