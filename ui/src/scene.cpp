@@ -255,14 +255,14 @@ namespace mainframe {
 			auto elm = focusedElement.lock();
 			switch (state) {
 				case KeyState::inactive: {
-					elm->keyDown(key, scancode, mods, false);
-					elm->onKeyDown(key, scancode, mods, false);
+					elm->keyUp(key, scancode, mods);
+					elm->onKeyUp(key, scancode, mods);
 					break;
 				}
 
 				case KeyState::active: {
-					elm->keyUp(key, scancode, mods);
-					elm->onKeyUp(key, scancode, mods);
+					elm->keyDown(key, scancode, mods, false);
+					elm->onKeyDown(key, scancode, mods, false);
 					break;
 				}
 
