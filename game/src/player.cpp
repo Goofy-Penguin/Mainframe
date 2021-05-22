@@ -27,7 +27,7 @@ namespace mainframe {
 				while (!disconnected) {
 					while (outgoing.available()) {
 						auto message = outgoing.pop();
-						if (!socket->sendAll(message->data(), message->size())) {
+						if (!socket->sendAll(message->data(), static_cast<int>(message->size()))) {
 							disconnect();
 						}
 					}
