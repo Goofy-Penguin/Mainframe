@@ -40,6 +40,7 @@ namespace mainframe {
 
 			virtual void initialize();
 			virtual void update();
+			virtual void tick();
 
 			void generateUniqueId();
 

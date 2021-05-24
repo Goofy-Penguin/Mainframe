@@ -66,6 +66,10 @@ namespace mainframe {
 
 		}
 
+		void Entity::tick() {
+
+		}
+
 		Matrix& Entity::getMatrix() {
 			return matrix;
 		}

@@ -32,5 +32,19 @@ namespace mainframe {
 				}
 			}
 		}
+
+		void World::tick() {
+			auto oldsize = entities.size();
+			for (size_t i = 0; i < oldsize; i++) {
+				auto& ent = entities[i];
+
+				ent->tick();
+
+				if (entities.size() != oldsize) {
+					i--;
+					oldsize = entities.size();
+				}
+			}
+		}
 	}
 }

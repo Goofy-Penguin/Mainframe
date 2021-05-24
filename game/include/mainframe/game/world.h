@@ -17,6 +17,7 @@ namespace mainframe {
 			std::unique_ptr<Entity> removeEntity(size_t id);
 
 			virtual void update();
+			virtual void tick();
 
 			template<class T = Entity>
 			const std::vector<T*> getEntities() {
