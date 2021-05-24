@@ -55,6 +55,16 @@ namespace mainframe {
 				return {x, z, y};
 			}
 
+			VecType lerp(const VecType& other, NumberType timestep) const {
+				VecType ret;
+
+				ret.x = x + (other.x - x) * timestep;
+				ret.y = y + (other.y - y) * timestep;
+				ret.z = z + (other.z - z) * timestep;
+
+				return ret;
+			}
+
 			VecType floor() const {
 				return {std::floor(x), std::floor(y), std::floor(z)};
 			}

@@ -10,6 +10,13 @@
 
 namespace mainframe {
 	namespace networking {
+		class Packet;
+		template<typename T>
+		concept isNetworkable = requires(T t, Packet p) {
+			{ t.networkRead(p) };
+			{ t.networkWrite(p) };
+		};
+
 		enum class EndianType {
 			System, Big, Little
 		};
@@ -36,12 +43,17 @@ namespace mainframe {
 
 			template<class T>
 			void read(T& ret) {
-				if (pos + sizeof(T) > buffer.size()) {
-					throw std::runtime_error("reading past buffer");
-				}
+    			if constexpr (isNetworkable<T>) {
+					ret.networkRead(*this);
+				} else {
+					static_assert(std::is_trivially_copyable_v<T>, "Fallback option for not a (vector, map, string, and does not supply a networkRead) is 'just memcpy it lel', but that needs T to be trivially copyable, or we're potentially memcpying classes that have strings in them or somesuch.");
+					if (pos + sizeof(T) > buffer.size()) {
+						throw std::runtime_error("reading past buffer");
+					}
 
-				std::memcpy(&ret, &buffer.at(pos), sizeof(T));
-				pos += sizeof(const T);
+					std::memcpy(&ret, &buffer.at(pos), sizeof(T));
+					pos += sizeof(const T);
+				}
 			}
 
 			template<class T>
@@ -114,10 +126,15 @@ namespace mainframe {
 
 			template<class T>
 			void write(const T& obj) {
-				auto ptr = reinterpret_cast<const uint8_t*>(&obj);
+				if constexpr (isNetworkable<T>) {
+					obj.networkWrite(*this);
+				} else {
+					static_assert(std::is_trivially_copyable_v<T>, "Fallback option for not a (vector, map, string, and does not supply a networkWrite) is 'just reinterpret_cast it lel', but that needs T to be trivially copyable, or we're potentially reinterpreting classes that have strings in them or somesuch.");
+					auto ptr = reinterpret_cast<const uint8_t*>(&obj);
 
-				buffer.insert(buffer.begin() + pos, ptr, ptr + sizeof(const T));
-				pos += sizeof(const T);
+					buffer.insert(buffer.begin() + pos, ptr, ptr + sizeof(const T));
+					pos += sizeof(const T);
+				}
 			}
 
 			template<class T>
