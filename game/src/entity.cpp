@@ -5,9 +5,8 @@ using namespace mainframe::math;
 
 namespace mainframe {
 	namespace game {
-		Entity::Entity(World* world_) : world(world_) {
-
-		}
+		Entity::Entity() { }
+		Entity::Entity(World* world_) : world(world_) { }
 
 		void Entity::setWorld(World* world_) {
 			world = world_;
@@ -15,6 +14,7 @@ namespace mainframe {
 
 		std::vector<EntityIdType> Entity::getParentTreeList() const {
 			std::vector<EntityIdType> ret;
+			if (world == nullptr) return ret;
 
 			// if the `world` is convertable to an entity, it means that the world has a parent world.
 			// if you store a box inside a closet in a house, we have world->house->closet->box

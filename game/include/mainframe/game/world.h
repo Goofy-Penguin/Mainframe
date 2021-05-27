@@ -53,6 +53,7 @@ namespace mainframe {
 			T& createEntity(Args&&... args) {
 				auto ent = std::make_unique<T>(dynamic_cast<WType*>(this), std::forward<Args>(args)...);
 				ent->generateUniqueId();
+				ent->setWorld(this);
 
 				T& retEnt = *ent;
 				entities.push_back(std::move(ent));
@@ -76,7 +77,7 @@ namespace mainframe {
 				return false;
 			}
 
-			template<class T>
+			template<class T = Entity>
 			T& findEntity(size_t id) const {
 				for (auto& ent : entities) {
 					if (ent->getId() == id) {

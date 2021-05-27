@@ -112,6 +112,7 @@ namespace mainframe {
 			inline auto data() const { return buffer.data(); }
 			inline auto& getBuffer() { return buffer; }
 			inline auto& getBuffer() const { return buffer; }
+			inline void setBuffer(std::vector<uint8_t> b) { buffer = b; }
 
 			inline auto begin() noexcept { return buffer.begin(); }
 			inline auto end() noexcept { return buffer.end(); }
