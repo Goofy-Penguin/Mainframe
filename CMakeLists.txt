@@ -1,10 +1,11 @@
-﻿cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.8)
 
 include(FetchContent)
 
 set(MAINFRAME_VERSION_MAJOR 1 CACHE STRING "major version" FORCE)
 set(MAINFRAME_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACHE STRING "version" FORCE)
+set(MAINFRAME_FREETYPE_GL_VERSION "637599f58401be69bafc5332d7af6d272a5aed6e" CACHE STRING "the tag used for freetype-gl")
 
 include("cmake/HunterGate.cmake")
 HunterGate(
@@ -13,6 +14,8 @@ HunterGate(
 )
 
 project ("mainframe" VERSION ${MAINFRAME_VERSION})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
 
 hunter_add_package(glfw)
 hunter_add_package(glew)
@@ -45,7 +48,7 @@ set(freetype-gl_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
 
-FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/rougier/freetype-gl.git)
+FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/rougier/freetype-gl.git GIT_TAG ${MAINFRAME_FREETYPE_GL_VERSION})
 FetchContent_MakeAvailable(freetype-gl)
 
 if (WIN32)
