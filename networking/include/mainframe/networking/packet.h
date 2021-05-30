@@ -7,6 +7,7 @@
 #include <map>
 #include <algorithm>
 #include <stdexcept>
+#include <unordered_map>
 
 namespace mainframe {
 	namespace networking {
@@ -87,6 +88,15 @@ namespace mainframe {
 				}
 			}
 
+			template<class A, class B>
+			void read(std::unordered_map<A, B>& ret) {
+				size_t elms = readLength<size_t>();
+
+				while (elms-- > 0) {
+					ret.emplace(read<std::pair<A, B>>());
+				}
+			}
+
 			void read(std::string& ret) {
 				auto len = readLength<size_t>();
 				auto start = buffer.begin() + pos;
@@ -156,6 +166,11 @@ namespace mainframe {
 
 			template<class A, class B>
 			void write(const std::map<A, B>& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
+			}
+
+			template<class A, class B>
+			void write(const std::unordered_map<A, B>& obj, bool shouldWriteLength = true) {
 				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
