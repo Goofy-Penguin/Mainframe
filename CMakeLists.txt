@@ -7,27 +7,14 @@ set(MAINFRAME_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACHE STRING "version" FORCE)
 set(MAINFRAME_FREETYPE_GL_VERSION "637599f58401be69bafc5332d7af6d272a5aed6e" CACHE STRING "the tag used for freetype-gl")
 
-include("cmake/HunterGate.cmake")
-HunterGate(
-	URL "https://github.com/cpp-pm/hunter/archive/v0.23.254.tar.gz"
-	SHA1 "017e688b9848c1f695303e8cfe9f35d40e154112"
-)
-
 project ("mainframe" VERSION ${MAINFRAME_VERSION})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
 
-hunter_add_package(glfw)
-hunter_add_package(glew)
-hunter_add_package(fmt)
-hunter_add_package(freetype)
-hunter_add_package(PNG)
-hunter_add_package(ZLIB)
-hunter_add_package(BZip2)
-hunter_add_package(nlohmann_json)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 find_package(glfw3 REQUIRED)
-find_package(glew REQUIRED)
+find_package(GLEW REQUIRED)
 find_package(fmt REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(PNG REQUIRED)
