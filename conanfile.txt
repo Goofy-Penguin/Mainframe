@@ -1,9 +1,9 @@
 [requires]
 glfw/3.3.4
 fmt/7.1.3
-zlib/1.2.11
 glew/2.2.0
 nlohmann_json/3.9.1
+lodepng/cci.20200615
 
 [generators]
 cmake_find_package
