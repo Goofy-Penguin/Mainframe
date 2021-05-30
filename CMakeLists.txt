@@ -19,7 +19,6 @@ find_package(fmt REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(BZip2 REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 set (build_tests true CACHE BOOL "build tests")

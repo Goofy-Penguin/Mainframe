@@ -3,7 +3,6 @@ glfw/3.3.4
 fmt/7.1.3
 zlib/1.2.11
 glew/2.2.0
-bzip2/1.0.8
 nlohmann_json/3.9.1
 
 [generators]
