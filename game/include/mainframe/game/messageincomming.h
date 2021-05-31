@@ -40,6 +40,7 @@ namespace mainframe {
 
 			virtual bool read() = 0;
 			virtual void execute() = 0;
+			virtual ~MessageIncomming() = default;
 		};
 	}
 }

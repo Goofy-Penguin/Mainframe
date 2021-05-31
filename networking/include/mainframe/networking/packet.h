@@ -60,6 +60,7 @@ namespace mainframe {
 			template<class T>
 			void read(std::vector<T>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
 					ret.push_back(read<T>());
@@ -82,6 +83,7 @@ namespace mainframe {
 			template<class A, class B>
 			void read(std::map<A, B>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
 					ret.emplace(read<std::pair<A, B>>());
@@ -91,9 +93,10 @@ namespace mainframe {
 			template<class A, class B>
 			void read(std::unordered_map<A, B>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
-					ret.emplace(read<std::pair<A, B>>());
+					ret.insert(read<std::pair<A, B>>());
 				}
 			}
 

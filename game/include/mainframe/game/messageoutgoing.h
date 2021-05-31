@@ -11,6 +11,8 @@ namespace mainframe {
 		public:
 			bool isConstructed();
 			virtual void construct();
+
+			virtual ~MessageOutgoing() = default;
 		};
 	}
 }
