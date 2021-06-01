@@ -244,6 +244,8 @@ namespace mainframe {
 
 			template<class T>
 			inline operator T() { return this->read<T>(); }
+
+			~Packet() = default;
 		};
 	}
 }
