@@ -36,7 +36,7 @@ namespace mainframe {
 
 			// copy query in
 			uint32_t len = static_cast<uint32_t>(query.size()) + 1;
-			std::memcpy(buffer.data() + 5, query.data(), len  + 1);
+			std::memcpy(buffer.data() + 5, query.data(), len);
 			std::memcpy(buffer.data(), &len, sizeof(len));
 
 			// send it

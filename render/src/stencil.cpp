@@ -306,10 +306,10 @@ namespace mainframe {
 			auto vertC = to + mainframe::math::Vector2::cosSin(angle) * width;
 			auto vertD = to + mainframe::math::Vector2::cosSin(angle) * -width;
 
-			pushVertice(vertA, uvStart, col);
-			pushVertice(vertB, {uvEnd.x, uvStart.y}, col);
-			pushVertice(vertC, {uvStart.x, uvEnd.y}, col);
-			pushVertice(vertD, uvEnd, col);
+			pushVertice(vertA + offset, uvStart, col);
+			pushVertice(vertB + offset, {uvEnd.x, uvStart.y}, col);
+			pushVertice(vertC + offset, {uvStart.x, uvEnd.y}, col);
+			pushVertice(vertD + offset, uvEnd, col);
 
 			pushIndices(4, 3, 2);
 			pushIndices(3, 2, 1);
