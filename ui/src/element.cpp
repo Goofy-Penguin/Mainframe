@@ -1,4 +1,5 @@
 #include <mainframe/ui/element.h>
+#include <mainframe/utils/thread.h>
 
 namespace mainframe {
 	namespace ui {
@@ -19,6 +20,12 @@ namespace mainframe {
 		}
 
 		void Element::invoke(std::function<void()> func) {
+			// if we're on the same thread, dont queue it
+			if (getThreadId() == std::this_thread::get_id()) {
+				func();
+				return;
+			}
+
 			invokes.push(func);
 		}
 
