@@ -7,30 +7,59 @@ using namespace std::chrono;
 
 namespace mainframe {
 	namespace game {
-		void Engine::tick() {
-		}
-
-		void Engine::update() {
-		}
-
-		void Engine::draw() {
-		}
+		void Engine::update(float deltaTime) { }
+		void Engine::fixedUpdate(float deltaTime) { }
+		void Engine::draw() { }
 
 		void Engine::run() {
+			/*double t = 0.0f;
+    		const double dt = 0.01f;
+
+			auto lasttick = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - milliseconds(1000);
+			auto currentTime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    		double accumulator = 0.0f;
+
+			while (!shouldShutdown) {
+				auto msperfps = milliseconds(static_cast<time_t>(1000.0f / targetFPS));
+       			milliseconds curtime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+
+				double frameTime = static_cast<double>(curtime.count() - currentTime.count());
+				if ( frameTime > 0.25 ) frameTime = 0.25;
+
+				currentTime = curtime;
+       		 	accumulator += frameTime;
+
+				while ( accumulator >= dt ) {
+					fixedUpdate(dt);
+
+					t += dt;
+					accumulator -= dt;
+				}
+
+				if (curtime - lasttick < msperfps){
+					std::this_thread::sleep_for(milliseconds(1));
+					 continue;
+				}
+
+				lasttick += msperfps;
+				if (curtime - lasttick > milliseconds(1000)) lasttick = curtime;
+
+				update(0.f);
+				draw();
+			}*/
+
 			auto lasttick = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - milliseconds(1000);
 
 			while (!shouldShutdown) {
 				milliseconds curtime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 				auto msperfps = milliseconds(static_cast<time_t>(1000.0f / targetFPS));
 
-				tick();
+				update(0.f);
 				if (shouldShutdown) break;
 				if (curtime - lasttick < msperfps) {
 					std::this_thread::sleep_for(milliseconds(1));
 					continue;
 				}
-
-				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				auto framestarttime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 				lasttick += msperfps;
@@ -40,12 +69,10 @@ namespace mainframe {
 					lasttick = curtime;
 				}
 
-				update();
+				fixedUpdate(1.f / 60.f);
 				if (shouldShutdown) break;
 
 				draw();
-
-				auto deltatime = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - framestarttime;
 			}
 		}
 

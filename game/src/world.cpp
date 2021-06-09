@@ -19,12 +19,12 @@ namespace mainframe {
 			return std::move(removeEntity(ent->getId()));
 		}
 
-		void World::update() {
+		void World::fixedUpdate(float deltaTime) {
 			auto oldsize = entities.size();
 			for (size_t i = 0; i < oldsize; i++) {
 				auto& ent = entities[i];
 
-				ent->update();
+				ent->fixedUpdate(deltaTime);
 
 				if (entities.size() != oldsize) {
 					i--;
@@ -33,12 +33,12 @@ namespace mainframe {
 			}
 		}
 
-		void World::tick() {
+		void World::update(float deltaTime) {
 			auto oldsize = entities.size();
 			for (size_t i = 0; i < oldsize; i++) {
 				auto& ent = entities[i];
 
-				ent->tick();
+				ent->update(deltaTime);
 
 				if (entities.size() != oldsize) {
 					i--;

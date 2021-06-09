@@ -17,10 +17,10 @@ namespace mainframe {
 			virtual void quit();
 
 			// called as much as possible, free from FPS lock
-			virtual void tick();
+			virtual void update(float deltaTime);
 
 			// called acordingly with the FPS lock
-			virtual void update();
+			virtual void fixedUpdate(float deltaTime);
 
 			// called acordingly with the FPS lock
 			virtual void draw();

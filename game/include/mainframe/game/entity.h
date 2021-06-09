@@ -39,8 +39,8 @@ namespace mainframe::game {
 		virtual void setRotation(const math::Vector3& rot);
 
 		virtual void initialize();
-		virtual void update();
-		virtual void tick();
+		virtual void update(float deltaTime);
+		virtual void fixedUpdate(float deltaTime);
 
 		void generateUniqueId();
 
