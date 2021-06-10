@@ -12,42 +12,50 @@ namespace mainframe {
 		void Engine::draw() { }
 
 		void Engine::run() {
-			/*double t = 0.0f;
-    		const double dt = 0.01f;
+			float t = 0.0f;
+			const float physicsTicks = 20;
+			const float dt = 1000.0 / physicsTicks;
+			auto engineStart = system_clock::now().time_since_epoch();
 
-			auto lasttick = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - milliseconds(1000);
-			auto currentTime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-    		double accumulator = 0.0f;
+			auto currentTime = 0.0;
+			auto lastFrame = currentTime;
+			float accumulator = 0.0f;
 
 			while (!shouldShutdown) {
-				auto msperfps = milliseconds(static_cast<time_t>(1000.0f / targetFPS));
-       			milliseconds curtime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+				auto msperfps = 1000.0f / targetFPS;
 
-				double frameTime = static_cast<double>(curtime.count() - currentTime.count());
-				if ( frameTime > 0.25 ) frameTime = 0.25;
+       			auto newTime = static_cast<float>(duration_cast<milliseconds>(system_clock::now().time_since_epoch() - engineStart).count());
+				auto frameTime = newTime - currentTime;
+				if (frameTime > dt * 25) frameTime = dt * 25;
 
-				currentTime = curtime;
        		 	accumulator += frameTime;
-
-				while ( accumulator >= dt ) {
-					fixedUpdate(dt);
+				while (accumulator >= dt) {
+					fixedUpdate(1.0 / physicsTicks);
 
 					t += dt;
 					accumulator -= dt;
 				}
 
-				if (curtime - lasttick < msperfps){
+				if (currentTime - lastFrame < msperfps){
 					std::this_thread::sleep_for(milliseconds(1));
-					 continue;
+					currentTime = newTime;
+					continue;
 				}
 
-				lasttick += msperfps;
-				if (curtime - lasttick > milliseconds(1000)) lasttick = curtime;
-
-				update(0.f);
+				update((currentTime - lastFrame) / msperfps);
 				draw();
-			}*/
 
+				currentTime = newTime;
+				lastFrame += msperfps;
+
+				// skip to future incase we're getting behind too much
+				// TODO: bool to allow it or not, for games we'd not want this
+				//if (currentTime - lastFrame > 1000) {
+				//	lastFrame = currentTime;
+				//}
+			}
+
+			/*
 			auto lasttick = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - milliseconds(1000);
 
 			while (!shouldShutdown) {
@@ -73,7 +81,7 @@ namespace mainframe {
 				if (shouldShutdown) break;
 
 				draw();
-			}
+			}*/
 		}
 
 		void Engine::quit() {
