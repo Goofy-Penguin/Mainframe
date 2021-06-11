@@ -19,20 +19,6 @@ namespace mainframe {
 			return std::move(removeEntity(ent->getId()));
 		}
 
-		void World::fixedUpdate(float deltaTime) {
-			auto oldsize = entities.size();
-			for (size_t i = 0; i < oldsize; i++) {
-				auto& ent = entities[i];
-
-				ent->fixedUpdate(deltaTime);
-
-				if (entities.size() != oldsize) {
-					i--;
-					oldsize = entities.size();
-				}
-			}
-		}
-
 		void World::update(float deltaTime) {
 			auto oldsize = entities.size();
 			for (size_t i = 0; i < oldsize; i++) {

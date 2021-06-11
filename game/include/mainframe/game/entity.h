@@ -40,7 +40,6 @@ namespace mainframe::game {
 
 		virtual void initialize();
 		virtual void update(float deltaTime);
-		virtual void fixedUpdate(float deltaTime);
 
 		void generateUniqueId();
 

@@ -8,19 +8,12 @@ namespace mainframe {
 		private:
 			bool shouldShutdown = false;
 
-			int currentFPS = 0;
-			float currentFPSTime = 0;
-			float targetFPS = 60;
-
 		public:
 			virtual void init();
 			virtual void quit();
 
-			// called as much as possible, free from FPS lock
+			// called on a fixed timestep
 			virtual void update(float deltaTime);
-
-			// called acordingly with the FPS lock
-			virtual void fixedUpdate(float deltaTime);
 
 			// called acordingly with the FPS lock
 			virtual void draw();
@@ -30,8 +23,6 @@ namespace mainframe {
 
 			// returns true after quit() is called
 			bool isQuitting();
-
-			void setFPS(float count);
 		};
 	}
 }
