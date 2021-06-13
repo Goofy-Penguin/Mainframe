@@ -7,6 +7,7 @@ namespace mainframe {
 		class Engine {
 		private:
 			bool shouldShutdown = false;
+			float timeStep = 0.25f;
 
 		public:
 			virtual void init();
@@ -20,6 +21,9 @@ namespace mainframe {
 
 			// starts the game loop and blocks until quit is called and is handled
 			virtual void run();
+
+			// sets the game tickrate
+			virtual void setTimestep(float timeStep);
 
 			// returns true after quit() is called
 			bool isQuitting();
