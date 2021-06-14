@@ -1,5 +1,5 @@
 #include <mainframe/render/texture.h>
-#include <mainframe/libs/lodepng.h>
+#include <lodepng.h>
 
 #include <stdexcept>
 #include <GL/glew.h>
