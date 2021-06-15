@@ -7,40 +7,38 @@ using namespace std::chrono;
 
 namespace mainframe {
 	namespace game {
+		void Engine::init() { }
 		void Engine::update(float deltaTime) { }
 		void Engine::draw() { }
 
 		void Engine::run() {
-			auto currentTime = high_resolution_clock::now().time_since_epoch();
+			auto prevTime = high_resolution_clock::now().time_since_epoch();
 
-			float t = 0.f;
-			const float dt = 0.01f;
-			float accumulator = 0.f;
+			float timeSinceLastRender = 0;
+			float timeStep = 1.f / static_cast<float>(tick);
 
 			while (!shouldShutdown) {
-				auto newTime = high_resolution_clock::now().time_since_epoch();
-       			auto frameTime = static_cast<float>(duration_cast<milliseconds>(newTime - currentTime).count());
-				if ( frameTime > timeStep ) frameTime = timeStep;
 
-    			currentTime = newTime;
-    			accumulator += frameTime;
+				auto currTime = high_resolution_clock::now().time_since_epoch();
+        		float durationOfLastFrame = static_cast<float>(duration_cast<milliseconds>(currTime - prevTime).count()) / 1000.f;
+				prevTime = currTime;
 
-				while ( accumulator >= dt ) {
-       				update(dt);
+				timeSinceLastRender += durationOfLastFrame;
 
-					t += dt;
-					accumulator -= dt;
+				while (timeSinceLastRender >= timeStep) {
+           			update(timeStep);
+					timeSinceLastRender -= timeStep;
 				}
 
 				if (shouldShutdown) break;
 				draw();
 
-				std::this_thread::sleep_for(milliseconds(1));
+				std::this_thread::sleep_for(milliseconds(1000 / tick));
 			}
 		}
 
-		void Engine::setTimestep(float time){
-			timeStep = time;
+		void Engine::setTick(unsigned int t){
+			tick = t;
 		}
 
 		void Engine::quit() {
@@ -49,10 +47,6 @@ namespace mainframe {
 
 		bool Engine::isQuitting() {
 			return shouldShutdown;
-		}
-
-		void Engine::init() {
-
 		}
 	}
 }
