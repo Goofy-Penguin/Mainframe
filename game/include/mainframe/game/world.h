@@ -32,7 +32,7 @@ namespace mainframe {
 			}
 
 			template<class T = Entity>
-			const std::vector<T*> getEntitiesInRange(const mainframe::math::Vector3& pos, float maxdistance, float mindistance = 0) {
+			const std::vector<T*> getEntitiesInRange(const mainframe::math::Vector3& pos, float maxdistance, float mindistance = -1) {
 				std::vector<T*> ret;
 
 				for (auto& ent : entities) {
