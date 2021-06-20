@@ -365,7 +365,7 @@ namespace mainframe {
 				if (glyph == nullptr) continue;
 
 				if (prevGlyph != nullptr) {
-					curpos.x += font.getKerning(glyph, prevGlyph);
+					curpos.x += font.getKerning(prevGlyph, text.c_str() + i);
 				}
 
 				drawTexture(

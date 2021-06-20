@@ -40,7 +40,7 @@ namespace mainframe {
 			bool loadFile(const std::string& file, float size, bool loadDefaulChars = true);
 
 			const ftgl::texture_glyph_t* getGlyph(uint32_t character) const;
-			float getKerning(const ftgl::texture_glyph_t* glyph, const ftgl::texture_glyph_t* prevGlyph) const;
+			float getKerning(const ftgl::texture_glyph_t* glyph, const std::string& utf8Char) const;
 			float getLineHeight() const;
 			float getLineGap() const;
 

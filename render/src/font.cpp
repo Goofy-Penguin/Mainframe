@@ -61,30 +61,11 @@ namespace mainframe {
 		}
 
 		const ftgl::texture_glyph_t* Font::getGlyph(uint32_t character) const {
-			auto& handleG = handle->glHandle->glyphs;
-			auto glyphs = reinterpret_cast<ftgl::texture_glyph_t**>(handleG->items);
-
-			for (size_t i = 0; i < handleG->size; i++) {
-				auto& curglyph = *glyphs[i];
-
-				if (curglyph.codepoint == character) {
-					return &curglyph;
-				}
-			}
-
-			return nullptr;
+			return ftgl::texture_font_find_glyph_gi(handle->glHandle, character);
 		}
 
-		float Font::getKerning(const ftgl::texture_glyph_t* glyph, const ftgl::texture_glyph_t* prevGlyph) const {
-			for (size_t i = 0; i < glyph->kerning->size; ++i) {
-				auto& kerning = *reinterpret_cast<ftgl::kerning_t**>(glyph->kerning->items)[i];
-
-				if (kerning.codepoint == prevGlyph->codepoint) {
-					return kerning.kerning;
-				}
-			}
-
-			return 0.0f;
+		float Font::getKerning(const ftgl::texture_glyph_t* glyph, const std::string& utf8Char) const {
+			return ftgl::texture_glyph_get_kerning(glyph, utf8Char.data());
 		}
 
 		void Font::setSharedHandle(std::shared_ptr<FontHandle>& handle_) {
@@ -124,7 +105,7 @@ namespace mainframe {
 				auto glyph = getGlyph(l);
 				if (glyph == nullptr) continue;
 
-				if (prevGlyph != nullptr) pos.x += getKerning(glyph, prevGlyph);
+				if (prevGlyph != nullptr) pos.x += getKerning(prevGlyph, text.c_str() + i);
 				pos.x += glyph->advance_x;
 
 				if (pos.x > total.x) total.x = pos.x;
@@ -142,8 +123,6 @@ namespace mainframe {
 			size_t oldcount = handle->glHandle->glyphs->size;
 			texture_font_load_glyphs(handle->glHandle, chars.c_str());
 
-			// dont reupload if it's unchanged
-			if (oldcount == handle->glHandle->glyphs->size) return;
 			upload();
 		}
 
