@@ -1,36 +1,35 @@
 #include <mainframe/game/world.h>
 
-namespace mainframe {
-	namespace game {
-		std::unique_ptr<Entity> World::removeEntity(size_t id) {
-			for (size_t i = 0; i < entities.size(); i++) {
-				if (entities[i]->getId() != id) continue;
+namespace mainframe::game {
+	std::unique_ptr<Entity> World::removeEntity(size_t id) {
+		for (size_t i = 0; i < entities.size(); i++) {
+			if (entities[i]->getId() != id) continue;
 
-				auto ent = std::move(entities[i]);
-				entities.erase(entities.begin() + i);
+			auto ent = std::move(entities[i]);
+			entities.erase(entities.begin() + i);
 
-				return ent;
-			}
-
-			return nullptr;
+			return ent;
 		}
 
-		std::unique_ptr<Entity> World::removeEntity(Entity* ent) {
-			return std::move(removeEntity(ent->getId()));
-		}
+		return nullptr;
+	}
 
-		void World::update(float deltaTime) {
-			auto oldsize = entities.size();
-			for (size_t i = 0; i < oldsize; i++) {
-				auto& ent = entities[i];
+	std::unique_ptr<Entity> World::removeEntity(Entity* ent) {
+		return std::move(removeEntity(ent->getId()));
+	}
 
-				ent->update(deltaTime);
+	void World::update(float deltaTime) {
+		auto oldsize = entities.size();
+		for (size_t i = 0; i < oldsize; i++) {
+			auto& ent = entities[i];
 
-				if (entities.size() != oldsize) {
-					i--;
-					oldsize = entities.size();
-				}
+			ent->update(deltaTime);
+
+			if (entities.size() != oldsize) {
+				i--;
+				oldsize = entities.size();
 			}
 		}
 	}
 }
+
