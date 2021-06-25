@@ -5,6 +5,7 @@ include(FetchContent)
 set(MAINFRAME_VERSION_MAJOR 1 CACHE STRING "major version" FORCE)
 set(MAINFRAME_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACHE STRING "version" FORCE)
+set(MAINFRAME_FREETYPE_GL_VERSION "637599f58401be69bafc5332d7af6d272a5aed6e" CACHE STRING "the tag used for freetype-gl")
 
 include("cmake/HunterGate.cmake")
 HunterGate(
@@ -49,10 +50,7 @@ set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
 
 FetchContent_GetProperties(freetype-gl)
 if(NOT freetype-gl_POPULATED)
-	FetchContent_Declare(freetype-gl
-		GIT_REPOSITORY https://github.com/Bromvlieg/freetype-gl.git
-	)
-
+	FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/Bromvlieg/freetype-gl.git)
 	FetchContent_MakeAvailable(freetype-gl)
 endif()
 
