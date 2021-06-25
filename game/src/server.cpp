@@ -32,8 +32,8 @@ namespace mainframe {
 			playerLock.unlock();
 		}
 
-		void Server::tick() {
-			Engine::tick();
+		void Server::update(float deltaTime) {
+			Engine::update(deltaTime);
 
 			playerLock.lock();
 			auto playersCopy = players;

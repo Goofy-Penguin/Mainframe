@@ -83,7 +83,7 @@ namespace mainframe {
 			static Texture& getPixelTexture();
 
 			int currentShaderHandle = -1;
-			unsigned int currentTextureHandle = -1;
+			unsigned int currentTextureHandle = 0xFFFFFFFF;
 
 			std::vector<VerticeData> vertices;
 			std::vector<unsigned int> indices;

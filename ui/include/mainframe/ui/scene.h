@@ -45,7 +45,7 @@ namespace mainframe {
 			void invoke(std::function<void()> func);
 
 			void draw(render::Stencil& stencil);
-			void update();
+			void update(float deltaTime);
 
 			void setWindow(game::Window& window);
 

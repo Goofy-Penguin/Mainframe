@@ -98,7 +98,7 @@ namespace mainframe {
 			stencil.draw();
 		}
 
-		void Scene::update() {
+		void Scene::update(float deltaTime) {
 			auto& invoker = getInvoker();
 			while (invoker.available()) {
 				invoker.pop()();

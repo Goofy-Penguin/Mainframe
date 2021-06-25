@@ -19,7 +19,7 @@ namespace mainframe {
 			std::mutex playerLock;
 
 		public:
-			virtual void tick() override;
+			virtual void update(float deltaTime) override;
 			virtual void init() override;
 			virtual void run() override;
 			virtual void quit() override;

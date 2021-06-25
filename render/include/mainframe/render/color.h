@@ -212,14 +212,18 @@ namespace mainframe {
 
 		public:
 			inline const static ColorType Black = ColorType(0, 0, 0);
-			inline const static ColorType Gray = ColorType(0.3f, 0.3f, 0.3f);
-			inline const static ColorType DarkGray = ColorType(0.1f, 0.1f, 0.1f);
 			inline const static ColorType White = ColorType(1, 1, 1);
-			inline const static ColorType Red = ColorType(1, 0, 0);
-			inline const static ColorType Green = ColorType(0, 1, 0);
-			inline const static ColorType Blue = ColorType(0, 0, 1);
-			inline const static ColorType Orange = ColorType(1, 0.6f, 0);
-			inline const static ColorType Yellow = ColorType(1, 1, 0);
+
+			inline const static ColorType Gray = ColorType(0.81f, 0.8f, 0.75f);
+			inline const static ColorType DarkGray = ColorType(0.51f, 0.50f, 0.47f);
+
+			inline const static ColorType Red = ColorType(1, 0.32f, 0.32f);
+			inline const static ColorType Green = ColorType(0.14f, 0.87f, 0.50f);
+			inline const static ColorType Blue = ColorType(0.2f, 0.67f, 0.87f);
+			inline const static ColorType Orange = ColorType(1, 0.47f, 0.24f);
+			inline const static ColorType Yellow = ColorType(1, 0.69f, 0.25f);
+			inline const static ColorType Purple = ColorType(0.43f, 0.43f, 0.82f);
+
 			inline const static ColorType Transparent = ColorType(0, 0, 0, 0);
 		};
 

@@ -7,6 +7,7 @@
 #include <map>
 #include <algorithm>
 #include <stdexcept>
+#include <unordered_map>
 
 namespace mainframe {
 	namespace networking {
@@ -59,6 +60,7 @@ namespace mainframe {
 			template<class T>
 			void read(std::vector<T>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
 					ret.push_back(read<T>());
@@ -81,9 +83,20 @@ namespace mainframe {
 			template<class A, class B>
 			void read(std::map<A, B>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
 					ret.emplace(read<std::pair<A, B>>());
+				}
+			}
+
+			template<class A, class B>
+			void read(std::unordered_map<A, B>& ret) {
+				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
+
+				while (elms-- > 0) {
+					ret.insert(read<std::pair<A, B>>());
 				}
 			}
 
@@ -112,6 +125,7 @@ namespace mainframe {
 			inline auto data() const { return buffer.data(); }
 			inline auto& getBuffer() { return buffer; }
 			inline auto& getBuffer() const { return buffer; }
+			inline void setBuffer(std::vector<uint8_t> b) { buffer = b; }
 
 			inline auto begin() noexcept { return buffer.begin(); }
 			inline auto end() noexcept { return buffer.end(); }
@@ -119,7 +133,6 @@ namespace mainframe {
 			inline auto cend() const noexcept { return buffer.cend(); }
 
 			inline void resize(size_t size) { buffer.resize(size); }
-
 			inline bool empty() const { return buffer.empty(); }
 			inline const std::vector<uint8_t>& readAll() const { return buffer; }
 			void clear();
@@ -155,6 +168,11 @@ namespace mainframe {
 
 			template<class A, class B>
 			void write(const std::map<A, B>& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
+			}
+
+			template<class A, class B>
+			void write(const std::unordered_map<A, B>& obj, bool shouldWriteLength = true) {
 				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
@@ -225,6 +243,8 @@ namespace mainframe {
 
 			template<class T>
 			inline operator T() { return this->read<T>(); }
+
+			~Packet() = default;
 		};
 	}
 }
