@@ -54,6 +54,8 @@ namespace mainframe {
 			std::rotate(pivot, pivot + 1, children.end());
 		}
 
+		bool Element::requiresFocus() { return false; }
+
 		void Element::drawBefore(render::Stencil& stencil) {}
 		void Element::draw(render::Stencil& stencil) {}
 		void Element::drawAfter(render::Stencil& stencil) {}
