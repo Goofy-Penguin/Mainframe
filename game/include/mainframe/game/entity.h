@@ -20,7 +20,7 @@ namespace mainframe::game {
 		Entity(World* world_);
 		virtual ~Entity();
 
-		virtual void remove();
+		virtual void remove(bool isParentRemove = false);
 
 		void setId(EntityIdType id_);
 		EntityIdType getId() const;

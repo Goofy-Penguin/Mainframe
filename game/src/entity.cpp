@@ -37,7 +37,7 @@ namespace mainframe {
 
 		}
 
-		void Entity::remove() {
+		void Entity::remove(bool isParentRemove) {
 			if (world == nullptr) return;
 
 			world->removeEntity(this);
