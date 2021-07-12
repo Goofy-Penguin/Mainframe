@@ -17,27 +17,27 @@ namespace mainframe {
 			Type type = Type::None;
 
 		public:
-			operator char() const { return raw[0]; }
-			operator unsigned char() const { return static_cast<unsigned char>(raw[0]); }
+			operator char() const { return isNull() ? 0 : raw[0]; }
+			operator unsigned char() const { return isNull() ? 0 : static_cast<unsigned char>(raw[0]); }
 
-			operator short() const { return static_cast<short>(std::stoi(raw)); }
-			operator unsigned short() const { return static_cast<unsigned short>(std::stoul(raw)); }
+			operator short() const { return isNull() ? 0 : static_cast<short>(std::stoi(raw)); }
+			operator unsigned short() const { return isNull() ? 0 : static_cast<unsigned short>(std::stoul(raw)); }
 
-			operator int() const { return std::stoi(raw); }
-			operator unsigned int() const { return static_cast<unsigned int>(std::stoul(raw)); }
+			operator int() const { return isNull() ? 0 : std::stoi(raw); }
+			operator unsigned int() const { return isNull() ? 0 : static_cast<unsigned int>(std::stoul(raw)); }
 
-			operator long() const { return std::stol(raw); }
-			operator unsigned long() const { return static_cast<unsigned int>(std::stoul(raw)); }
+			operator long() const { return isNull() ? 0 : std::stol(raw); }
+			operator unsigned long() const { return isNull() ? 0 : static_cast<unsigned int>(std::stoul(raw)); }
 
-			operator long long() const { return std::stoll(raw); }
-			operator unsigned long long() const { return std::stoull(raw); }
+			operator long long() const { return isNull() ? 0 : std::stoll(raw); }
+			operator unsigned long long() const { return isNull() ? 0 : std::stoull(raw); }
 
-			operator float() const { return std::stof(raw); }
-			operator double() const { return std::stod(raw); }
-			operator long double() const { return std::stold(raw); }
+			operator float() const { return isNull() ? 0 : std::stof(raw); }
+			operator double() const { return isNull() ? 0 : std::stod(raw); }
+			operator long double() const { return isNull() ? 0 : std::stold(raw); }
 
 			operator std::string() const { return raw; }
-			operator bool() const { return std::stoll(raw) > 0; }
+			operator bool() const { return isNull() ? false : std::stoll(raw) > 0; }
 
 			template<class T>
 			T get() const {
@@ -51,6 +51,7 @@ namespace mainframe {
 			Value(const Value& value);
 
 			Type getType() const;
+			bool isNull() const;
 		};
 	}
 }
