@@ -126,7 +126,7 @@ namespace mainframe::game {
 		return sp;
 	}
 
-	glm::mat4 createDerpyGLMView(glm::vec3 const& eye, glm::vec3 const& center, glm::vec3 const& up) {
+	glm::mat4 createModifiedGLMView(glm::vec3 const& eye, glm::vec3 const& center, glm::vec3 const& up) {
 		glm::vec3 const f(glm::normalize(center - eye));
 		glm::vec3 const s(1, 0, 0); // s(glm::normalize(glm::cross(f, up)));
 		glm::vec3 const u(glm::cross(s, f));
@@ -160,7 +160,7 @@ namespace mainframe::game {
 
 		// create glm view and perspective like we have on our end, but with z flipped with y, and some logic derp that
 		// requires us to use glm in the first place. which.... might not be a bad idea?
-		glm::mat4 view = createDerpyGLMView(glm::vec3(campos.x, campos.z, campos.y), glm::vec3(camera_lookat.x, camera_lookat.z, camera_lookat.y), glm::vec3(0, 1, 0));
+		glm::mat4 view = createModifiedGLMView(glm::vec3(campos.x, campos.z, campos.y), glm::vec3(camera_lookat.x, camera_lookat.z, camera_lookat.y), glm::vec3(0, 1, 0));
 		glm::mat4 proj = glm::perspective(numbers::pi<float> / 4.0f, windowSizeFloat.x / windowSizeFloat.y, 0.1f, 10000.0f);
 
 		// <insert zooperdiebap math animation>
