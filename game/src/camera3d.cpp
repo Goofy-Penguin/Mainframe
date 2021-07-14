@@ -1,6 +1,12 @@
 #include <mainframe/game/camera3d.h>
 #include <mainframe/numbers/pi.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/matrix.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+
 namespace mainframe::game {
 	void Camera3D::updateLookat() {
 		lookPos = {
@@ -120,17 +126,74 @@ namespace mainframe::game {
 		return sp;
 	}
 
+	glm::mat4 createDerpyGLMView(glm::vec3 const& eye, glm::vec3 const& center, glm::vec3 const& up) {
+		glm::vec3 const f(glm::normalize(center - eye));
+		glm::vec3 const s(1, 0, 0); // s(glm::normalize(glm::cross(f, up)));
+		glm::vec3 const u(glm::cross(s, f));
+
+		glm::mat4 Result(1);
+		Result[0][0] = s.x;
+		Result[1][0] = s.y;
+		Result[2][0] = s.z;
+		Result[0][1] = u.x;
+		Result[1][1] = u.y;
+		Result[2][1] = u.z;
+		Result[0][2] = -f.x;
+		Result[1][2] = -f.y;
+		Result[2][2] = -f.z;
+		Result[3][0] = -glm::dot(s, eye);
+		Result[3][1] = -glm::dot(u, eye);
+		Result[3][2] = glm::dot(f, eye);
+		return Result;
+	}
+
 	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos) const {
-		math::Matrix viewproj_inv = (projmat * mat).inverted();
+		// change these values to
+		math::Vector3 plane_origin {0, 0, 0};
+		math::Vector3 plane_normal {0, 0, 1};
+		auto windowSizeFloat = windowSize.cast<float>();
+		auto screenPosFloat = screen_pos.cast<float>();
 
-		float screenx_clip = 2 * (static_cast<float>(screen_pos.x) / static_cast<float>(windowSize.x)) - 1;
-		float screeny_clip = -(1 - 2 * static_cast<float>(screen_pos.y) / static_cast<float>(windowSize.y));
+		// get our pos and force aim downwards, the getForward() seems to behave odd when aiming full down
+		auto campos = getLocation();
+		math::Vector3 camera_lookat = campos + math::Vector3(0, 0, -1);
 
-		math::Vector4 screen_clip = {screenx_clip, screeny_clip, -1, 1};
-		math::Vector4 world_pos = viewproj_inv.translate(screen_clip);
+		// create glm view and perspective like we have on our end, but with z flipped with y, and some logic derp that
+		// requires us to use glm in the first place. which.... might not be a bad idea?
+		glm::mat4 view = createDerpyGLMView(glm::vec3(campos.x, campos.z, campos.y), glm::vec3(camera_lookat.x, camera_lookat.z, camera_lookat.y), glm::vec3(0, 1, 0));
+		glm::mat4 proj = glm::perspective(numbers::pi<float> / 4.0f, windowSizeFloat.x / windowSizeFloat.y, 0.1f, 10000.0f);
 
+		// <insert zooperdiebap math animation>
+		glm::mat4x4 viewproj_inv = glm::inverse(proj * view);
+
+		float screenx_clip = 2 * (screenPosFloat.x / windowSizeFloat.x) - 1;
+		float screeny_clip = 1 - 2 * (screenPosFloat.y) / windowSizeFloat.y;
+
+		glm::vec4 screen_clip = {screenx_clip, screeny_clip, -1, 1};
+		glm::vec4 world_pos = viewproj_inv * screen_clip;
+
+		// divide by the weigth of the universe to resolve black mater offsets
 		world_pos /= world_pos.w;
 
-		return {world_pos.x, world_pos.y, world_pos.z};
+		// convert the object back to the real universe
+		math::Vector3 mouse_point_world = {world_pos.x, world_pos.z, world_pos.y};
+		math::Vector3 camera_forward_world = mouse_point_world - campos;
+
+		float numerator = (plane_origin - campos).dot(plane_normal);
+		float denumerator = camera_forward_world.dot(plane_normal);
+
+		float delta = numerator / denumerator;
+		math::Vector3 aimPos = camera_forward_world * delta + campos;
+
+		// TODO: we can do some more plane scanning logic here, but for our current purposes we do not need additional collision logic
+		if (denumerator == 0.0f) {
+			if (numerator == 0.0f) {
+				// line is inside plane
+			} else {
+				// line is parallel to plane
+			}
+		}
+
+		return aimPos;
 	}
 }
