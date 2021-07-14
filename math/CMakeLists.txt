@@ -9,6 +9,7 @@
 set(output_target mainframe.math)
 add_library(${output_target} ${source_files})
 target_include_directories(${output_target} PUBLIC "include")
+target_link_libraries(${output_target} PUBLIC glm)
 target_compile_features(${output_target} PRIVATE cxx_std_20)
 
 if (build_tests)
