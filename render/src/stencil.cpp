@@ -497,6 +497,8 @@ namespace mainframe {
 		std::shared_ptr<Stencil::Recording> Stencil::recordStop() {
 			if (recordings.empty()) throw std::runtime_error("no recordings active");
 
+			draw();
+
 			auto ret = recordings.back();
 			recordings.pop_back();
 
@@ -597,7 +599,7 @@ namespace mainframe {
 				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
 
 				for (size_t i = indiceOffset, j = indices.size(); i < j; i++) {
-					indices[i] += static_cast<unsigned int>(verticeOffset);;
+					indices[i] += static_cast<unsigned int>(verticeOffset);
 				}
 			}
 		}
@@ -605,28 +607,31 @@ namespace mainframe {
 		void Stencil::draw() {
 			if (vertices.empty()) return;
 
-			if (getDisableDept()) glDisable(GL_DEPTH_TEST);
-
 			bool suppressed = false;
 			for (auto& recording : recordings) {
 				if (recording->supressDraw) suppressed = true;
 
-				recording->chunks.push_back({
+				recording->chunks.emplace_back(
 					currentShaderHandle,
 					currentTextureHandle,
 					vertices,
 					indices
-				});
+				);
 			}
 
-			if (suppressed) return;
+			if (suppressed) {
+				vertices.clear();
+				indices.clear();
+				return;
+			}
+
+			if (getDisableDept()) glDisable(GL_DEPTH_TEST);
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, currentTextureHandle);
 
 #ifndef MAINFRAME_EGL
 			glUseProgram(currentShaderHandle);
-
 
 			glBindVertexArray(buffer.getVao());
 
@@ -682,6 +687,7 @@ namespace mainframe {
 
 			glDisable(GL_TEXTURE_2D);
 			glDisable(GL_COLOR_MATERIAL);
+
 #endif
 
 			if (getDisableDept()) glEnable(GL_DEPTH_TEST);
