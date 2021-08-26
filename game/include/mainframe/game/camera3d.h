@@ -41,7 +41,7 @@ namespace mainframe::game {
 		void setWindowSize(const math::Vector2i& winsize);
 		const math::Vector2i& getWindowSize();
 
-		math::Vector3 worldToScreen(const math::Vector3& pos) const;
+		math::Vector2 worldToScreen(const math::Vector3& pos) const;
 		math::Vector3 screenToWorld(const math::Vector2i& screen_pos) const;
 
 		void insertViewMatrix(int location) const;
