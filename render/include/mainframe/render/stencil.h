@@ -110,7 +110,7 @@ namespace mainframe {
 			void drawPolygon(const Polygon& poly);
 			void drawCircle(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, Color col, float angleStart = 0, float maxAngle = numbers::pi<float> * 2);
 			void drawCircleOutline(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, size_t roundness, float borderSize, Color col, float angleStart = 0, float maxAngle = numbers::pi<float> * 2);
-			void drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col);
+			void drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col, float rotation = 0, const mainframe::math::Vector2& rotationOrigin = {});
 			void drawLine(const mainframe::math::Vector2& from, const mainframe::math::Vector2& to, float width, const Color& col, const mainframe::math::Vector2 uvStart = {0, 0}, const mainframe::math::Vector2 uvEnd = {1, 1});
 			void drawBox(const mainframe::math::Vector2& pos, const mainframe::math::Vector2& size, Color col);
 			void drawText(const Font& font, const std::string& text, const mainframe::math::Vector2& pos, Color col, TextAlignment alignx = TextAlignment::Left, TextAlignment aligny = TextAlignment::Left, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")});

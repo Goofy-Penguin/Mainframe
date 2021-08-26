@@ -174,7 +174,8 @@ namespace mainframe {
 			}
 		}
 
-		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col) {
+// auto rotated = newpos.rotateAroundOrigin(rotation, orginPos);
+		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col, float rotation, const mainframe::math::Vector2& rotationOrigin) {
 			if (col.a == 0) return;
 
 			pos += offset;
@@ -183,16 +184,35 @@ namespace mainframe {
 			setShader(shader2D);
 
 			// top 4
-			pushVertice(pos, {0, 0}, col);
-			pushVertice(pos + math::Vector2(size.x, 0), {0, 0}, col);
-			pushVertice(pos + borderSize, {0, 0}, col);
-			pushVertice(pos + math::Vector2(size.x - borderSize.x, borderSize.y), {0, 0}, col);
+			math::Vector2 A = pos;
+			math::Vector2 B = A + math::Vector2(size.x, 0);
+			math::Vector2 C = A + borderSize;
+			math::Vector2 D = A + math::Vector2(size.x - borderSize.x, borderSize.y);
 
 			// bottom 4
-			pushVertice(pos + math::Vector2(borderSize.x, size.y - borderSize.y), {0, 0}, col);
-			pushVertice(pos + math::Vector2(0, size.y), {0, 0}, col);
-			pushVertice(pos + size - borderSize, {0, 0}, col);
-			pushVertice(pos + size, {0, 0}, col);
+			math::Vector2 E = A + math::Vector2(borderSize.x, size.y - borderSize.y);
+			math::Vector2 F = A + math::Vector2(0, size.y);
+			math::Vector2 G = A + size - borderSize;
+			math::Vector2 H = A + size;
+
+			// apply rotation if needed
+			if (rotation != 0) {
+				math::Vector2* points[] = {&A, &B, &C, &D, &E, &F, &G, &H};
+				for (size_t i = 0; i < 8; i++){
+					*points[i] = points[i]->rotateAroundOrigin(rotation, rotationOrigin);
+				}
+			}
+
+			// push top and bottom vertices
+			pushVertice(A, {0, 0}, col);
+			pushVertice(B, {0, 0}, col);
+			pushVertice(C, {0, 0}, col);
+			pushVertice(D, {0, 0}, col);
+
+			pushVertice(E, {0, 0}, col);
+			pushVertice(F, {0, 0}, col);
+			pushVertice(G, {0, 0}, col);
+			pushVertice(H, {0, 0}, col);
 
 			// top
 			pushIndices(8, 7, 6);
