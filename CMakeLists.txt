@@ -9,10 +9,9 @@ set(MAINFRAME_FREETYPE_GL_VERSION "637599f58401be69bafc5332d7af6d272a5aed6e" CAC
 
 include("cmake/HunterGate.cmake")
 HunterGate(
-	URL "https://github.com/cpp-pm/hunter/archive/v0.23.254.tar.gz"
-	SHA1 "017e688b9848c1f695303e8cfe9f35d40e154112"
+	URL "https://github.com/cpp-pm/hunter/archive/v0.23.314.tar.gz"
+	SHA1 "95c47c92f68edb091b5d6d18924baabe02a6962a"
 )
-
 project ("mainframe" VERSION ${MAINFRAME_VERSION})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
