@@ -117,13 +117,13 @@ namespace mainframe::game {
 		return windowSize;
 	}
 
-	math::Vector2 Camera3D::worldToScreen(const math::Vector3& pos) const {
+	math::Vector3 Camera3D::worldToScreen(const math::Vector3& pos) const {
 		int viewport[] = {0, 0, (int)windowSize.x, (int)windowSize.y};
 
 		math::Vector3 sp;
 		glhProjectf(pos.x, pos.z, pos.y, mat.getValues(), projmat.getValues(), viewport, (float*)&sp);
 
-		return sp.xy();
+		return sp;
 	}
 
 	glm::mat4 createModifiedGLMView(glm::vec3 const& eye, glm::vec3 const& center, glm::vec3 const& up) {
