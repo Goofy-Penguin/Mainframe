@@ -47,6 +47,7 @@ set(freetype-gl_BUILD_APIDOC OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
+set(freetype-gl_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
 
 FetchContent_GetProperties(freetype-gl)
