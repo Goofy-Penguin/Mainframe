@@ -7,54 +7,18 @@ set(MAINFRAME_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACHE STRING "version" FORCE)
 set(MAINFRAME_FREETYPE_GL_VERSION "637599f58401be69bafc5332d7af6d272a5aed6e" CACHE STRING "the tag used for freetype-gl")
 
-include("cmake/HunterGate.cmake")
-HunterGate(
-	URL "https://github.com/cpp-pm/hunter/archive/v0.23.314.tar.gz"
-	SHA1 "95c47c92f68edb091b5d6d18924baabe02a6962a"
-)
-project ("mainframe" VERSION ${MAINFRAME_VERSION})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
-
-hunter_add_package(glfw)
-hunter_add_package(GLEW)
-hunter_add_package(fmt)
-hunter_add_package(freetype)
-hunter_add_package(PNG)
-hunter_add_package(ZLIB)
-hunter_add_package(BZip2)
-hunter_add_package(nlohmann_json)
-hunter_add_package(glm)
-
-find_package(glfw3 REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(fmt REQUIRED)
-find_package(Freetype REQUIRED)
-find_package(PNG REQUIRED)
-find_package(ZLIB REQUIRED)
-find_package(BZip2 REQUIRED)
-find_package(nlohmann_json REQUIRED)
-find_package(glm REQUIRED)
-
-set (build_tests true CACHE BOOL "build tests")
-set (build_samples true CACHE BOOL "build samples")
+set(build_tests true CACHE BOOL "build tests")
+set(build_samples true CACHE BOOL "build samples")
 
 # libraries 3th party
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_APIDOC OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_MAKEFONT OFF CACHE BOOL "" FORCE)
 set(freetype-gl_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(freetype-gl_USE_VAO ON CACHE BOOL "" FORCE)
-
-FetchContent_GetProperties(freetype-gl)
-if(NOT freetype-gl_POPULATED)
-	FetchContent_Declare(freetype-gl GIT_REPOSITORY https://github.com/Bromvlieg/freetype-gl.git)
-	FetchContent_MakeAvailable(freetype-gl)
-endif()
 
 if (WIN32)
 	set(mf_winlibs opengl32)
@@ -70,6 +34,58 @@ endfunction()
 function(MFAddExecutable projname)
 	message("detected exe:" ${CMAKE_BINARY_DIR}/bin/${output_target})
 endfunction()
+
+project ("mainframe" VERSION ${MAINFRAME_VERSION})
+include("cmake/CPM.cmake")
+
+CPMAddPackage(
+        NAME GLFW
+        GITHUB_REPOSITORY glfw/glfw
+        GIT_TAG 3.3.4
+        OPTIONS
+          "GLFW_BUILD_TESTS OFF"
+          "GLFW_BUILD_EXAMPLES OFF"
+          "GLFW_BULID_DOCS OFF"
+)
+
+CPMAddPackage("gh:nigels-com/glew#glew-2.2.0")
+CPMAddPackage(
+  NAME fmt
+  GIT_TAG 6.1.2
+  GITHUB_REPOSITORY fmtlib/fmt
+)
+
+CPMAddPackage("gh:opencor/bzip2#87855c58afc9e8e7d579c97dd867ec20709b3eb0")
+CPMAddPackage("gh:madler/zlib@1.2.11")
+CPMAddPackage("gh:glennrp/libpng@1.6.36")
+
+CPMAddPackage(
+  NAME nlohmann_json
+  VERSION 3.7.3
+  # the git repo is incredibly large, so we download the archived include directory
+  URL https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip
+  URL_HASH SHA256=87b5884741427220d3a33df1363ae0e8b898099fbc59f1c451113f6732891014
+)
+
+if (nlohmann_json_ADDED)
+  add_library(nlohmann_json INTERFACE IMPORTED)
+  target_include_directories(nlohmann_json INTERFACE ${nlohmann_json_SOURCE_DIR}/include)
+endif()
+
+CPMAddPackage("gh:g-truc/glm#0.9.9.8")
+
+CPMAddPackage(
+  NAME freetype
+  GIT_REPOSITORY https://github.com/freetype/freetype.git
+  GIT_TAG VER-2-10-0
+  VERSION 2.10.0
+)
+
+if (freetype_ADDED)
+  add_library(Freetype::Freetype ALIAS freetype)
+endif()
+
+CPMAddPackage("gh:Bromvlieg/freetype-gl#master")
 
 # our libs
 add_subdirectory ("utils")
