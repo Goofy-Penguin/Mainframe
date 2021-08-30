@@ -2,6 +2,7 @@
 #include <mainframe/game/window.h>
 #include <mainframe/render/stencil.h>
 #include <mainframe/render/font.h>
+#include <mainframe/render/textengine.h>
 #include <mainframe/math/vector2.h>
 #include <fmt/printf.h>
 
@@ -12,7 +13,8 @@ using namespace mainframe::math;
 class GameTest : public Engine {
 	Window& window;
 	Stencil stencil;
-	Font font = Font("fonts/stencil/VeraMono.ttf", 15.0f);
+	TextEngine textEngine;
+	Font& font = textEngine.loadFont("fonts/stencil/VeraMono.ttf", 15);
 	Texture tex = Texture("textures/stencil/test.png");
 	float rot = 0;
 

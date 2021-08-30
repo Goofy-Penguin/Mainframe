@@ -1,6 +1,7 @@
 #include <mainframe/game/engine.h>
 #include <mainframe/game/window.h>
 #include <mainframe/render/stencil.h>
+#include <mainframe/render/textengine.h>
 #include <mainframe/ui/scene.h>
 #include <mainframe/ui/elms/panel.h>
 #include <mainframe/ui/elms/label.h>
@@ -8,6 +9,8 @@
 #include <mainframe/ui/elms/button.h>
 #include <mainframe/ui/elms/image.h>
 #include <fmt/printf.h>
+#include <stdexcept>
+#include <iostream>
 
 using namespace mainframe::game;
 using namespace mainframe::render;
@@ -18,8 +21,9 @@ class GameTest : public Engine {
 	Window& window;
 	Stencil stencil;
 	std::shared_ptr<Scene> scene = Scene::create();
-	std::shared_ptr<Font> font = std::make_shared<Font>("fonts/simplemenu/VeraMono.ttf", 15.0f);
-	std::shared_ptr<Font> fontSmall = std::make_shared<Font>("fonts/simplemenu/VeraMono.ttf", 13.0f);
+	TextEngine textEngine;
+	Font& font = textEngine.loadFont("fonts/simplemenu/VeraMono.ttf", 15);
+	Font& fontSmall = textEngine.loadFont("fonts/simplemenu/VeraMono.ttf", 13);
 	Texture tex = Texture("textures/simplemenu/test.png");
 
 public:
@@ -29,19 +33,19 @@ public:
 		auto frame = scene->createChild<Frame>();
 		frame->setSize(window.getSize() /  2);
 		frame->setPos(window.getSize() / 2 - frame->getSize() / 2);
-		frame->setFont(fontSmall);
+		frame->setFont(&fontSmall);
 		frame->setText("Test frame");
 		frame->resizeToContents();
 
 		auto lbl = frame->createChild<Label>();
 		lbl->setPos({20, 20});
-		lbl->setFont(font);
+		lbl->setFont(&font);
 		lbl->setText("Some basic menu elements");
 		lbl->resizeToContents();
 
 		auto btn = frame->createChild<Button>();
 		btn->setPos(lbl->getPos() + Vector2i(0, lbl->getSize().y + 5));
-		btn->setFont(font);
+		btn->setFont(&font);
 		btn->setText("Press me!");
 		btn->resizeToContents();
 		btn->setSize(btn->getSize() * 2);
@@ -105,11 +109,15 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	GameTest e(w);
-	e.setFPS(75);
+	try {
+		GameTest e(w);
+		e.setFPS(75);
 
-	e.init();
-	e.run();
+		e.init();
+		e.run();
+	} catch (std::runtime_error& err) {
+		std::cerr << err.what();
+	}
 
 	return 0;
 }

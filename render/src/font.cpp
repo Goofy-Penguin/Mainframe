@@ -1,191 +1,136 @@
 #include <mainframe/render/font.h>
 
-#include <freetype-gl.h>
-#include <utf8-utils.h>
-#include <stdexcept>
+#include <fmt/format.h>
+#include <utf8.h>
+#include <iostream>
 
 namespace mainframe {
 	namespace render {
-		ftgl::texture_atlas_t*& Font::getAtlas() {
-			thread_local ftgl::texture_atlas_t* atlas = nullptr;
-			return atlas;
-		}
-
-		Font::Font(const std::string& file, float size, bool loadDefaulChars) {
-			if (!loadFile(file, size, loadDefaulChars)) {
-				throw std::runtime_error("error loading font");
-			}
-		}
-
-		bool Font::loadFile(const std::string& file, float size, bool loadDefaulChars) {
-			auto& atlas = getAtlas();
-
-			if (atlas == nullptr) {
-				atlas = texture_atlas_new(1024, 1024, 1);
+		Font::Font(FT_Library& ft, std::string _filename, unsigned int size) : filename(_filename) {
+			if (FT_New_Face(ft, _filename.c_str(), 0, &face) != 0) {
+				throw std::runtime_error(fmt::format("Error: failed to load font: {}", _filename));
 			}
 
-			handle->glHandle = texture_font_new_from_file(atlas, size, file.c_str());
-			if (handle->glHandle == nullptr) return false;
+			FT_Set_Pixel_Sizes(face, 0, size);
 
-			if (loadDefaulChars) {
-				addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n");
-			}
-
-			return true;
+			addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n");
 		}
 
-		void FontHandle::reset() {
-			if (glHandle == nullptr) return;
-
-			texture_font_delete(glHandle);
-			glHandle = nullptr;
-		}
-
-		FontHandle::~FontHandle() {
-			reset();
-		}
-
-		void Font::upload() {
-			auto& atlas = handle->glHandle->atlas;
-			unsigned char* data = (unsigned char*)atlas->data;
-			tex.resize({static_cast<int>(atlas->width), static_cast<int>(atlas->height)});
-			tex.clear(Colors::White);
-
-			auto& pixels = tex.data();
-			for (size_t i = 0; i < atlas->width * atlas->height; i++) {
-				pixels[i].a = static_cast<float>(data[i]) / 255;
-			}
-
-			tex.upload();
-			tex.unloadPixels();
-		}
-
-		const ftgl::texture_glyph_t* Font::getGlyph(uint32_t character) const {
-			auto& handleG = handle->glHandle->glyphs;
-			auto glyphs = reinterpret_cast<ftgl::texture_glyph_t**>(handleG->items);
-
-			for (size_t i = 0; i < handleG->size; i++) {
-				auto& curglyph = *glyphs[i];
-
-				if (curglyph.codepoint == character) {
-					return &curglyph;
+		void Font::Release() {
+			if(!undead) {
+				if (FT_Done_Face(face) != 0) {
+					fmt::print(stderr, "Error: failed to clean up font\n");
 				}
 			}
-
-			return nullptr;
 		}
 
-		float Font::getKerning(const ftgl::texture_glyph_t* glyph, const ftgl::texture_glyph_t* prevGlyph) const {
-			for (size_t i = 0; i < glyph->kerning->size; ++i) {
-				auto& kerning = *reinterpret_cast<ftgl::kerning_t**>(glyph->kerning->items)[i];
-
-				if (kerning.codepoint == prevGlyph->codepoint) {
-					return kerning.kerning;
-				}
-			}
-
-			return 0.0f;
-		}
-
-		void Font::setSharedHandle(std::shared_ptr<FontHandle>& handle_) {
-			handle = handle_;
-		}
-
-		std::shared_ptr<FontHandle>& Font::getSharedHandle() {
-			return handle;
+		Font::~Font() {
+			Release();
 		}
 
 		float Font::getLineHeight() const {
-			return handle->glHandle->height;
+			return face->size->metrics.height / 64.f;
 		}
 
-		float Font::getLineGap() const {
-			return handle->glHandle->linegap;
+		float Font::textHeight() const {
+			auto& metrics = face->size->metrics;
+			return (metrics.ascender + metrics.descender) / 64.f;
+		}
+
+		float Font::getKerning(const Glyph& left, const Glyph& right) const {
+			FT_Vector kerning;
+
+			FT_Get_Kerning(face, left.glyphIndex, right.glyphIndex, FT_KERNING_DEFAULT, &kerning);
+			return kerning.x / 64.f;
+		}
+
+		
+		void Font::addChars(std::string chars) {
+			auto charsIter = chars.begin();
+			while(charsIter < chars.end()) {
+				auto chr = utf8::next(charsIter, chars.end());
+				loadGlyph(chr);
+			}
+		}
+
+		Glyph Font::loadGlyph(FT_ULong character) {
+			// if (!FT_Get_Char_Index(face, character)) {
+			// 	throw std::runtime_error(fmt::format("face {} does not have character {}", filename, character));
+			// }
+			if (!FT_Load_Char(face, character, FT_LOAD_RENDER)) {
+				//ssssssssshhhh
+				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
+			}
+
+			auto& atlasNode = atlas.addSprite(face->glyph->bitmap.width, face->glyph->bitmap.rows);
+
+			glTextureSubImage2D(
+				atlas.glTexture,
+				0,
+				atlasNode.x,
+				atlasNode.y,
+				atlasNode.width,
+				atlasNode.height,
+				GL_RED,
+				GL_UNSIGNED_BYTE,
+				face->glyph->bitmap.buffer
+			);
+
+			Glyph glyph {
+				character,
+				face->glyph->glyph_index,
+				{ face->glyph->metrics.horiBearingX / 64.0f, face->glyph->metrics.horiBearingY / 64.0f },
+				{ face->glyph->advance.x / 64.0f, face->glyph->advance.y / 64.0f },
+				{ atlasNode.x, atlasNode.y },
+				{ atlasNode.x + atlasNode.width, atlasNode.y + atlasNode.height },
+				{ face->glyph->metrics.width / 64.0f, face->glyph->metrics.height / 64.0f },
+			};
+
+			glyphs.push_back(glyph);
+
+			return glyph;
+		}
+
+		const Glyph& Font::getGlyph(uint32_t codepoint) const { 
+			return *std::find_if(glyphs.begin(), glyphs.end(), [codepoint](auto glyph) { return glyph.codepoint == codepoint; });
 		}
 
 		math::Vector2 Font::getStringSize(const std::string& text) const {
 			math::Vector2 total;
 			math::Vector2 pos;
 
-			size_t len = text.size();
-			float lineheight = getLineHeight();
+			const float lineheight = textHeight();
 
-			const ftgl::texture_glyph_t* prevGlyph = nullptr;
+			const Glyph* prevGlyph = nullptr;
 
-			for (size_t i = 0; i < text.size(); i += ftgl::utf8_surrogate_len(text.c_str() + i)) {
-				uint32_t l = ftgl::utf8_to_utf32(text.c_str() + i);
-				if (l == '\n') {
+			auto textIter = text.begin();
+			auto point = utf8::next(textIter, text.end());
+			for (; textIter < text.end(); point = utf8::next(textIter, text.end())) {
+				if (point == '\n') {
 					pos.y += lineheight;
 					pos.x = 0;
 					prevGlyph = nullptr;
 					continue;
 				}
 
-				auto glyph = getGlyph(l);
-				if (glyph == nullptr) continue;
+				const auto& glyph = getGlyph(point);
 
-				if (prevGlyph != nullptr) pos.x += getKerning(glyph, prevGlyph);
-				pos.x += glyph->advance_x;
+				if (prevGlyph != nullptr) pos.x += getKerning(glyph, *prevGlyph);
+				pos.x += glyph.advance.x;
 
 				if (pos.x > total.x) total.x = pos.x;
 				if (pos.y + lineheight > total.y) total.y = pos.y + lineheight;
 
-				prevGlyph = glyph;
+				prevGlyph = &glyph;
 			}
 
 			return total;
 		}
 
-		void Font::addChars(const std::string& chars) {
-			if (chars.empty()) return;
-
-			size_t oldcount = handle->glHandle->glyphs->size;
-			texture_font_load_glyphs(handle->glHandle, chars.c_str());
-
-			// dont reupload if it's unchanged
-			if (oldcount == handle->glHandle->glyphs->size) return;
-			upload();
-		}
-
 		std::string Font::toUTF8(const std::wstring text) {
-			const wchar_t* in = text.c_str();
-
-			std::string out;
-			unsigned int codepoint = 0;
-			for (in; *in != 0; ++in) {
-				if (*in >= 0xd800 && *in <= 0xdbff)
-					codepoint = ((*in - 0xd800) << 10) + 0x10000;
-				else {
-					if (*in >= 0xdc00 && *in <= 0xdfff)
-						codepoint |= *in - 0xdc00;
-					else
-						codepoint = *in;
-
-					if (codepoint <= 0x7f)
-						out.append(1, static_cast<char>(codepoint));
-					else if (codepoint <= 0x7ff) {
-						out.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
-						out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
-					} else if (codepoint <= 0xffff) {
-						out.append(1, static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
-						out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
-						out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
-					} else {
-						out.append(1, static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
-						out.append(1, static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
-						out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
-						out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
-					}
-
-					codepoint = 0;
-				}
-			}
-
-			return out;
-		}
-
-		void Font::addChars(const std::wstring& chars) {
-			addChars(toUTF8(chars.c_str()));
+			std::string result;
+			utf8::utf16to8(text.begin(), text.end(), std::back_inserter(result));
+			return result;
 		}
 	}
 }

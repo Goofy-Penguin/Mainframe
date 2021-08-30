@@ -1,7 +1,7 @@
 #include <mainframe/ui/elms/textbox.h>
 
 #include <GLFW/glfw3.h>
-#include <utf8-utils.h>
+#include <utf8.h>
 
 #ifdef _MSC_VER
 #include <Windows.h>
@@ -74,7 +74,7 @@ namespace mainframe {
 
 			auto size = getSize();
 			auto start = size / 2;
-			auto& font = getFont();
+			auto font = getFont();
 			auto& text = getText();
 
 			auto offset = start - font->getStringSize(text) / 2;
@@ -86,7 +86,8 @@ namespace mainframe {
 			}
 
 			std::string masked;
-			for (size_t i = 0; i < text.size(); i += ftgl::utf8_surrogate_len(text.c_str() + i)) {
+			
+			for (int i = 0; i < utf8::distance(text.begin(), text.end()); i++) {
 				masked += maskCharacter;
 			}
 
@@ -138,7 +139,7 @@ namespace mainframe {
 
 			size_t i = 0;
 			while (true) {
-				auto next = i + ftgl::utf8_surrogate_len(text.c_str() + i);
+				auto next = i + utf8::internal::sequence_length(text.c_str() + i);
 
 				if (text.begin() + next != text.end()) {
 					i = next;
