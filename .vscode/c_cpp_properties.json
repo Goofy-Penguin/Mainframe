@@ -1,9 +1,12 @@
 {
+	"env": {
+		"ias_includePaths": ["${workspaceFolder}/**"]
+	},
     "configurations": [
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${ias_includePaths}"
             ],
             "defines": [
                 "_DEBUG",

@@ -8,6 +8,10 @@
 #include <glm/vec4.hpp>
 
 namespace mainframe::game {
+	Camera3D::Camera3D() : location(0, 4, 0), angle(numbers::pi<float> / 2, numbers::pi<float> / 2) {
+		updateLookat();
+	}
+
 	void Camera3D::updateLookat() {
 		lookPos = {
 			location.x + std::sin(angle.y) * std::cos(angle.x),
@@ -18,8 +22,13 @@ namespace mainframe::game {
 		this->mat = math::Matrix::createLookAt(location, lookPos, {0.0, 1.0, 0.0});
 	}
 
-	Camera3D::Camera3D() : location(0, 4, 0), angle(numbers::pi<float> / 2, numbers::pi<float> / 2) {
+	void Camera3D::setYaw(float yaw) {
+		angle.y = yaw;
 		updateLookat();
+	}
+
+	float Camera3D::getYaw() {
+		return angle.y;
 	}
 
 	math::Vector3 Camera3D::getForward() const {
