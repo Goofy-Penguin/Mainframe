@@ -57,6 +57,14 @@ namespace mainframe {
 				}
 			}
 
+			void networkRead(mainframe::networking::Packet& packet) {
+				packet.read(buffer);
+			}
+
+			void networkWrite(mainframe::networking::Packet& packet) const {
+				packet.write(buffer);
+			}
+
 			template<class T>
 			void read(std::vector<T>& ret) {
 				size_t elms = readLength<size_t>();
