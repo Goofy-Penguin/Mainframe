@@ -58,10 +58,6 @@ namespace mainframe {
 			id = ++_id;
 		}
 
-		void Entity::initialize() {
-
-		}
-
 		void Entity::update(float deltaTime) { }
 
 		Matrix& Entity::getMatrix() {
