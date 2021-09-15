@@ -38,7 +38,6 @@ namespace mainframe::game {
 		virtual void setScale(const math::Vector3& scale);
 		virtual void setRotation(const math::Vector3& rot);
 
-		virtual void initialize();
 		virtual void update(float deltaTime);
 
 		void generateUniqueId();
