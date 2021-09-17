@@ -91,7 +91,10 @@ namespace mainframe {
 			mainframe::math::Vector2i windowSize;
 
 			bool deptDisabled = false;
+
 			mainframe::math::Vector2 offset;
+			mainframe::math::Vector2 oldOffset;
+
 			std::vector<mainframe::math::Vector2> offsets;
 			std::vector<mainframe::math::AABB> clippingRects;
 
@@ -119,6 +122,9 @@ namespace mainframe {
 			void drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col = Colors::White, mainframe::math::Vector2 uvStart = {0, 0}, mainframe::math::Vector2 uvEnd = {1, 1}, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")});
 
 			void draw();
+
+			void pushLocalOffset();
+			void popLocalOffset();
 
 			void pushOffset(const mainframe::math::Vector2& offset);
 			void popOffset();
