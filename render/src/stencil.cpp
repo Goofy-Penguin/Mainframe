@@ -31,9 +31,7 @@ namespace mainframe {
 			return pixel;
 		}
 
-		Stencil::VerticeData::VerticeData(float _x, float _y, float _z, float _u, float _v, float _r, float _g, float _b, float _a) : x(_x), y(_y), z(_z), u(_u), v(_v), r(_r), g(_g), b(_b), a(_a) {
-
-		}
+		Stencil::VerticeData::VerticeData(float _x, float _y, float _z, float _u, float _v, float _r, float _g, float _b, float _a) : x(_x), y(_y), z(_z), u(_u), v(_v), r(_r), g(_g), b(_b), a(_a) {}
 
 		void Stencil::setShader(int shader) {
 			if (currentShaderHandle != shader) draw();
@@ -78,6 +76,16 @@ namespace mainframe {
 				col.b,
 				col.a
 			);
+		}
+
+
+		void Stencil::pushLocalOffset() {
+			oldOffset = offset;
+			offset = {};
+		}
+
+		void Stencil::popLocalOffset() {
+			offset = oldOffset;
 		}
 
 		void Stencil::pushIndices(unsigned int a, unsigned int b, unsigned int c) {
