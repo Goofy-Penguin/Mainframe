@@ -249,8 +249,9 @@ namespace mainframe {
 				return lengthFormat == LengthType::None ? lengthFormatGlobal : lengthFormat;
 			}
 
-			template<class T>
-			inline operator T() { return this->read<T>(); }
+			// TODO: this will have side effects
+			//template<class T>
+			//inline operator T() { return this->read<T>(); }
 
 			~Packet() = default;
 		};
