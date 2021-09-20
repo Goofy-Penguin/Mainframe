@@ -16,6 +16,11 @@ project ("mainframe" VERSION ${MAINFRAME_VERSION})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
 
+if (WIN32)
+	hunter_add_package(glfw)
+	hunter_add_package(glew)
+endif()
+
 hunter_add_package(fmt)
 hunter_add_package(freetype)
 hunter_add_package(PNG)
@@ -24,8 +29,13 @@ hunter_add_package(BZip2)
 hunter_add_package(nlohmann_json)
 hunter_add_package(glm)
 
+if (WIN32)
+	find_package(glew REQUIRED)
+else()
+	find_package(GLEW REQUIRED)
+endif()
+
 find_package(glfw3 REQUIRED)
-find_package(GLEW REQUIRED)
 find_package(fmt REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(PNG REQUIRED)
