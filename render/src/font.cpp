@@ -44,7 +44,7 @@ namespace mainframe {
 			return kerning.x / 64.f;
 		}
 
-		
+
 		void Font::addChars(std::string chars) {
 			auto charsIter = chars.begin();
 			while(charsIter < chars.end()) {
@@ -57,7 +57,7 @@ namespace mainframe {
 			// if (!FT_Get_Char_Index(face, character)) {
 			// 	throw std::runtime_error(fmt::format("face {} does not have character {}", filename, character));
 			// }
-			if (!FT_Load_Char(face, character, FT_LOAD_RENDER)) {
+			if (!FT_Load_Char(face, character, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT)) {
 				//ssssssssshhhh
 				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
 			}
@@ -81,8 +81,8 @@ namespace mainframe {
 				face->glyph->glyph_index,
 				{ face->glyph->metrics.horiBearingX / 64.0f, face->glyph->metrics.horiBearingY / 64.0f },
 				{ face->glyph->advance.x / 64.0f, face->glyph->advance.y / 64.0f },
-				{ atlasNode.x, atlasNode.y },
-				{ atlasNode.x + atlasNode.width, atlasNode.y + atlasNode.height },
+				{ atlasNode.x / static_cast<float>(atlas.size), atlasNode.y / static_cast<float>(atlas.size) },
+				{ (atlasNode.x + atlasNode.width) / static_cast<float>(atlas.size), (atlasNode.y + atlasNode.height) / static_cast<float>(atlas.size) },
 				{ face->glyph->metrics.width / 64.0f, face->glyph->metrics.height / 64.0f },
 			};
 
@@ -91,7 +91,7 @@ namespace mainframe {
 			return glyph;
 		}
 
-		const Glyph& Font::getGlyph(uint32_t codepoint) const { 
+		const Glyph& Font::getGlyph(uint32_t codepoint) const {
 			return *std::find_if(glyphs.begin(), glyphs.end(), [codepoint](auto glyph) { return glyph.codepoint == codepoint; });
 		}
 

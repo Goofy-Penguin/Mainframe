@@ -9,7 +9,7 @@ namespace mainframe {
 		Atlas::Atlas() {
 			glGenTextures(1, &glTexture);
 			glBindTexture(GL_TEXTURE_2D, glTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 2048, 2048, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, size, size, 0, GL_RED, GL_FLOAT, nullptr);
 		}
 
 		Atlas::~Atlas() {
@@ -27,7 +27,7 @@ namespace mainframe {
 
 		Atlas& Atlas::operator=(Atlas&& other) {
 			if (this == &other) return *this;
-			
+
 			Release();
 			std::swap(glTexture, other.glTexture);
 			return *this;
@@ -64,7 +64,7 @@ namespace mainframe {
 				// to be insterted node is too big, can't fit here
 				return std::nullopt;
 			}
-			
+
 			if (width == insertedWidth && height == insertedHeight) {
 				// fits perfectly
 				empty = false;

@@ -5,7 +5,7 @@
 #include <memory>
 #include <optional>
 #include <functional>
-		
+
 namespace mainframe {
 	namespace render {
 		struct Sprite {
@@ -31,9 +31,10 @@ namespace mainframe {
 		// TODO: move code around so glTexture doesn't ahve to be public anymore,
 		// probably by moving the texture to textface
 		public:
+			int size = 256;
 			GLuint glTexture;
-			AtlasNode rootNode{0, 0, 2048, 2048, true, nullptr, nullptr};
-			
+			AtlasNode rootNode{0, 0, size, size, true, nullptr, nullptr};
+
 			void Release();
 
 		public:

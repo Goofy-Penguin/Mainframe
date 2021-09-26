@@ -12,8 +12,8 @@ namespace mainframe {
 			FT_ULong glyphIndex;
 			mainframe::math::Vector2 bearing;
 			mainframe::math::Vector2 advance;
-			mainframe::math::Vector2i textureTopLeft;
-			mainframe::math::Vector2i textureBottomRight;
+			mainframe::math::Vector2 textureTopLeft;
+			mainframe::math::Vector2 textureBottomRight;
 			mainframe::math::Vector2i size;
 		};
 	}

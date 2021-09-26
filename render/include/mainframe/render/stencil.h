@@ -116,7 +116,7 @@ namespace mainframe {
 			void drawText(const Font& font, const std::string& text, const mainframe::math::Vector2& pos, Color col, TextAlignment alignx = TextAlignment::Left, TextAlignment aligny = TextAlignment::Left, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")});
 			void drawTriangle(const mainframe::math::Vector2& a, const mainframe::math::Vector2& aUV, const Color& colA, const mainframe::math::Vector2& b, const mainframe::math::Vector2& bUV, const Color& colB, const mainframe::math::Vector2& c, const mainframe::math::Vector2& cUV, const Color& colC);
 			void drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, const Texture& tex, Color col = Colors::White, mainframe::math::Vector2 uvStart = {0, 0}, mainframe::math::Vector2 uvEnd = {1, 1}, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")});
-			void drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col = Colors::White, mainframe::math::Vector2 uvStart = {0, 0}, mainframe::math::Vector2 uvEnd = {1, 1}, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")});
+			void drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col = Colors::White, mainframe::math::Vector2 uvStart = {0, 0}, mainframe::math::Vector2 uvEnd = {1, 1}, float rotation = 0, const mainframe::math::Vector2& origin = {std::nanf(""), std::nanf("")}, bool overrideShader = true);
 
 			void draw();
 

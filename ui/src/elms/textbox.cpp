@@ -86,7 +86,7 @@ namespace mainframe {
 			}
 
 			std::string masked;
-			
+
 			for (int i = 0; i < utf8::distance(text.begin(), text.end()); i++) {
 				masked += maskCharacter;
 			}
