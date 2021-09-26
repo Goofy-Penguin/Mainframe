@@ -27,6 +27,7 @@ class GameTest : public Engine {
 	Texture tex = Texture("textures/simplemenu/test.png");
 
 public:
+	Texture tmp;
 	virtual void init() override {
 		scene->setWindow(window);
 
@@ -58,6 +59,16 @@ public:
 		img->setPos(btn->getPos() + Vector2i(0, btn->getSize().y + 5));
 		img->setSize(tex.getSize());
 		img->setImage(tex);
+
+		std::vector<float> data(font.atlas.size * font.atlas.size);
+		glGetTextureImage(font.atlas.glTexture, 0, GL_RED, GL_FLOAT, data.size() * sizeof(float), data.data());
+		tmp = {Vector2i(font.atlas.size, font.atlas.size)};
+		for (int x = 0; x < font.atlas.size; x++) {
+			for (int y = 0; y < font.atlas.size; y++) {
+				tmp.setPixel({x, y}, data[y * font.atlas.size + x]);
+			}
+		}
+		tmp.upload();
 	}
 
 	virtual void draw() override {
@@ -77,6 +88,21 @@ public:
 		});
 
 		scene->draw(stencil);
+
+
+		/// //////////////////
+		stencil.drawBox(10, {600, 30}, Colors::Gray);
+
+		std::string text = " ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n";
+		int x = 20;
+		for (auto letter : text) {
+			auto glyph = font.getGlyph(letter);
+			stencil.drawTexture({x, 20}, glyph.size, tmp, Colors::White, glyph.textureTopLeft, glyph.textureBottomRight);
+
+			x += glyph.advance.x;
+		}
+
+		stencil.draw();
 		window.swapBuffer();
 	}
 
