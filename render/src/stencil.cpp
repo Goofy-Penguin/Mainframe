@@ -326,7 +326,6 @@ namespace mainframe {
 			//setShader(shader2DText);
 
 			math::Vector2 startpos = pos;
-			math::Vector2 curpos = startpos;
 
 			math::Vector2 tsize = font.getStringSize(text);
 			if (alignx != TextAlignment::Left || aligny != TextAlignment::Left) {
@@ -344,7 +343,8 @@ namespace mainframe {
 			}
 
 			float lineheight = font.getLineHeight();
-			startpos.y -= lineheight / 4;
+			startpos.y += lineheight;
+			math::Vector2 curpos = startpos;
 
 			auto rotOrigin = origin.isNaN() ? pos + tsize / 2 + offset : origin;
 
@@ -368,7 +368,7 @@ namespace mainframe {
 				}
 
 				drawTexture(
-					{curpos.x + glyph.bearing.x, curpos.y + lineheight - glyph.bearing.y},
+					{curpos.x + glyph.bearing.x, curpos.y - glyph.bearing.y},
 					{static_cast<float>(glyph.size.x), static_cast<float>(glyph.size.y)},
 					5, // TODO FIX ME
 					col,

@@ -97,18 +97,26 @@ public:
 
 
 		/// //////////////////
-		stencil.drawBox(10, {600, 30}, Colors::Gray);
+		stencil.drawBox(10, {600, 20}, Colors::Gray);
 
-		std::string text = " ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n";
-		int x = 20;
+		std::string text = "~!@#$ %^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n";
+		mainframe::math::Vector2 curpos = {20, 20};
+		float lineheight = font.getLineHeight();
 		for (auto letter : text) {
 			auto glyph = font.getGlyph(letter);
-			stencil.drawTexture({x, 20}, glyph.size, tmp, Colors::White, glyph.textureTopLeft, glyph.textureBottomRight);
 
-			x += glyph.advance.x;
+			stencil.drawTexture(
+				{curpos.x + glyph.bearing.x, curpos.y + lineheight / 4 - glyph.bearing.y},
+				glyph.size,
+				tmp,
+				Colors::White,
+				glyph.textureTopLeft,
+				glyph.textureBottomRight);
+
+			curpos.x += glyph.advance.x;
 		}
 
-		stencil.drawText(font, "AFWWAFAWFWAFWAFAWFWAFAWFAWFAW", {10, 40}, Colors::White);
+		stencil.drawText(font, "AFWWAFAWFWAFWAFA\nWFWAFAWFAWFAW", {10, 40}, Colors::White);
 		stencil.draw();
 		window.swapBuffer();
 	}
