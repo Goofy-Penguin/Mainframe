@@ -1,4 +1,5 @@
 #include <mainframe/render/font.h>
+#include <mainframe/render/color.h>
 
 #include <fmt/format.h>
 #include <utf8.h>
@@ -64,6 +65,14 @@ namespace mainframe {
 
 			auto& atlasNode = atlas.addSprite(face->glyph->bitmap.width, face->glyph->bitmap.rows);
 
+			// convert glyph pixels to color
+			std::vector<mainframe::render::Color> pixels(atlasNode.width * atlasNode.height);
+			for (size_t i = 0; i < pixels.size(); i++) {
+				auto byteval = face->glyph->bitmap.buffer[i];
+				pixels[i] = {1, 1, 1, static_cast<float>(byteval) / 255.0f};
+			}
+
+			// upload glpyh into atlas
 			glTextureSubImage2D(
 				atlas.glTexture,
 				0,
@@ -71,9 +80,9 @@ namespace mainframe {
 				atlasNode.y,
 				atlasNode.width,
 				atlasNode.height,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
+				GL_RGBA,
+				GL_FLOAT,
+				pixels.data()
 			);
 
 			Glyph glyph {

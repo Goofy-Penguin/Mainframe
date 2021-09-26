@@ -322,10 +322,11 @@ namespace mainframe {
 		void Stencil::drawText(const Font& font, const std::string& text, const math::Vector2& pos, Color col, TextAlignment alignx, TextAlignment aligny, float rotation, const mainframe::math::Vector2& origin) {
 			if (col.a == 0 || text.empty()) return;
 
-			setTexture(font.atlas.glTexture);
-			setShader(shader2DText);
+			//setTexture(font.atlas.glTexture);
+			//setShader(shader2DText);
 
 			math::Vector2 startpos = pos;
+			math::Vector2 curpos = startpos;
 
 			math::Vector2 tsize = font.getStringSize(text);
 			if (alignx != TextAlignment::Left || aligny != TextAlignment::Left) {
@@ -345,8 +346,6 @@ namespace mainframe {
 			float lineheight = font.getLineHeight();
 			startpos.y -= lineheight / 4;
 
-			math::Vector2 curpos = startpos;
-
 			auto rotOrigin = origin.isNaN() ? pos + tsize / 2 + offset : origin;
 
 			const Glyph* prevGlyph = nullptr;
@@ -362,7 +361,7 @@ namespace mainframe {
 					continue;
 				}
 
-				auto glyph = font.getGlyph(point);
+				auto& glyph = font.getGlyph(point);
 
 				if (prevGlyph != nullptr) {
 					curpos.x += font.getKerning(glyph, *prevGlyph);
@@ -371,13 +370,13 @@ namespace mainframe {
 				drawTexture(
 					{curpos.x + glyph.bearing.x, curpos.y + lineheight - glyph.bearing.y},
 					{static_cast<float>(glyph.size.x), static_cast<float>(glyph.size.y)},
-					font.atlas.glTexture,
+					5, // TODO FIX ME
 					col,
 					glyph.textureTopLeft,
 					glyph.textureBottomRight,
 					rotation,
 					origin,
-					false
+					true
 				);
 
 				curpos.x += glyph.advance.x;
@@ -435,7 +434,7 @@ namespace mainframe {
 			in vec2 output_texpos;\n\n\
 			uniform sampler2D tex;\n\n\
 			void main(){\n\
-				outColor = vec4(1, 1, 1, texture(tex, output_texpos).r) * output_color;\n\
+				outColor = texture(tex, output_texpos); //vec4(1, 1, 1, texture(tex, output_texpos).r) * output_color;\n\
 				if (outColor.a == 0.0) discard;\n\
 			}\n", GL_FRAGMENT_SHADER);
 			shader2DText.attachRaw("#version 300 es\nprecision mediump float;\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);

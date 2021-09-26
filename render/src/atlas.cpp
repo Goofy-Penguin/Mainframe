@@ -9,7 +9,7 @@ namespace mainframe {
 		Atlas::Atlas() {
 			glGenTextures(1, &glTexture);
 			glBindTexture(GL_TEXTURE_2D, glTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, size, size, 0, GL_RED, GL_FLOAT, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGBA, GL_FLOAT, nullptr);
 		}
 
 		Atlas::~Atlas() {

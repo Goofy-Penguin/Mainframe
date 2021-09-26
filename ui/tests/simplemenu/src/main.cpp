@@ -60,12 +60,18 @@ public:
 		img->setSize(tex.getSize());
 		img->setImage(tex);
 
-		std::vector<float> data(font.atlas.size * font.atlas.size);
-		glGetTextureImage(font.atlas.glTexture, 0, GL_RED, GL_FLOAT, data.size() * sizeof(float), data.data());
+		std::vector<float> data(font.atlas.size * font.atlas.size * 4);
+		glGetTextureImage(font.atlas.glTexture, 0, GL_RGBA, GL_FLOAT, data.size() * sizeof(float), data.data());
 		tmp = {Vector2i(font.atlas.size, font.atlas.size)};
 		for (int x = 0; x < font.atlas.size; x++) {
 			for (int y = 0; y < font.atlas.size; y++) {
-				tmp.setPixel({x, y}, data[y * font.atlas.size + x]);
+				auto index = (y * font.atlas.size + x) * 4;
+				tmp.setPixel({x, y}, {
+					data[index + 0],
+					data[index + 1],
+					data[index + 2],
+					data[index + 3]
+				 });
 			}
 		}
 		tmp.upload();
@@ -102,6 +108,7 @@ public:
 			x += glyph.advance.x;
 		}
 
+		stencil.drawText(font, "AFWWAFAWFWAFWAFAWFWAFAWFAWFAW", {10, 40}, Colors::White);
 		stencil.draw();
 		window.swapBuffer();
 	}
