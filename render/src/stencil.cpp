@@ -352,7 +352,6 @@ namespace mainframe {
 
 			auto textIter = text.begin();
 			auto point = utf8::next(textIter, text.end());
-			char letter = 0;
 			for (;textIter < text.end(); point = utf8::next(textIter, text.end())) {
 				if (point == '\n') {
 					curpos.y += lineheight;
@@ -363,7 +362,6 @@ namespace mainframe {
 				}
 
 				auto& glyph = font.getGlyph(point);
-				letter = glyph.codepoint;
 
 				if (prevGlyph != nullptr) {
 					curpos.x += font.getKerning(glyph, *prevGlyph);
