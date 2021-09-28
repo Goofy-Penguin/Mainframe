@@ -8,5 +8,10 @@ namespace mainframe {
 		Value::Type Value::getType() const {
 			return type;
 		}
+
+		bool Value::isNull() const {
+			if (type == Type::String) return false;
+			return raw.empty();
+		}
 	}
 }

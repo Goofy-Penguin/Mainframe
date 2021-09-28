@@ -2,6 +2,7 @@
 #include <mainframe/game/window.h>
 #include <mainframe/render/stencil.h>
 #include <mainframe/render/font.h>
+#include <mainframe/render/textengine.h>
 #include <mainframe/math/vector2.h>
 #include <fmt/printf.h>
 
@@ -12,7 +13,8 @@ using namespace mainframe::math;
 class GameTest : public Engine {
 	Window& window;
 	Stencil stencil;
-	Font font = Font("fonts/stencil/VeraMono.ttf", 15.0f);
+	TextEngine textEngine;
+	Font& font = textEngine.loadFont("fonts/stencil/VeraMono.ttf", 15);
 	Texture tex = Texture("textures/stencil/test.png");
 	float rot = 0;
 
@@ -22,6 +24,11 @@ public:
 	}
 
 	virtual void draw() override {
+		if (window.getShouldClose()) {
+			quit();
+			return;
+		}
+
 		window.use(); // only needed for multi window
 
 		stencil.drawBox({0, 0}, stencil.getWindowSize(), Colors::DarkGray);
@@ -61,19 +68,13 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void tick() override {
+	virtual void update(float deltaTime) override {
 		Window::pollEvents();
 	}
 
 	virtual void quit() override {
 		Engine::quit();
 		window.close();
-	}
-
-	virtual void update() override {
-		if (window.getShouldClose()) {
-			quit();
-		}
 	}
 
 	GameTest(Window& w) : window(w) {
@@ -89,7 +90,7 @@ int main() {
 	}
 
 	GameTest e(w);
-	e.setFPS(75);
+	e.setTick(75);
 
 	e.init();
 	e.run();

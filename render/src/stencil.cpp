@@ -2,9 +2,8 @@
 #include <mainframe/render/font.h>
 
 #include <GL/glew.h>
-#include <freetype-gl.h>
-#include <utf8-utils.h>
 #include <stdexcept>
+#include <utf8.h>
 
 namespace mainframe::render {
 	int& Stencil::getPixelTextureGetRef() {
@@ -242,7 +241,7 @@ namespace mainframe::render {
 		drawTexture(pos, size, tex.getHandle(), col, uvStart, uvEnd, rotation, origin);
 	}
 
-	void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
+	void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin, bool overrideShader) {
 		if (col.a == 0) return;
 
 		pos += offset;
@@ -303,7 +302,7 @@ namespace mainframe::render {
 		c.y += size.y;
 
 		setTexture(rawTextureHandle);
-		setShader(shader2D);
+		if (overrideShader) setShader(shader2D);
 
 		auto rotOrigin = origin.isNaN() ? pos + size / 2 : pos + origin;
 
@@ -350,8 +349,8 @@ namespace mainframe::render {
 	void Stencil::drawText(const Font& font, const std::string& text, const math::Vector2& pos, Color col, TextAlignment alignx, TextAlignment aligny, float rotation, const mainframe::math::Vector2& origin) {
 		if (col.a == 0 || text.empty()) return;
 
-		setTexture(font.tex);
-		setShader(shader2DText);
+		//setTexture(font.atlas.glTexture);
+		//setShader(shader2DText);
 
 		math::Vector2 startpos = pos;
 
@@ -371,16 +370,20 @@ namespace mainframe::render {
 		}
 
 		float lineheight = font.getLineHeight();
-		startpos.y -= lineheight / 4;
-
+		startpos.y += lineheight;
 		math::Vector2 curpos = startpos;
 
 		auto rotOrigin = origin.isNaN() ? pos + tsize / 2 + offset : origin;
 
-		const ftgl::texture_glyph_t* prevGlyph = nullptr;
-		for (size_t i = 0; i < text.size(); i += ftgl::utf8_surrogate_len(text.c_str() + i)) {
-			uint32_t l = ftgl::utf8_to_utf32(text.c_str() + i);
-			if (l == '\n') {
+		const Glyph* prevGlyph = nullptr;
+
+		uint32_t point = 0;
+		auto beginIter = text.begin();
+		auto endIter = text.end();
+		while (beginIter != endIter) {
+			point = utf8::next(beginIter, endIter);
+
+			if (point == '\n') {
 				curpos.y += lineheight;
 				curpos.x = startpos.x;
 
@@ -388,26 +391,27 @@ namespace mainframe::render {
 				continue;
 			}
 
-			auto glyph = font.getGlyph(l);
-			if (glyph == nullptr) continue;
+			auto& glyph = font.getGlyph(point);
 
 			if (prevGlyph != nullptr) {
-				curpos.x += font.getKerning(prevGlyph, text.c_str() + i);
+				curpos.x += font.getKerning(glyph, *prevGlyph);
 			}
 
 			drawTexture(
-				{curpos.x + glyph->offset_x, curpos.y + lineheight - glyph->offset_y},
-				{static_cast<float>(glyph->width), static_cast<float>(glyph->height)},
-				font.tex,
+				{curpos.x + glyph.bearing.x, curpos.y - glyph.bearing.y},
+				{static_cast<float>(glyph.size.x), static_cast<float>(glyph.size.y)},
+				font.atlas.glTexture,
 				col,
-				{glyph->s0, glyph->t0},
-				{glyph->s1, glyph->t1},
+				glyph.textureTopLeft,
+				glyph.textureBottomRight,
 				rotation,
-				origin
+				origin,
+				true
 			);
 
-			curpos.x += glyph->advance_x;
-			prevGlyph = glyph;
+			curpos.x += glyph.advance.x;
+			curpos.y += glyph.advance.y;
+			prevGlyph = &glyph;
 		}
 	}
 
@@ -440,15 +444,29 @@ namespace mainframe::render {
 			glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 9, 0);
 
 			GLint tposAttrib = glGetAttribLocation(handle, "texpos");
-			glEnableVertexAttribArray(tposAttrib);
-			glVertexAttribPointer(tposAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 3));
+			if (tposAttrib != -1) {
+				glEnableVertexAttribArray(tposAttrib);
+				glVertexAttribPointer(tposAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 3));
+			}
 
 			GLint colAttrib = glGetAttribLocation(handle, "color");
-			glEnableVertexAttribArray(colAttrib);
-			glVertexAttribPointer(colAttrib, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 5));
+			if (colAttrib != -1) {
+				glEnableVertexAttribArray(colAttrib);
+				glVertexAttribPointer(colAttrib, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 9, (void*)(sizeof(float) * 5));
+			}
 		};
 
-		shader2DText.attachRaw("#version 300 es\nprecision mediump float;\nout vec4 outColor;\n\nin vec4 output_color;\nin vec2 output_texpos;\n\nuniform sampler2D tex;\n\nvoid main(){vec4 texColor = texture(tex, output_texpos) * output_color;\nif (texColor.a <= 0.0) discard;\noutColor=texColor;\n}\n", GL_FRAGMENT_SHADER);
+		shader2DText.attachRaw("\
+		#version 300 es\n\
+		precision mediump float;\n\
+		out vec4 outColor;\n\n\
+		in vec4 output_color;\n\
+		in vec2 output_texpos;\n\n\
+		uniform sampler2D tex;\n\n\
+		void main(){\n\
+			outColor = texture(tex, output_texpos); //vec4(1, 1, 1, texture(tex, output_texpos).r) * output_color;\n\
+			if (outColor.a == 0.0) discard;\n\
+		}\n", GL_FRAGMENT_SHADER);
 		shader2DText.attachRaw("#version 300 es\nprecision mediump float;\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
 		initShader(shader2DText);
 
