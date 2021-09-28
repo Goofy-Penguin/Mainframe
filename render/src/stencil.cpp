@@ -350,9 +350,12 @@ namespace mainframe {
 
 			const Glyph* prevGlyph = nullptr;
 
-			auto textIter = text.begin();
-			auto point = utf8::next(textIter, text.end());
-			for (;textIter < text.end(); point = utf8::next(textIter, text.end())) {
+			uint32_t point = 0;
+			auto beginIter = text.begin();
+			auto endIter = text.end();
+			while (beginIter != endIter) {
+				point = utf8::next(beginIter, endIter);
+
 				if (point == '\n') {
 					curpos.y += lineheight;
 					curpos.x = startpos.x;
