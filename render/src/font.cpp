@@ -7,7 +7,7 @@
 
 namespace mainframe {
 	namespace render {
-		Font::Font(FT_Library& ft, std::string _filename, unsigned int size) : filename(_filename) {
+		Font::Font(FT_Library& ft, std::string _filename, unsigned int _size) : filename(_filename), size(_size) {
 			if (FT_New_Face(ft, _filename.c_str(), 0, &face) != 0) {
 				throw std::runtime_error(fmt::format("Error: failed to load font: {}", _filename));
 			}
@@ -58,6 +58,8 @@ namespace mainframe {
 			// if (!FT_Get_Char_Index(face, character)) {
 			// 	throw std::runtime_error(fmt::format("face {} does not have character {}", filename, character));
 			// }
+
+			FT_Set_Pixel_Sizes(face, 0, size);
 			if (!FT_Load_Char(face, character, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT)) {
 				//ssssssssshhhh
 				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));

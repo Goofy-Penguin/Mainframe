@@ -17,6 +17,7 @@ namespace mainframe {
 			FT_Face face;
 			Atlas atlas;
 			std::vector<Glyph> glyphs;
+			unsigned int size = 0;
 			bool undead = false; // needs to be movable, and moved from state is undead.
 
 		public:
