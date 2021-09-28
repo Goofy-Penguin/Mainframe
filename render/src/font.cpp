@@ -108,7 +108,7 @@ namespace mainframe {
 			math::Vector2 total;
 			math::Vector2 pos;
 
-			const float lineheight = textHeight();
+			const float lineheight = getLineHeight();
 
 			const Glyph* prevGlyph = nullptr;
 
@@ -123,12 +123,13 @@ namespace mainframe {
 				}
 
 				const auto& glyph = getGlyph(point);
+				auto maxh = std::max(static_cast<float>(glyph.size.y), lineheight);
 
 				if (prevGlyph != nullptr) pos.x += getKerning(glyph, *prevGlyph);
 				pos.x += glyph.advance.x;
 
 				if (pos.x > total.x) total.x = pos.x;
-				if (pos.y + lineheight > total.y) total.y = pos.y + lineheight;
+				if (pos.y + maxh > total.y) total.y = pos.y + maxh;
 
 				prevGlyph = &glyph;
 			}
