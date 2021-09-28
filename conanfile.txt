@@ -6,6 +6,7 @@ nlohmann_json/3.9.1
 lodepng/cci.20200615
 freetype/2.10.4
 utfcpp/3.2.1
+glm/0.9.9.8
 
 [generators]
 cmake_find_package
