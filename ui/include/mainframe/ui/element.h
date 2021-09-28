@@ -46,7 +46,9 @@ namespace mainframe {
 			virtual void updateBefore();
 			virtual void update();
 			virtual void updateAfter();
-			virtual void initialize();
+			virtual bool requiresFocus();
+
+			virtual void bringToFront();
 
 			virtual void show();
 			virtual void hide();

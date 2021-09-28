@@ -1,9 +1,8 @@
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
 set(MAINFRAME_VERSION_MAJOR 1 CACHE STRING "major version" FORCE)
 set(MAINFRAME_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACHE STRING "version" FORCE)
-
 project ("mainframe" VERSION ${MAINFRAME_VERSION})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
@@ -34,6 +33,7 @@ find_package(Freetype REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(lodepng REQUIRED)
 find_package(utf8cpp REQUIRED)
+find_package(glm REQUIRED)
 
 set (build_tests true CACHE BOOL "build tests")
 set (build_samples true CACHE BOOL "build samples")

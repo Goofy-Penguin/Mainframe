@@ -22,16 +22,12 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void tick() override {
-		Window::pollEvents();
-	}
-
 	virtual void quit() override {
 		Engine::quit();
 		window.close();
 	}
 
-	virtual void update() override {
+	virtual void update(float delta) override {
 		if (window.getShouldClose() || std::time(nullptr) - initTime > 2) {
 			quit();
 		}
@@ -50,7 +46,7 @@ int main() {
 	}
 
 	GameTest e(w);
-	e.setFPS(75);
+	e.setTick(75);
 
 	e.init();
 	e.run();

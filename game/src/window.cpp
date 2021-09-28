@@ -113,6 +113,8 @@ namespace mainframe {
 		}
 
 		bool Window::setTitle(const std::string& title) {
+			if (handle == nullptr) return {};
+
 			glfwSetWindowTitle(GLFWHANDLE, title.c_str());
 			return true;
 		}
@@ -122,6 +124,8 @@ namespace mainframe {
 		}
 
 		math::Vector2i Window::getFrameSize() const {
+			if (handle == nullptr) return {};
+
 			math::Vector2i ret;
 			glfwGetFramebufferSize(GLFWHANDLE, &ret.x, &ret.y);
 
@@ -129,6 +133,8 @@ namespace mainframe {
 		}
 
 		math::Vector2i Window::getSize() const {
+			if (handle == nullptr) return {};
+
 			math::Vector2i ret;
 			glfwGetWindowSize(GLFWHANDLE, &ret.x, &ret.y);
 
@@ -136,6 +142,8 @@ namespace mainframe {
 		}
 
 		math::Vector2i Window::getPos() const {
+			if (handle == nullptr) return {};
+
 			math::Vector2i ret;
 			glfwGetWindowPos(GLFWHANDLE, &ret.x, &ret.y);
 
@@ -143,6 +151,8 @@ namespace mainframe {
 		}
 
 		math::Vector2i Window::getMousePos() const {
+			if (handle == nullptr) return {};
+
 			double x, y;
 			glfwGetCursorPos(GLFWHANDLE, &x, &y);
 
@@ -150,14 +160,20 @@ namespace mainframe {
 		}
 
 		void Window::setPos(const math::Vector2i& pos) {
+			if (handle == nullptr) return;
+
 			glfwSetWindowPos(GLFWHANDLE, pos.x, pos.y);
 		}
 
 		void Window::setMonitor(const Monitor& monitor, const math::Vector2i& pos, const math::Vector2i& size) {
+			if (handle == nullptr) return;
+
 			glfwSetWindowMonitor(GLFWHANDLE, monitor.handle, pos.x, pos.y, size.x, size.y, monitor.refreshRate);
 		}
 
 		void Window::setMousePos(const math::Vector2i& pos) {
+			if (handle == nullptr) return;
+
 			glfwSetCursorPos(GLFWHANDLE, static_cast<double>(pos.x), static_cast<double>(pos.y));
 		}
 
@@ -170,18 +186,26 @@ namespace mainframe {
 		}
 
 		void Window::blink() {
+			if (handle == nullptr) return;
+
 			glfwRequestWindowAttention(GLFWHANDLE);
 		}
 
 		void Window::maximize() {
+			if (handle == nullptr) return;
+
 			glfwMaximizeWindow(GLFWHANDLE);
 		}
 
 		void Window::minimize() {
+			if (handle == nullptr) return;
+
 			glfwIconifyWindow(GLFWHANDLE);
 		}
 
 		void Window::focus() {
+			if (handle == nullptr) return;
+
 			glfwFocusWindow(GLFWHANDLE);
 		}
 
@@ -190,10 +214,14 @@ namespace mainframe {
 		}
 
 		void Window::use() {
+			if (handle == nullptr) return;
+
 			glfwMakeContextCurrent(GLFWHANDLE);
 		}
 
 		void Window::swapBuffer() const {
+			if (handle == nullptr) return;
+
 			glfwSwapBuffers(GLFWHANDLE);
 
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -201,10 +229,14 @@ namespace mainframe {
 		}
 
 		void Window::setSize(const math::Vector2i& size) {
+			if (handle == nullptr) return;
+
 			glfwSetWindowSize(GLFWHANDLE, size.x, size.y);
 		}
 
 		void Window::setCallbacks() {
+			if (handle == nullptr) return;
+
 			glfwSetKeyCallback(GLFWHANDLE, callbacks_key);
 			glfwSetCharCallback(GLFWHANDLE, callbacks_char);
 			glfwSetScrollCallback(GLFWHANDLE, callbacks_scroll);
@@ -240,6 +272,8 @@ namespace mainframe {
 		}
 
 		void Window::restore() {
+			if (handle == nullptr) return;
+
 			glfwRestoreWindow(GLFWHANDLE);
 		}
 
@@ -253,6 +287,8 @@ namespace mainframe {
 		}
 
 		Monitor Window::getMonitor() {
+			if (handle == nullptr) return {};
+
 			// https://stackoverflow.com/a/31526753
 			int nmonitors, i;
 			int wx, wy, ww, wh;

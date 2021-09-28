@@ -15,8 +15,6 @@ namespace mainframe {
 	namespace ui {
 		class Scene : public ElementContainer {
 		private:
-			std::weak_ptr<Element> focusedElement;
-			std::weak_ptr<Element> hoveredElement;
 
 			void drawElm(Element& elm, render::Stencil& stencil);
 			void updateElm(Element& elm);
@@ -34,6 +32,9 @@ namespace mainframe {
 			utils::ringbuffer<std::function<void()>> invokes = {64};
 
 		public:
+			std::weak_ptr<Element> focusedElement;
+			std::weak_ptr<Element> hoveredElement;
+
 			mainframe::utils::Event<const math::Vector2i&, unsigned int, ModifierKey, MouseState> onMousePress;
 			mainframe::utils::Event<const math::Vector2i&, const math::Vector2i&> onMouseScroll;
 			mainframe::utils::Event<const math::Vector2i&> onMouseMove;
@@ -44,7 +45,7 @@ namespace mainframe {
 			void invoke(std::function<void()> func);
 
 			void draw(render::Stencil& stencil);
-			void update();
+			void update(float deltaTime);
 
 			void setWindow(game::Window& window);
 

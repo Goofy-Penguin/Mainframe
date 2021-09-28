@@ -7,9 +7,17 @@
 #include <map>
 #include <algorithm>
 #include <stdexcept>
+#include <unordered_map>
 
 namespace mainframe {
 	namespace networking {
+		class Packet;
+		template<typename T>
+		concept isNetworkable = requires(T t, Packet p) {
+			{ t.networkRead(p) };
+			{ t.networkWrite(p) };
+		};
+
 		enum class EndianType {
 			System, Big, Little
 		};
@@ -36,17 +44,31 @@ namespace mainframe {
 
 			template<class T>
 			void read(T& ret) {
-				if (pos + sizeof(T) > buffer.size()) {
-					throw std::runtime_error("reading past buffer");
-				}
+    			if constexpr (isNetworkable<T>) {
+					ret.networkRead(*this);
+				} else {
+					static_assert(std::is_trivially_copyable_v<T>, "Fallback option for not a (vector, map, string, and does not supply a networkRead) is 'just memcpy it lel', but that needs T to be trivially copyable, or we're potentially memcpying classes that have strings in them or somesuch.");
+					if (pos + sizeof(T) > buffer.size()) {
+						throw std::runtime_error("reading past buffer");
+					}
 
-				std::memcpy(&ret, &buffer.at(pos), sizeof(T));
-				pos += sizeof(const T);
+					std::memcpy(&ret, &buffer.at(pos), sizeof(T));
+					pos += sizeof(const T);
+				}
+			}
+
+			void networkRead(mainframe::networking::Packet& packet) {
+				packet.read(buffer);
+			}
+
+			void networkWrite(mainframe::networking::Packet& packet) const {
+				packet.write(buffer);
 			}
 
 			template<class T>
 			void read(std::vector<T>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
 					ret.push_back(read<T>());
@@ -69,9 +91,20 @@ namespace mainframe {
 			template<class A, class B>
 			void read(std::map<A, B>& ret) {
 				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
 
 				while (elms-- > 0) {
 					ret.emplace(read<std::pair<A, B>>());
+				}
+			}
+
+			template<class A, class B>
+			void read(std::unordered_map<A, B>& ret) {
+				size_t elms = readLength<size_t>();
+				if(elms <= 0) return;
+
+				while (elms-- > 0) {
+					ret.insert(read<std::pair<A, B>>());
 				}
 			}
 
@@ -100,6 +133,7 @@ namespace mainframe {
 			inline auto data() const { return buffer.data(); }
 			inline auto& getBuffer() { return buffer; }
 			inline auto& getBuffer() const { return buffer; }
+			inline void setBuffer(std::vector<uint8_t> b) { buffer = b; }
 
 			inline auto begin() noexcept { return buffer.begin(); }
 			inline auto end() noexcept { return buffer.end(); }
@@ -107,17 +141,21 @@ namespace mainframe {
 			inline auto cend() const noexcept { return buffer.cend(); }
 
 			inline void resize(size_t size) { buffer.resize(size); }
-
 			inline bool empty() const { return buffer.empty(); }
 			inline const std::vector<uint8_t>& readAll() const { return buffer; }
 			void clear();
 
 			template<class T>
 			void write(const T& obj) {
-				auto ptr = reinterpret_cast<const uint8_t*>(&obj);
+				if constexpr (isNetworkable<T>) {
+					obj.networkWrite(*this);
+				} else {
+					static_assert(std::is_trivially_copyable_v<T>, "Fallback option for not a (vector, map, string, and does not supply a networkWrite) is 'just reinterpret_cast it lel', but that needs T to be trivially copyable, or we're potentially reinterpreting classes that have strings in them or somesuch.");
+					auto ptr = reinterpret_cast<const uint8_t*>(&obj);
 
-				buffer.insert(buffer.begin() + pos, ptr, ptr + sizeof(const T));
-				pos += sizeof(const T);
+					buffer.insert(buffer.begin() + pos, ptr, ptr + sizeof(const T));
+					pos += sizeof(const T);
+				}
 			}
 
 			template<class T>
@@ -138,6 +176,11 @@ namespace mainframe {
 
 			template<class A, class B>
 			void write(const std::map<A, B>& obj, bool shouldWriteLength = true) {
+				write(obj.begin(), obj.end(), shouldWriteLength);
+			}
+
+			template<class A, class B>
+			void write(const std::unordered_map<A, B>& obj, bool shouldWriteLength = true) {
 				write(obj.begin(), obj.end(), shouldWriteLength);
 			}
 
@@ -206,8 +249,11 @@ namespace mainframe {
 				return lengthFormat == LengthType::None ? lengthFormatGlobal : lengthFormat;
 			}
 
-			template<class T>
-			inline operator T() { return this->read<T>(); }
+			// TODO: this will have side effects
+			//template<class T>
+			//inline operator T() { return this->read<T>(); }
+
+			~Packet() = default;
 		};
 	}
 }

@@ -2,36 +2,29 @@
 
 #include <string>
 
-namespace mainframe {
-	namespace game {
-		class Engine {
-		private:
-			bool shouldShutdown = false;
+namespace mainframe::game {
+	class Engine {
+	private:
+		bool shouldShutdown = false;
+		unsigned int tick = 66;
 
-			int currentFPS = 0;
-			float currentFPSTime = 0;
-			float targetFPS = 60;
+	public:
+		virtual void init();
+		virtual void quit();
 
-		public:
-			virtual void init();
-			virtual void quit();
+		// called on a fixed timestep
+		virtual void update(float deltaTime);
 
-			// called as much as possible, free from FPS lock
-			virtual void tick();
+		// called acordingly with the FPS lock
+		virtual void draw();
 
-			// called acordingly with the FPS lock
-			virtual void update();
+		// starts the game loop and blocks until quit is called and is handled
+		virtual void run();
 
-			// called acordingly with the FPS lock
-			virtual void draw();
+		// sets the game tickrate
+		virtual void setTick(unsigned int tick);
 
-			// starts the game loop and blocks until quit is called and is handled
-			virtual void run();
-
-			// returns true after quit() is called
-			bool isQuitting();
-
-			void setFPS(float count);
-		};
-	}
+		// returns true after quit() is called
+		bool isQuitting();
+	};
 }

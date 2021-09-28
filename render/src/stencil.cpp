@@ -30,9 +30,7 @@ namespace mainframe {
 			return pixel;
 		}
 
-		Stencil::VerticeData::VerticeData(float _x, float _y, float _z, float _u, float _v, float _r, float _g, float _b, float _a) : x(_x), y(_y), z(_z), u(_u), v(_v), r(_r), g(_g), b(_b), a(_a) {
-
-		}
+		Stencil::VerticeData::VerticeData(float _x, float _y, float _z, float _u, float _v, float _r, float _g, float _b, float _a) : x(_x), y(_y), z(_z), u(_u), v(_v), r(_r), g(_g), b(_b), a(_a) {}
 
 		void Stencil::setShader(int shader) {
 			if (currentShaderHandle != shader) draw();
@@ -77,6 +75,16 @@ namespace mainframe {
 				col.b,
 				col.a
 			);
+		}
+
+
+		void Stencil::pushLocalOffset() {
+			oldOffset = offset;
+			offset = {};
+		}
+
+		void Stencil::popLocalOffset() {
+			offset = oldOffset;
 		}
 
 		void Stencil::pushIndices(unsigned int a, unsigned int b, unsigned int c) {
@@ -173,7 +181,8 @@ namespace mainframe {
 			}
 		}
 
-		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col) {
+// auto rotated = newpos.rotateAroundOrigin(rotation, orginPos);
+		void Stencil::drawBoxOutlined(mainframe::math::Vector2 pos, const mainframe::math::Vector2& size, const mainframe::math::Vector2& borderSize, Color col, float rotation, const mainframe::math::Vector2& rotationOrigin) {
 			if (col.a == 0) return;
 
 			pos += offset;
@@ -182,16 +191,35 @@ namespace mainframe {
 			setShader(shader2D);
 
 			// top 4
-			pushVertice(pos, {0, 0}, col);
-			pushVertice(pos + math::Vector2(size.x, 0), {0, 0}, col);
-			pushVertice(pos + borderSize, {0, 0}, col);
-			pushVertice(pos + math::Vector2(size.x - borderSize.x, borderSize.y), {0, 0}, col);
+			math::Vector2 A = pos;
+			math::Vector2 B = A + math::Vector2(size.x, 0);
+			math::Vector2 C = A + borderSize;
+			math::Vector2 D = A + math::Vector2(size.x - borderSize.x, borderSize.y);
 
 			// bottom 4
-			pushVertice(pos + math::Vector2(borderSize.x, size.y - borderSize.y), {0, 0}, col);
-			pushVertice(pos + math::Vector2(0, size.y), {0, 0}, col);
-			pushVertice(pos + size - borderSize, {0, 0}, col);
-			pushVertice(pos + size, {0, 0}, col);
+			math::Vector2 E = A + math::Vector2(borderSize.x, size.y - borderSize.y);
+			math::Vector2 F = A + math::Vector2(0, size.y);
+			math::Vector2 G = A + size - borderSize;
+			math::Vector2 H = A + size;
+
+			// apply rotation if needed
+			if (rotation != 0) {
+				math::Vector2* points[] = {&A, &B, &C, &D, &E, &F, &G, &H};
+				for (size_t i = 0; i < 8; i++){
+					*points[i] = points[i]->rotateAroundOrigin(rotation, rotationOrigin);
+				}
+			}
+
+			// push top and bottom vertices
+			pushVertice(A, {0, 0}, col);
+			pushVertice(B, {0, 0}, col);
+			pushVertice(C, {0, 0}, col);
+			pushVertice(D, {0, 0}, col);
+
+			pushVertice(E, {0, 0}, col);
+			pushVertice(F, {0, 0}, col);
+			pushVertice(G, {0, 0}, col);
+			pushVertice(H, {0, 0}, col);
 
 			// top
 			pushIndices(8, 7, 6);
@@ -515,6 +543,8 @@ namespace mainframe {
 		std::shared_ptr<Stencil::Recording> Stencil::recordStop() {
 			if (recordings.empty()) throw std::runtime_error("no recordings active");
 
+			draw();
+
 			auto ret = recordings.back();
 			recordings.pop_back();
 
@@ -615,7 +645,7 @@ namespace mainframe {
 				indices.insert(indices.end(), chunk.indices.begin(), chunk.indices.end());
 
 				for (size_t i = indiceOffset, j = indices.size(); i < j; i++) {
-					indices[i] += static_cast<unsigned int>(verticeOffset);;
+					indices[i] += static_cast<unsigned int>(verticeOffset);
 				}
 			}
 		}
@@ -623,28 +653,31 @@ namespace mainframe {
 		void Stencil::draw() {
 			if (vertices.empty()) return;
 
-			if (getDisableDept()) glDisable(GL_DEPTH_TEST);
-
 			bool suppressed = false;
 			for (auto& recording : recordings) {
 				if (recording->supressDraw) suppressed = true;
 
-				recording->chunks.push_back({
+				recording->chunks.emplace_back(
 					currentShaderHandle,
 					currentTextureHandle,
 					vertices,
 					indices
-				});
+				);
 			}
 
-			if (suppressed) return;
+			if (suppressed) {
+				vertices.clear();
+				indices.clear();
+				return;
+			}
+
+			if (getDisableDept()) glDisable(GL_DEPTH_TEST);
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, currentTextureHandle);
 
 #ifndef MAINFRAME_EGL
 			glUseProgram(currentShaderHandle);
-
 
 			glBindVertexArray(buffer.getVao());
 
@@ -700,6 +733,7 @@ namespace mainframe {
 
 			glDisable(GL_TEXTURE_2D);
 			glDisable(GL_COLOR_MATERIAL);
+
 #endif
 
 			if (getDisableDept()) glEnable(GL_DEPTH_TEST);

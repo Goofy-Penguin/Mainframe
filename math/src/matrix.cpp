@@ -197,7 +197,7 @@ namespace mainframe {
 
 		Matrix Matrix::createLookAt(const Vector3& eyePos, const Vector3& targetPos, const Vector3& upPos) {
 			auto zAxis = (eyePos - targetPos).xzy().normalized();
-			auto xAxis = upPos.cross(zAxis).normalized();
+			Vector3 xAxis = {1, 0, 0};// upPos.cross(zAxis).normalized();
 			auto yAxis = zAxis.cross(xAxis).normalized();
 
 			Matrix orientation = Matrix(
