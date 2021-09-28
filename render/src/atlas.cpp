@@ -33,13 +33,19 @@ namespace mainframe {
 			return *this;
 		}
 
+		size_t Atlas::getSpriteCount() const {
+			return spriteCount;
+		}
+
 		AtlasNode& Atlas::addSprite(int width, int height) {
 			auto nodeOpt = rootNode.InsertNode(width, height);
 			if (!nodeOpt.has_value()) {
 				throw std::runtime_error(fmt::format("Error: failed to add sprite with size {}, {}", width, height));
 			}
-			auto& node = (*nodeOpt).get();
 
+			spriteCount++;
+
+			auto& node = (*nodeOpt).get();
 			return node;
 		}
 
