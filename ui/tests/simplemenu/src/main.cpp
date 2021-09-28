@@ -59,22 +59,6 @@ public:
 		img->setPos(btn->getPos() + Vector2i(0, btn->getSize().y + 5));
 		img->setSize(tex.getSize());
 		img->setImage(tex);
-
-		std::vector<float> data(font.atlas.size * font.atlas.size * 4);
-		glGetTextureImage(font.atlas.glTexture, 0, GL_RGBA, GL_FLOAT, data.size() * sizeof(float), data.data());
-		tmp = {Vector2i(font.atlas.size, font.atlas.size)};
-		for (int x = 0; x < font.atlas.size; x++) {
-			for (int y = 0; y < font.atlas.size; y++) {
-				auto index = (y * font.atlas.size + x) * 4;
-				tmp.setPixel({x, y}, {
-					data[index + 0],
-					data[index + 1],
-					data[index + 2],
-					data[index + 3]
-				 });
-			}
-		}
-		tmp.upload();
 	}
 
 	virtual void draw() override {
@@ -94,30 +78,8 @@ public:
 		});
 
 		scene->draw(stencil);
-
-
-		/// //////////////////
-		stencil.drawBox(10, {600, 20}, Colors::Gray);
-
-		std::string text = "~!@#$ %^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n";
-		mainframe::math::Vector2 curpos = {20, 20};
-		float lineheight = font.getLineHeight();
-		for (auto letter : text) {
-			auto glyph = font.getGlyph(letter);
-
-			stencil.drawTexture(
-				{curpos.x + glyph.bearing.x, curpos.y + lineheight / 4 - glyph.bearing.y},
-				glyph.size,
-				tmp,
-				Colors::White,
-				glyph.textureTopLeft,
-				glyph.textureBottomRight);
-
-			curpos.x += glyph.advance.x;
-		}
-
-		stencil.drawText(font, "AFWWAFAWFWAFWAFA\nWFWAFAWFAWFAW", {10, 40}, Colors::White);
 		stencil.draw();
+
 		window.swapBuffer();
 	}
 
