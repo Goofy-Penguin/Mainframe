@@ -62,6 +62,10 @@ public:
 	}
 
 	virtual void draw() override {
+		if (window.getShouldClose()) {
+			quit();
+		}
+
 		auto wsize = Vector2(stencil.getWindowSize());
 
 		stencil.drawPolygon({
@@ -83,21 +87,14 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void tick() override {
+	virtual void update(float deltaTime) override {
 		Window::pollEvents();
+		scene->update(deltaTime);
 	}
 
 	virtual void quit() override {
 		Engine::quit();
 		window.close();
-	}
-
-	virtual void update() override {
-		scene->update();
-
-		if (window.getShouldClose()) {
-			quit();
-		}
 	}
 
 	GameTest(Window& w) : window(w) {
@@ -114,7 +111,7 @@ int main(int argc, char* argv[]) {
 
 	try {
 		GameTest e(w);
-		e.setFPS(75);
+		e.setTick(75);
 
 		e.init();
 		e.run();

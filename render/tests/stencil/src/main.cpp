@@ -24,6 +24,11 @@ public:
 	}
 
 	virtual void draw() override {
+		if (window.getShouldClose()) {
+			quit();
+			return;
+		}
+
 		window.use(); // only needed for multi window
 
 		stencil.drawBox({0, 0}, stencil.getWindowSize(), Colors::DarkGray);
@@ -63,19 +68,13 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void tick() override {
+	virtual void update(float deltaTime) override {
 		Window::pollEvents();
 	}
 
 	virtual void quit() override {
 		Engine::quit();
 		window.close();
-	}
-
-	virtual void update() override {
-		if (window.getShouldClose()) {
-			quit();
-		}
 	}
 
 	GameTest(Window& w) : window(w) {
@@ -91,7 +90,7 @@ int main() {
 	}
 
 	GameTest e(w);
-	e.setFPS(75);
+	e.setTick(75);
 
 	e.init();
 	e.run();
