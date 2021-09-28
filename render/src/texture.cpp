@@ -72,10 +72,15 @@ namespace mainframe {
 					int offset = y * w * 4 + x * 4;
 
 					auto& p = getPixel(x, y);
-					p.r = static_cast<float>(image[offset++]) / 255;
-					p.g = static_cast<float>(image[offset++]) / 255;
-					p.b = static_cast<float>(image[offset++]) / 255;
-					p.a = static_cast<float>(image[offset++]) / 255;
+					float r = static_cast<float>(image[offset++]) / 255;
+					float g = static_cast<float>(image[offset++]) / 255;
+					float b = static_cast<float>(image[offset++]) / 255;
+					float a = static_cast<float>(image[offset++]) / 255;
+
+					p.r = r * a;
+					p.g = g * a;
+					p.b = b * a;
+					p.a = a;
 				}
 			}
 		}
@@ -151,6 +156,30 @@ namespace mainframe {
 			size = size_;
 		}
 
+		void Texture::setQuality(unsigned int quality) {
+			this->quality = quality;
+
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) return; // Not bound yet
+
+			// Re-bind it
+			glBindTexture(GL_TEXTURE_2D, glhandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, quality);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, quality);
+		}
+
+		void Texture::setWrap(unsigned int wrap) {
+			this->wrap = wrap;
+
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) return; // Not bound yet
+
+			// Re-bind it
+			glBindTexture(GL_TEXTURE_2D, glhandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+		}
+
 		void Texture::bind() {
 			auto& glhandle = handle->glHandle;
 			if (glhandle != UINT_MAX) return;
@@ -186,10 +215,10 @@ namespace mainframe {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, glhandle);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, quality);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, quality);
 		}
 
 		std::vector<Color>& Texture::data() {

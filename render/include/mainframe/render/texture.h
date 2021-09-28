@@ -21,6 +21,9 @@ namespace mainframe {
 
 		class Texture {
 		private:
+			unsigned int quality = 0x2600; // GL_NEAREST
+			unsigned int wrap = 0x2901; // GL_REPEAT
+
 			mainframe::math::Vector2i size;
 			std::vector<Color> pixels;
 			std::shared_ptr<TextureHandle> handle = std::make_shared<TextureHandle>();
@@ -46,6 +49,9 @@ namespace mainframe {
 
 			void bind();
 			void upload();
+			void setQuality(unsigned int quality);
+			void setWrap(unsigned int wrap);
+
 			void use();
 			void use() const;
 			void clear(const mainframe::render::Color& bgcol = Colors::Transparent);
