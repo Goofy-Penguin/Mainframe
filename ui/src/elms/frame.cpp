@@ -86,12 +86,6 @@ namespace mainframe {
 			}
 
 			stencil.drawText(*getFont(), getText(), pos, getColor(), getAlignmentX(), getAlignmentY());
-
-			stencil.pushOffset(contentStart + borderSize);
-		}
-
-		void Frame::drawAfter(render::Stencil& stencil) {
-			stencil.popOffset();
 		}
 	}
 }

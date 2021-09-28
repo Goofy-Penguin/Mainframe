@@ -28,7 +28,6 @@ namespace mainframe {
 			const render::Color& getBackColor();
 
 			virtual void draw(render::Stencil& stencil) override;
-			virtual void drawAfter(render::Stencil& stencil) override;
 
 			virtual void mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) override;
 			virtual void mouseUp(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) override;
