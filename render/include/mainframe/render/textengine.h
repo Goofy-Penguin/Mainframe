@@ -16,10 +16,10 @@ namespace mainframe {
 			TextEngine();
 			TextEngine(const TextEngine& other) = delete;
 			TextEngine(TextEngine&& other) = delete;
-			
+
 			TextEngine& operator=(const TextEngine& other) = delete;
 			TextEngine& operator=(TextEngine&& other) = delete;
-			
+
 			~TextEngine();
 
 			Font& loadFont(std::string filename, unsigned int size);

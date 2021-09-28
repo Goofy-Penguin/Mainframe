@@ -32,7 +32,7 @@ namespace mainframe {
 		// probably by moving the texture to textface
 		public:
 			size_t spriteCount = 0;
-			int size = 256;
+			int size = 2048;
 			GLuint glTexture;
 			AtlasNode rootNode{0, 0, size, size, true, nullptr, nullptr};
 
