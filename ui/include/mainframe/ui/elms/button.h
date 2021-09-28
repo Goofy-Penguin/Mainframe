@@ -5,7 +5,7 @@
 namespace mainframe {
 	namespace ui {
 		class Button : public Frame {
-			render::Color hoverColor = render::Colors::Gray + 0.1f;
+			render::Color hoverColor = render::Color(0.1f, 0.1f, 0.1f, 1);
 
 		public:
 			Button();

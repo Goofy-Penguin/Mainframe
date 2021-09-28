@@ -7,8 +7,8 @@ namespace mainframe {
 		class Frame : public Label {
 			int titleSize = 20;
 			int borderSize = 2;
-			render::Color borderColor = render::Colors::DarkGray;
-			render::Color backColor = render::Colors::Gray;
+			render::Color borderColor = render::Color(0.1f, 0.1f, 0.1f, 1);
+			render::Color backColor = render::Color(0.2f, 0.2f, 0.2f, 1);
 			bool dragging = false;
 			math::Vector2i dragStart;
 
