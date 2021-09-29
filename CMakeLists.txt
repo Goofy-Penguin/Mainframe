@@ -18,8 +18,8 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 if(CMAKE_COMPILER_IS_GNUXX)
    set(CONAN_SETTINGS compiler.libcxx=libstdc++11)
 endif()
+
 conan_cmake_run(CONANFILE conanfile.txt
-                BUILD_TYPE "Debug"
                 SETTINGS ${CONAN_SETTINGS}
                 BUILD missing)
 
@@ -29,7 +29,6 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(fmt REQUIRED)
 find_package(Freetype REQUIRED)
-# find_package(PNG REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(lodepng REQUIRED)
 find_package(utf8cpp REQUIRED)
@@ -66,8 +65,3 @@ add_subdirectory ("database")
 add_subdirectory ("game")
 add_subdirectory ("render")
 add_subdirectory ("ui")
-
-# samples
-if (build_samples)
-	#add_subdirectory ("samples")
-endif()
