@@ -13,7 +13,6 @@ namespace mainframe {
 			}
 
 			FT_Set_Pixel_Sizes(face, 0, size);
-
 			addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n");
 		}
 
@@ -60,19 +59,12 @@ namespace mainframe {
 			// }
 
 			FT_Set_Pixel_Sizes(face, 0, size);
-			if (!FT_Load_Char(face, character, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT)) {
+			if (!FT_Load_Char(face, character, FT_LOAD_RENDER)) {
 				//ssssssssshhhh
 				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
 			}
 
 			auto& atlasNode = atlas.addSprite(face->glyph->bitmap.width, face->glyph->bitmap.rows);
-
-			// convert glyph pixels to color
-			std::vector<mainframe::render::Color> pixels(atlasNode.width * atlasNode.height);
-			for (size_t i = 0; i < pixels.size(); i++) {
-				auto byteval = face->glyph->bitmap.buffer[i];
-				pixels[i] = {1, 1, 1, static_cast<float>(byteval) / 255.0f};
-			}
 
 			// upload glpyh into atlas
 			glTextureSubImage2D(
@@ -82,9 +74,9 @@ namespace mainframe {
 				atlasNode.y,
 				atlasNode.width,
 				atlasNode.height,
-				GL_RGBA,
-				GL_FLOAT,
-				pixels.data()
+				GL_RED,
+				GL_UNSIGNED_BYTE,
+				face->glyph->bitmap.buffer
 			);
 
 			Glyph glyph {

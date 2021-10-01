@@ -348,9 +348,7 @@ namespace mainframe::render {
 
 	void Stencil::drawText(const Font& font, const std::string& text, const math::Vector2& pos, Color col, TextAlignment alignx, TextAlignment aligny, float rotation, const mainframe::math::Vector2& origin) {
 		if (col.a == 0 || text.empty()) return;
-
-		//setTexture(font.atlas.glTexture);
-		//setShader(shader2DText);
+		setShader(shader2DText);
 
 		math::Vector2 startpos = pos;
 
@@ -392,10 +390,10 @@ namespace mainframe::render {
 			}
 
 			auto& glyph = font.getGlyph(point);
-
 			if (prevGlyph != nullptr) {
 				curpos.x += font.getKerning(glyph, *prevGlyph);
 			}
+
 
 			drawTexture(
 				{curpos.x + glyph.bearing.x, curpos.y - glyph.bearing.y},
@@ -406,7 +404,7 @@ namespace mainframe::render {
 				glyph.textureBottomRight,
 				rotation,
 				origin,
-				true
+				false
 			);
 
 			curpos.x += glyph.advance.x;
@@ -464,12 +462,24 @@ namespace mainframe::render {
 		in vec2 output_texpos;\n\n\
 		uniform sampler2D tex;\n\n\
 		void main(){\n\
-			outColor = texture(tex, output_texpos); //vec4(1, 1, 1, texture(tex, output_texpos).r) * output_color;\n\
-			if (outColor.a == 0.0) discard;\n\
+			outColor = vec4(1.0, 1.0, 1.0, texture(tex, output_texpos).r) * output_color;\n\
 		}\n", GL_FRAGMENT_SHADER);
-		shader2DText.attachRaw("#version 300 es\nprecision mediump float;\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
-		initShader(shader2DText);
 
+		shader2DText.attachRaw("\
+		#version 300 es\n\
+		precision mediump float;\n\
+		in vec3 position;\n\
+		in vec2 texpos;\n\
+		in vec4 color;\n\n\
+		out vec2 output_texpos;\n\
+		out vec4 output_color;\n\
+		void main() {\n\
+			gl_Position = vec4(position, 1.0);\n\
+			output_color = color;\n\
+			output_texpos = texpos;\n\
+		}\n", GL_VERTEX_SHADER);
+
+		initShader(shader2DText);
 
 		shader2D.attachRaw("#version 300 es\nprecision mediump float;\nout vec4 outColor;\n\nin vec4 output_color;\nin vec2 output_texpos;\n\nuniform sampler2D tex;\n\nvoid main(){\nvec4 texColor = texture(tex, output_texpos) * output_color;\n\nif (texColor.a <= 0.0) discard;\noutColor=texColor;\n}\n", GL_FRAGMENT_SHADER);
 		shader2D.attachRaw("#version 300 es\nprecision mediump float;\nin vec3 position;\nin vec2 texpos;\nin vec4 color;\n\nout vec2 output_texpos;\nout vec4 output_color;\nvoid main() {\ngl_Position = vec4(position, 1.0);\noutput_color = color;\noutput_texpos = texpos;\n}\n", GL_VERTEX_SHADER);
