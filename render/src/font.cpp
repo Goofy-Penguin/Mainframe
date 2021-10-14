@@ -13,7 +13,7 @@ namespace mainframe {
 			}
 
 			FT_Set_Pixel_Sizes(face, 0, size);
-			addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n");
+			addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n\r\t");
 		}
 
 		void Font::Release() {
@@ -54,14 +54,18 @@ namespace mainframe {
 		}
 
 		Glyph Font::loadGlyph(FT_ULong character) {
-			// if (!FT_Get_Char_Index(face, character)) {
-			// 	throw std::runtime_error(fmt::format("face {} does not have character {}", filename, character));
-			// }
+			if (hasGlyph(character)) return getGlyph(character);
+
+			if (!FT_Get_Char_Index(face, character)) {
+				//throw std::runtime_error(fmt::format("face {} does not have character {}", filename, character));
+				return {};
+			}
 
 			FT_Set_Pixel_Sizes(face, 0, size);
-			if (!FT_Load_Char(face, character, FT_LOAD_RENDER)) {
+			if (FT_Load_Char(face, character, FT_LOAD_RENDER) != FT_Err_Ok) {
 				//ssssssssshhhh
 				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
+				return {};
 			}
 
 			auto& atlasNode = atlas.addSprite(face->glyph->bitmap.width, face->glyph->bitmap.rows);
@@ -94,15 +98,23 @@ namespace mainframe {
 			return glyph;
 		}
 
+		bool Font::hasGlyph(uint32_t codepoint) const {
+			return std::find_if(glyphs.begin(), glyphs.end(), [codepoint](auto glyph) {
+				return glyph.codepoint == codepoint;
+			}) != glyphs.end();
+		}
+
 		const Glyph& Font::getGlyph(uint32_t codepoint) const {
 			return *std::find_if(glyphs.begin(), glyphs.end(), [codepoint](auto glyph) { return glyph.codepoint == codepoint; });
 		}
 
 		math::Vector2 Font::getStringSize(const std::string& text) const {
+			const float lineheight = getLineHeight();
+			if (text.empty()) return {0, lineheight};
+
 			math::Vector2 total;
 			math::Vector2 pos;
 
-			const float lineheight = getLineHeight();
 
 			const Glyph* prevGlyph = nullptr;
 
@@ -116,6 +128,7 @@ namespace mainframe {
 					continue;
 				}
 
+				if (!hasGlyph(point)) continue;
 				const auto& glyph = getGlyph(point);
 				auto maxh = std::max(static_cast<float>(glyph.size.y), lineheight);
 

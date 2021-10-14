@@ -389,6 +389,7 @@ namespace mainframe::render {
 				continue;
 			}
 
+			if (!font.hasGlyph(point)) continue;
 			auto& glyph = font.getGlyph(point);
 			if (prevGlyph != nullptr) {
 				curpos.x += font.getKerning(glyph, *prevGlyph);

@@ -44,6 +44,7 @@ namespace mainframe {
 
 			Glyph loadGlyph(FT_ULong character);
 
+			bool hasGlyph(uint32_t codepoint) const;
 			const Glyph& getGlyph(uint32_t codepoint) const;
 
 			math::Vector2 getStringSize(const std::string& text) const;
