@@ -29,19 +29,20 @@ namespace mainframe {
 		}
 
 		float Font::getLineHeight() const {
-			return face->size->metrics.height / 64.f;
+			return static_cast<float>(face->size->metrics.height >> 6);
 		}
 
+		// line gap?
 		float Font::textHeight() const {
 			auto& metrics = face->size->metrics;
-			return (metrics.ascender + metrics.descender) / 64.f;
+			return static_cast<float>(metrics.height >> 6 - metrics.ascender >> 6 + metrics.descender >> 6);
 		}
 
 		float Font::getKerning(const Glyph& left, const Glyph& right) const {
 			FT_Vector kerning;
 
-			FT_Get_Kerning(face, left.glyphIndex, right.glyphIndex, FT_KERNING_DEFAULT, &kerning);
-			return kerning.x / 64.f;
+			FT_Get_Kerning(face, left.glyphIndex, right.glyphIndex, FT_KERNING_UNFITTED, &kerning);
+			return static_cast<float>(kerning.x >> 6);
 		}
 
 
@@ -62,7 +63,7 @@ namespace mainframe {
 			}
 
 			FT_Set_Pixel_Sizes(face, 0, size);
-			if (FT_Load_Char(face, character, FT_LOAD_RENDER) != FT_Err_Ok) {
+			if (FT_Load_Char(face, character, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT) != FT_Err_Ok) {
 				//ssssssssshhhh
 				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
 				return {};
@@ -86,11 +87,26 @@ namespace mainframe {
 			Glyph glyph {
 				character,
 				face->glyph->glyph_index,
-				{ face->glyph->metrics.horiBearingX / 64.0f, face->glyph->metrics.horiBearingY / 64.0f },
-				{ face->glyph->advance.x / 64.0f, face->glyph->advance.y / 64.0f },
-				{ atlasNode.x / static_cast<float>(atlas.size), atlasNode.y / static_cast<float>(atlas.size) },
-				{ (atlasNode.x + atlasNode.width) / static_cast<float>(atlas.size), (atlasNode.y + atlasNode.height) / static_cast<float>(atlas.size) },
-				{ face->glyph->metrics.width / 64.0f, face->glyph->metrics.height / 64.0f },
+				{
+					static_cast<float>(face->glyph->metrics.horiBearingX) / 64.f,
+					static_cast<float>(face->glyph->metrics.horiBearingY) / 64.f
+				},
+				{
+					static_cast<float>(face->glyph->advance.x) / 64.f,
+					static_cast<float>(face->glyph->advance.y) / 64.f
+				},
+				{
+					atlasNode.x / static_cast<float>(atlas.size),
+					atlasNode.y / static_cast<float>(atlas.size)
+				},
+				{
+					(atlasNode.x + atlasNode.width) / static_cast<float>(atlas.size),
+					(atlasNode.y + atlasNode.height) / static_cast<float>(atlas.size)
+				},
+				{
+					static_cast<float>(face->glyph->metrics.width) / 64.f,
+					static_cast<float>(face->glyph->metrics.height) / 64.f
+				},
 			};
 
 			glyphs.push_back(glyph);

@@ -351,6 +351,8 @@ namespace mainframe::render {
 		setShader(shader2DText);
 
 		math::Vector2 startpos = pos;
+		startpos.x = std::roundf(startpos.x);
+		startpos.y = std::roundf(startpos.y);
 
 		math::Vector2 tsize = font.getStringSize(text);
 		if (alignx != TextAlignment::Left || aligny != TextAlignment::Left) {
