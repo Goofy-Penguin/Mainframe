@@ -32,10 +32,13 @@ namespace mainframe {
 			return static_cast<float>(face->size->metrics.height >> 6);
 		}
 
-		// line gap?
-		float Font::textHeight() const {
+		float Font::lineGap() const {
 			auto& metrics = face->size->metrics;
-			return static_cast<float>(metrics.height >> 6 - metrics.ascender >> 6 + metrics.descender >> 6);
+			return static_cast<float>(
+				(metrics.height >> 6) -
+				(metrics.ascender >> 6) +
+				(metrics.descender >> 6)
+			);
 		}
 
 		float Font::getKerning(const Glyph& left, const Glyph& right) const {
@@ -134,9 +137,11 @@ namespace mainframe {
 
 			const Glyph* prevGlyph = nullptr;
 
-			auto textIter = text.begin();
-			auto point = utf8::next(textIter, text.end());
-			for (; textIter < text.end(); point = utf8::next(textIter, text.end())) {
+			uint32_t point = 0;
+			auto beginIter = text.begin();
+			auto endIter = text.end();
+			while (beginIter != endIter) {
+				point = utf8::next(beginIter, endIter);
 				if (point == '\n') {
 					pos.y += lineheight;
 					pos.x = 0;

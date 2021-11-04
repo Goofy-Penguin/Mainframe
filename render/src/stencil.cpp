@@ -370,7 +370,7 @@ namespace mainframe::render {
 		}
 
 		float lineheight = font.getLineHeight();
-		startpos.y += lineheight;
+		startpos.y += lineheight + static_cast<float>(font.face->size->metrics.descender >> 6);
 		math::Vector2 curpos = startpos;
 
 		auto rotOrigin = origin.isNaN() ? pos + tsize / 2 + offset : origin;

@@ -32,11 +32,9 @@ namespace mainframe {
 
 			~Font();
 
-			// distance between two lines of text that are under eachother
 			float getLineHeight() const;
 
-			// "global glyph height", should be the highest any character gets
-			float textHeight() const;
+			float lineGap() const;
 
 			void addChars(std::string chars);
 
