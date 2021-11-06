@@ -31,5 +31,22 @@ namespace mainframe::game {
 			}
 		}
 	}
+
+	void World::runEntityQueue(mainframe::game::EntityIdType id) {
+		auto fnd = entityCMDQueue.find(id);
+		if(fnd == entityCMDQueue.end()) return;
+
+		for(auto& fnc: fnd->second) fnc(); // Run all queued commands
+		fnd->second.clear();
+	}
+
+	void World::queueEntityCommand(mainframe::game::EntityIdType id, std::function<void()> callback) {
+		auto fnd = entityCMDQueue.find(id);
+		if(fnd == entityCMDQueue.end()) {
+			entityCMDQueue[id] = {callback};
+		} else {
+			fnd->second.push_back(callback);
+		}
+	}
 }
 

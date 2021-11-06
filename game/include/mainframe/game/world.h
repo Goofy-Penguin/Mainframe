@@ -4,14 +4,20 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
+#include <unordered_map>
+#include <functional>
 
 namespace mainframe::game {
 
 	class World {
 		std::vector<std::unique_ptr<Entity>> entities;
+		std::unordered_map<mainframe::game::EntityIdType, std::vector<std::function<void()>>> entityCMDQueue;
 
 	public:
 		virtual ~World() = default;
+
+		virtual void queueEntityCommand(mainframe::game::EntityIdType id, std::function<void()> callback);
+		virtual void runEntityQueue(mainframe::game::EntityIdType id);
 
 		std::unique_ptr<Entity> removeEntity(Entity* ent);
 		std::unique_ptr<Entity> removeEntity(size_t id);
@@ -66,7 +72,7 @@ namespace mainframe::game {
 			entities.push_back(std::move(ent));
 		}
 
-		bool hasEntity(size_t id) const {
+		bool hasEntity(mainframe::game::EntityIdType id) const {
 			for (auto& ent : entities) {
 				if (ent->getId() == id) {
 					return true;
@@ -77,7 +83,7 @@ namespace mainframe::game {
 		}
 
 		template<class T = Entity>
-		T& findEntity(size_t id) const {
+		T& findEntity(mainframe::game::EntityIdType id) const {
 			for (auto& ent : entities) {
 				if (ent->getId() == id) {
 					return *dynamic_cast<T*>(ent.get());
