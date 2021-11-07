@@ -56,6 +56,7 @@ namespace mainframe {
 			}
 
 			VecType lerp(const VecType& other, NumberType timestep) const {
+				if((*this) == other) return other;
 				VecType ret;
 
 				ret.x = x + (other.x - x) * timestep;
