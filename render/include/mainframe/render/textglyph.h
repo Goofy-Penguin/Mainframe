@@ -8,8 +8,8 @@
 namespace mainframe {
 	namespace render {
 		struct Glyph {
-			uint32_t codepoint;
-			FT_ULong glyphIndex;
+			FT_ULong codepoint;
+			FT_UInt glyphIndex;
 			mainframe::math::Vector2 bearing;
 			mainframe::math::Vector2 advance;
 			mainframe::math::Vector2 textureTopLeft;

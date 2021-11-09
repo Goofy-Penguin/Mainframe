@@ -12,7 +12,9 @@ namespace mainframe {
 				throw std::runtime_error(fmt::format("Error: failed to load font: {}", _filename));
 			}
 
-			FT_Set_Pixel_Sizes(face, 0, size);
+			FT_Set_Char_Size(face, 0, size * 64, 72, 72); // DPI = 72
+			FT_Select_Charmap(face, FT_ENCODING_UNICODE);
+
 			addChars(" ~!@#$%^&*()_+`1234567890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm|\\<>?,./:;\"'}{][\n\r\t");
 		}
 
@@ -60,14 +62,18 @@ namespace mainframe {
 		Glyph Font::loadGlyph(FT_ULong character) {
 			if (hasGlyph(character)) return getGlyph(character);
 
-			if (!FT_Get_Char_Index(face, character)) {
+			FT_UInt charIndx = FT_Get_Char_Index(face, character);
+			if (charIndx == 0) {
 				//throw std::runtime_error(fmt::format("face {} does not have character {}", filename, character));
 				return {};
 			}
 
-			FT_Set_Pixel_Sizes(face, 0, size);
-			if (FT_Load_Char(face, character, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT) != FT_Err_Ok) {
-				//ssssssssshhhh
+			if (FT_Load_Glyph(face, charIndx, FT_LOAD_DEFAULT ) != FT_Err_Ok) {
+				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
+				return {};
+			}
+
+			if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL ) != FT_Err_Ok) {
 				//throw std::runtime_error(fmt::format("Error: failed to load char: {}\n", character));
 				return {};
 			}
@@ -75,6 +81,7 @@ namespace mainframe {
 			auto& atlasNode = atlas.addSprite(face->glyph->bitmap.width, face->glyph->bitmap.rows);
 
 			// upload glpyh into atlas
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glTextureSubImage2D(
 				atlas.glTexture,
 				0,
@@ -89,14 +96,14 @@ namespace mainframe {
 
 			Glyph glyph {
 				character,
-				face->glyph->glyph_index,
+				charIndx,
 				{
 					static_cast<float>(face->glyph->metrics.horiBearingX) / 64.f,
 					static_cast<float>(face->glyph->metrics.horiBearingY) / 64.f
 				},
 				{
-					static_cast<float>(face->glyph->advance.x) / 64.f,
-					static_cast<float>(face->glyph->advance.y) / 64.f
+					static_cast<float>(face->glyph->advance.x >> 6),
+					static_cast<float>(face->glyph->advance.y >> 6)
 				},
 				{
 					atlasNode.x / static_cast<float>(atlas.size),
@@ -113,7 +120,6 @@ namespace mainframe {
 			};
 
 			glyphs.push_back(glyph);
-
 			return glyph;
 		}
 

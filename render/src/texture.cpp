@@ -61,7 +61,7 @@ namespace mainframe {
 
 			std::vector<unsigned char> image;
 			unsigned error = lodepng::decode(image, w, h, fileName);
-			if (error != 0) throw std::runtime_error("error loading png");
+			if (error != 0) throw std::runtime_error(fmt::format("[lodepng] Error loading png: {}", error));
 
 			pixels.resize(h * w);
 			size.x = static_cast<int>(w);
