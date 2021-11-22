@@ -18,6 +18,7 @@ namespace mainframe::game {
 		return std::move(removeEntity(ent->getId()));
 	}
 
+	void World::updateEnd(float deltaTime) { }
 	void World::update(float deltaTime) {
 		auto oldsize = entities.size();
 		for (size_t i = 0; i < oldsize; i++) {

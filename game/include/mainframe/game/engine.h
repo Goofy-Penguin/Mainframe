@@ -12,17 +12,21 @@ namespace mainframe::game {
 		virtual void init();
 		virtual void quit();
 
+		virtual void pollEvents();
+
 		// called on a fixed timestep
 		virtual void update(float deltaTime);
+		virtual void updateEnd(float deltaTime);
 
 		// called acordingly with the FPS lock
-		virtual void draw();
+		virtual void draw(const double alpha);
 
 		// starts the game loop and blocks until quit is called and is handled
 		virtual void run();
 
 		// sets the game tickrate
 		virtual void setTick(unsigned int tick);
+		virtual unsigned int getTick();
 
 		// returns true after quit() is called
 		bool isQuitting();
