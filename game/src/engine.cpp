@@ -19,7 +19,7 @@ namespace mainframe {
 
 		void Engine::draw(const double alpha) {}
 		void Engine::run() {
-			auto constexpr dt = std::chrono::duration<long long, std::ratio<1, 60>>{1}; // TODO: PASS TICK TO RATIO
+			auto constexpr dt = std::chrono::duration<long long, std::ratio<1, 66>>{1}; // TODO: PASS TICK TO RATIO
 			using duration = decltype(Clock::duration{} + dt);
 			using time_point = std::chrono::time_point<Clock, duration>;
 
