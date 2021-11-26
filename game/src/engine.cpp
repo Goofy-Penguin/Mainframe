@@ -15,8 +15,7 @@ namespace mainframe {
 		void Engine::init() {}
 
 		void Engine::pollEvents() {}
-		void Engine::update(float deltaTime) {}
-		void Engine::updateEnd(float deltaTime) {}
+		void Engine::update(float deltaTime, long long gameTime) {}
 
 		void Engine::draw(const double alpha) {}
 		void Engine::run() {
@@ -39,14 +38,12 @@ namespace mainframe {
 				pollEvents();
 
 				while (accumulator >= dt) {
-					update(1.f / 60.f); // TODO: Get DT
-
+					update(std::chrono::duration<float>{dt} / 1s, t.time_since_epoch().count());
 					t += dt;
         			accumulator -= dt;
 				}
 
-				const double alpha = std::chrono::duration<double>{accumulator} / dt;
-				draw(alpha);
+				draw(std::chrono::duration<double>{accumulator} / dt);
 			}
 		}
 

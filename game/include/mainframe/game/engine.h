@@ -15,8 +15,7 @@ namespace mainframe::game {
 		virtual void pollEvents();
 
 		// called on a fixed timestep
-		virtual void update(float deltaTime);
-		virtual void updateEnd(float deltaTime);
+		virtual void update(float deltaTime, long long gameTime);
 
 		// called acordingly with the FPS lock
 		virtual void draw(const double alpha);
