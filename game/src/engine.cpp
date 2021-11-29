@@ -1,42 +1,54 @@
 #include <mainframe/game/engine.h>
+
 #include <iostream>
 #include <chrono>
 #include <thread>
 
 using namespace std::chrono;
+using namespace std::literals;
 
+using Clock = std::chrono::steady_clock;
 
 
 namespace mainframe {
 	namespace game {
-		void Engine::init() { }
-		void Engine::update(float deltaTime) { }
-		void Engine::draw() { }
+		void Engine::init() {}
 
+		void Engine::pollEvents() {}
+		void Engine::update(float deltaTime, long long gameTime) {}
+
+		void Engine::draw(const double alpha) {}
 		void Engine::run() {
-			auto prevTime = high_resolution_clock::now().time_since_epoch();
+			auto constexpr dt = std::chrono::duration<long long, std::ratio<1, 66>>{1}; // TODO: PASS TICK TO RATIO
+			using duration = decltype(Clock::duration{} + dt);
+			using time_point = std::chrono::time_point<Clock, duration>;
 
-			float timeSinceLastRender = 0;
-			float timeStep = 1.f / static_cast<float>(tick);
+			time_point t{};
+			time_point currentTime = Clock::now();
+			duration accumulator = 0s;
 
-			while (!shouldShutdown) {
+			while(!shouldShutdown) {
+				time_point newTime = Clock::now();
+				auto frameTime = newTime - currentTime;
+				if (frameTime > 250ms) frameTime = 250ms; // Anti spiral of death (mostly when debugging stuff, or game paused / minimized) // TODO: PASS Maxframe
 
-				auto currTime = high_resolution_clock::now().time_since_epoch();
-        		float durationOfLastFrame = static_cast<float>(duration_cast<milliseconds>(currTime - prevTime).count()) / 1000.f;
-				prevTime = currTime;
+				currentTime = newTime;
+    			accumulator += frameTime;
 
-				timeSinceLastRender += durationOfLastFrame;
+				pollEvents();
 
-				while (timeSinceLastRender >= timeStep) {
-           			update(timeStep);
-					timeSinceLastRender -= timeStep;
+				while (accumulator >= dt) {
+					update(std::chrono::duration<float>{dt} / 1s, t.time_since_epoch().count());
+					t += dt;
+        			accumulator -= dt;
 				}
 
-				if (shouldShutdown) break;
-				draw();
-
-				std::this_thread::sleep_for(milliseconds(1000 / tick));
+				draw(std::chrono::duration<double>{accumulator} / dt);
 			}
+		}
+
+		unsigned int Engine::getTick(){
+			return tick;
 		}
 
 		void Engine::setTick(unsigned int t){
