@@ -67,7 +67,11 @@ namespace mainframe {
 			}
 
 			VecType floor() const {
-				return {std::floor(x), std::floor(y), std::floor(z)};
+				return { std::floor(x), std::floor(y), std::floor(z) };
+			}
+
+			VecType round() const {
+				return { std::round(x), std::round(y), std::round(z) };
 			}
 
 			VecType getRotated(const VecType& ang, const VecType& orgin) const {
