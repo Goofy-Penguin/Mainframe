@@ -19,6 +19,8 @@ namespace mainframe {
 		Texture::Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol) {
 			pixels.resize(initsize.y * initsize.x);
 			size = initsize;
+			originalSize = initsize;
+
 			for (auto& elm : pixels) {
 				elm = bgcol;
 			}
@@ -63,10 +65,13 @@ namespace mainframe {
 			unsigned error = lodepng::decode(image, w, h, fileName);
 			if (error != 0) throw std::runtime_error(fmt::format("[lodepng] Error loading png: {}", error));
 
-			pixels.resize(h * w);
-			size.x = static_cast<int>(w);
-			size.y = static_cast<int>(h);
+			size = {
+				static_cast<int>(w),
+				static_cast<int>(h)
+			};
+			originalSize = size;
 
+			pixels.resize(h * w);
 			for (unsigned y = 0; y < h; y++) {
 				for (unsigned x = 0; x < w; x++) {
 					int offset = y * w * 4 + x * 4;
@@ -89,6 +94,10 @@ namespace mainframe {
 			return size;
 		}
 
+		const mainframe::math::Vector2i& Texture::getOriginalSize() const {
+			return originalSize;
+		}
+
 		unsigned int Texture::getHandle() const {
 			return handle->glHandle;
 		}
@@ -106,13 +115,12 @@ namespace mainframe {
 			newpixels.resize(newsize.y * newsize.x);
 
 			if (!pixels.empty() && size.x > 0 && size.y > 0) {
-				auto wperc = static_cast<float>(newsize.x) / static_cast<float>(size.x);
-				auto hperc = static_cast<float>(newsize.y) / static_cast<float>(size.y);
+				auto percentage = newsize.cast<float>() / size.cast<float>();
 
 				for (int cy = 0; cy < newsize.y; cy++) {
 					for (int cx = 0; cx < newsize.x; cx++) {
 						int pixel = cy * newsize.x + cx;
-						int nearestMatch = static_cast<int>(cy / hperc)* size.x + static_cast<int>(cx / wperc);
+						int nearestMatch = static_cast<int>(cy / percentage.y) * size.x + static_cast<int>(cx / percentage.x);
 
 						newpixels[pixel] = pixels[nearestMatch];
 					}

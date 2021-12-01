@@ -24,6 +24,7 @@ namespace mainframe {
 			unsigned int quality = 0x2600; // GL_NEAREST
 			unsigned int wrap = 0x2901; // GL_REPEAT
 
+			mainframe::math::Vector2i originalSize;
 			mainframe::math::Vector2i size;
 			std::vector<Color> pixels;
 			std::shared_ptr<TextureHandle> handle = std::make_shared<TextureHandle>();
@@ -37,6 +38,7 @@ namespace mainframe {
 			Texture(const std::string& fileName);
 
 			const mainframe::math::Vector2i& getSize() const;
+			const mainframe::math::Vector2i& getOriginalSize() const;
 			void resize(const mainframe::math::Vector2i& newsize);
 
 			mainframe::render::Color& getPixel(unsigned x, unsigned y);
