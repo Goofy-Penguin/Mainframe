@@ -74,6 +74,10 @@ namespace mainframe {
 				return { std::round(x), std::round(y), std::round(z) };
 			}
 
+			VecType ceil() const {
+				return { std::ceil(x), std::ceil(y), std::ceil(z) };
+			}
+
 			VecType getRotated(const VecType& ang, const VecType& orgin) const {
 				// TODO: when importing matrix
 				//Matrix rotmat = Matrix::CreateRotationz(ang.x) * Matrix::CreateRotationy(ang.z) * Matrix::CreateRotationx(ang.y) * Matrix::CreateTranslation(orgin);

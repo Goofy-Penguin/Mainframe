@@ -59,6 +59,18 @@ namespace mainframe {
 				return ret;
 			}
 
+			VecType floor() const {
+				return { std::floor(x), std::floor(y) };
+			}
+
+			VecType round() const {
+				return { std::round(x), std::round(y) };
+			}
+
+			VecType ceil() const {
+				return { std::ceil(x), std::ceil(y) };
+			}
+
 			VecType clamp(const VecType& min, const VecType& max) const {
 				return {
 					std::clamp(x, min.x, max.x),
