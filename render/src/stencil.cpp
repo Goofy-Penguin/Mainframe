@@ -238,12 +238,14 @@ namespace mainframe::render {
 	}
 
 	void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, const Texture& tex, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
+		// TODO: Check if texture is transparent or not before applying this
+		//glBlendFunc(tex.blend_src, tex.blend_dest);
+
 		drawTexture(pos, size, tex.getHandle(), col, uvStart, uvEnd, rotation, origin);
 	}
 
 	void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin, bool overrideShader) {
 		if (col.a == 0) return;
-
 		pos += offset;
 
 		// TODO: idunno how to support clipping with rotation UV magic

@@ -188,6 +188,11 @@ namespace mainframe {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		}
 
+		void Texture::setBlend(unsigned int blend_src, unsigned int blend_dest) {
+			this->blend_src = blend_src;
+			this->blend_dest = blend_dest;
+		}
+
 		void Texture::bind() {
 			auto& glhandle = handle->glHandle;
 			if (glhandle != UINT_MAX) return;

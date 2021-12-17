@@ -32,6 +32,9 @@ namespace mainframe {
 			void checkPixels() const;
 
 		public:
+			unsigned int blend_src = 0x0303; // GL_SRC_ALPHA
+			unsigned int blend_dest = 0x0302; // GL_ONE_MINUS_SRC_ALPHA
+
 			Texture() = default;
 			Texture(const Texture& t) = default;
 			Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol = Colors::Transparent);
@@ -53,6 +56,7 @@ namespace mainframe {
 			void upload();
 			void setQuality(unsigned int quality);
 			void setWrap(unsigned int wrap);
+			void setBlend(unsigned int blend_src, unsigned int blend_dest);
 
 			void use();
 			void use() const;
