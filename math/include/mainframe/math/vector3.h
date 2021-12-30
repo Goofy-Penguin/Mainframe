@@ -100,15 +100,12 @@ namespace mainframe {
 
 			// FROM: https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Vector3.cs#L324
 			NumberType angle(const VecType& other) const {
-				float sqrFrom = std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2);
-				float sqrTo = std::pow(other.x, 2) + std::pow(other.y, 2) + std::pow(other.z, 2);
-
-				float denominator = std::sqrt(sqrFrom * sqrTo);
-				if (denominator < 1e-15F)
+				float denominator = length() * other.length();
+				if (denominator < 1e-15f)
 					return 0.f;
 
 				float val = dot(other) / denominator;
-				return std::acos(std::clamp(val, -1.f, 1.f)) * (360 / mainframe::numbers::pi<float> * 2);
+				return std::acos(val);
 			}
 
 			NumberType dot(const VecType& other) const {
