@@ -61,7 +61,7 @@ public:
 		img->setImage(tex);
 	}
 
-	virtual void draw() override {
+	virtual void draw(const double alpha) override {
 		if (window.getShouldClose()) {
 			quit();
 		}
@@ -87,7 +87,7 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void update(float deltaTime) override {
+	virtual void update(float deltaTime, long long gameTime) override {
 		Window::pollEvents();
 		scene->update(deltaTime);
 	}

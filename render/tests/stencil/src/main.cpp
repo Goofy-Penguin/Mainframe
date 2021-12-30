@@ -23,7 +23,7 @@ public:
 		tex.upload();
 	}
 
-	virtual void draw() override {
+	virtual void draw(const double alpha) override {
 		if (window.getShouldClose()) {
 			quit();
 			return;
@@ -68,7 +68,7 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void update(float deltaTime) override {
+	virtual void update(float deltaTime, long long gameTime) override {
 		Window::pollEvents();
 	}
 
