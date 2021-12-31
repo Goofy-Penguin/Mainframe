@@ -22,6 +22,9 @@ namespace mainframe {
 			explicit Vector3_t(Vector2_t<NumberType> xy, NumberType _z = 0) : x(xy.x), y(xy.y), z(_z) {}
 			Vector3_t(NumberType _x, NumberType _y, NumberType _z = 0) : x(_x), y(_y), z(_z) {}
 
+			static VecType zero() { return VecType(); }
+			static VecType one() { return VecType(1, 1, 1); }
+
 			//TODO: fix to use vector2 or update function to work in 3d space
 			NumberType distanceToLine(const VecType& point_a, const VecType& point_b) {
 				VecType ap = *this - point_a;
@@ -36,6 +39,7 @@ namespace mainframe {
 				VecType closest_point = point_a + ab * t;
 				return closest_point.distance(*this);
 			}
+
 
 			NumberType distance(const VecType& other) const {
 				return std::sqrt(((x - other.x) * (x - other.x)) + ((y - other.y) * (y - other.y)) + ((z - other.z) * (z - other.z)));

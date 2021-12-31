@@ -25,6 +25,9 @@ namespace mainframe {
 			template<class T>
 			Vector2_t(Vector2_t<T> other) : x(static_cast<NumberType>(other.x)), y(static_cast<NumberType>(other.y)) {}
 
+			static VecType zero() { return VecType(); }
+			static VecType one() { return VecType(1, 1); }
+
 			NumberType distance(const VecType& other) const {
 				return std::sqrt(((x - other.x) * (x - other.x)) + ((y - other.y) * (y - other.y)));
 			}
