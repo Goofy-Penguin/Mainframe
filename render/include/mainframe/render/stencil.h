@@ -74,8 +74,6 @@ namespace mainframe::render {
 		};
 
 	private:
-		Shader shader2DText;
-		Shader shader2D;
 
 		VIABuffer buffer;
 
@@ -103,6 +101,8 @@ namespace mainframe::render {
 		void pushIndices(unsigned int a, unsigned int b, unsigned int c);
 
 	public:
+		Shader shader2DText;
+		Shader shader2D;
 
 		void drawRecording(const Recording& recording);
 		void drawRecording(const Recording& recording, const mainframe::math::Vector2& pos);
