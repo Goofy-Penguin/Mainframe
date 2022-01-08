@@ -88,6 +88,7 @@ namespace mainframe::render {
 		mainframe::math::Vector2i windowSize;
 
 		bool deptDisabled = false;
+		bool clipDisabled = false;
 
 		mainframe::math::Vector2 offset;
 		mainframe::math::Vector2 oldOffset;
@@ -124,6 +125,9 @@ namespace mainframe::render {
 
 		void pushLocalOffset();
 		void popLocalOffset();
+
+		void pushDisableClip();
+		void popDisableClip();
 
 		void pushOffset(const mainframe::math::Vector2& offset);
 		void popOffset();

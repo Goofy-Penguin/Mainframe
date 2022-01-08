@@ -86,6 +86,14 @@ namespace mainframe::render {
 		offset = oldOffset;
 	}
 
+	void Stencil::pushDisableClip() {
+		clipDisabled = true;
+	}
+
+	void Stencil::popDisableClip() {
+		clipDisabled = false;
+	}
+
 	void Stencil::pushIndices(unsigned int a, unsigned int b, unsigned int c) {
 		auto pos = static_cast<unsigned int>(vertices.size());
 
@@ -252,7 +260,7 @@ namespace mainframe::render {
 		// move to shader? should also speed up this process here as the GPU already computes the coords for us
 		// needs fallback for EGL then tho....
 
-		if (rotation == 0) {
+		if (rotation == 0 && !clipDisabled) {
 			auto& clip = getClippingRect();
 			auto pixelSize = (uvEnd - uvStart) / size;
 
