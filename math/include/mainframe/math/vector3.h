@@ -72,6 +72,14 @@ namespace mainframe {
 				return ret;
 			}
 
+			VecType clamp(NumberType min, NumberType max) const {
+				return {
+					std::clamp(x, min, max),
+					std::clamp(y, min, max),
+					std::clamp(z, min, max)
+				};
+			}
+
 			VecType floor() const {
 				return { std::floor(x), std::floor(y), std::floor(z) };
 			}

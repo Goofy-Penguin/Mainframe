@@ -74,10 +74,17 @@ namespace mainframe {
 				return { std::ceil(x), std::ceil(y) };
 			}
 
-			VecType clamp(const VecType& min, const VecType& max) const {
+			VecType clampVec(const VecType& min, const VecType& max) const {
 				return {
 					std::clamp(x, min.x, max.x),
 					std::clamp(y, min.y, max.y)
+				};
+			}
+
+			VecType clamp(NumberType min, NumberType max) const {
+				return {
+					std::clamp(x, min, max),
+					std::clamp(y, min, max)
 				};
 			}
 
