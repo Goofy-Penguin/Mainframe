@@ -13,6 +13,7 @@ namespace mainframe::game {
 		World* world = nullptr;
 		mainframe::math::Matrix matrix;
 		mainframe::math::Vector3 velocity;
+
 		EntityIdType id = 0xFFFFFFFF;
 
 	public:
