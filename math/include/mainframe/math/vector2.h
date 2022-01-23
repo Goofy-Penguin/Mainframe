@@ -53,6 +53,10 @@ namespace mainframe {
 				return x * other.y - y * other.x;
 			}
 
+			VecType abs() const {
+				return {std::abs(x), std::abs(y)};
+			}
+
 			VecType lerp(const VecType& other, NumberType timestep) const {
 				VecType ret;
 

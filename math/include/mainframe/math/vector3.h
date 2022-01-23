@@ -53,6 +53,10 @@ namespace mainframe {
 				return (*this) / length();
 			}
 
+			VecType abs() const {
+				return {std::abs(x), std::abs(y), std::abs(z)};
+			}
+
 			Vector2_t<NumberType> xy() const {
 				return {x, y};
 			}
