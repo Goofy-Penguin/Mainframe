@@ -46,6 +46,8 @@ namespace mainframe {
 			const Glyph& getGlyph(uint32_t codepoint) const;
 
 			math::Vector2 getStringSize(const std::string& text) const;
+			static size_t getByteCount(const std::string& text, int characterPosition);
+			static size_t getCharacterCount(const std::string& text);
 
 			static std::string toUTF8(const std::wstring text);
 		};

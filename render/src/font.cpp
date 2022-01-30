@@ -171,6 +171,34 @@ namespace mainframe {
 			return total;
 		}
 
+		size_t Font::getByteCount(const std::string& text, int characterPosition) {
+			int count = 0;
+			auto beginIter = text.begin();
+			auto endIter = text.end();
+			while (beginIter != endIter) {
+				utf8::next(beginIter, endIter);
+				count++;
+
+				if (characterPosition == count) {
+					return std::distance(text.begin(), beginIter);
+				}
+			}
+
+			return text.size();
+		}
+
+		size_t Font::getCharacterCount(const std::string& text) {
+			size_t count = 0;
+			auto beginIter = text.begin();
+			auto endIter = text.end();
+			while (beginIter != endIter) {
+				utf8::next(beginIter, endIter);
+				count++;
+			}
+
+			return count;
+		}
+
 		std::string Font::toUTF8(const std::wstring text) {
 			std::string result;
 			utf8::utf16to8(text.begin(), text.end(), std::back_inserter(result));
