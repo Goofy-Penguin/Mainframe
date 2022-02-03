@@ -51,6 +51,7 @@ namespace mainframe {
 
 			void setPixel(const mainframe::math::Vector2i& pos, const mainframe::render::Color& col);
 			void setPixels(const mainframe::math::Vector2i& size_, const std::vector<Color>& data);
+			void setMaxAnisotropy();
 
 			void bind();
 			void upload();

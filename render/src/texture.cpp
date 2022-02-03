@@ -176,6 +176,18 @@ namespace mainframe {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, quality);
 		}
 
+		void Texture::setMaxAnisotropy() {
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) return; // Not bound yet
+
+			GLfloat fLargest;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+
+			// Re-bind it
+			glBindTexture(GL_TEXTURE_2D, glhandle);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
+		}
+
 		void Texture::setWrap(unsigned int wrap) {
 			this->wrap = wrap;
 
