@@ -172,13 +172,15 @@ namespace mainframe {
 		}
 
 		size_t Font::getByteCount(const std::string& text, int characterPosition) {
+			if (characterPosition == 0) return 0;
+
 			int count = 0;
 			auto beginIter = text.begin();
 			auto endIter = text.end();
 			while (beginIter != endIter) {
 				utf8::next(beginIter, endIter);
-				count++;
 
+				count++;
 				if (characterPosition == count) {
 					return std::distance(text.begin(), beginIter);
 				}
