@@ -46,7 +46,9 @@ namespace mainframe {
 			virtual void updateBefore();
 			virtual void update();
 			virtual void updateAfter();
-			virtual bool requiresFocus();
+
+			virtual bool lockKeyboard();
+			virtual bool lockScroll();
 
 			virtual void bringToFront();
 

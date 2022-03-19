@@ -11,6 +11,22 @@ namespace mainframe {
 			return ret;
 		}
 
+		std::shared_ptr<Element> Scene::getFocusRoot() {
+			if (focusedElement.expired()) return {};
+			auto child = focusedElement.lock();
+
+			while(true) {
+				if(child == nullptr) return {};
+				if(!child->hasParent()) return child;
+
+				auto cnv = child->getParent<mainframe::ui::Element>();
+				if(cnv == nullptr) return child; // It's a container, not an element, skip it
+				child = cnv;
+			}
+
+			return {};
+		}
+
 		std::shared_ptr<Element> Scene::getFocus() {
 			if (focusedElement.expired()) return {};
 			return focusedElement.lock();

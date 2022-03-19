@@ -32,6 +32,7 @@ namespace mainframe {
 			utils::ringbuffer<std::function<void()>> invokes = {64};
 
 		public:
+
 			std::weak_ptr<Element> focusedElement;
 			std::weak_ptr<Element> hoveredElement;
 
@@ -49,6 +50,7 @@ namespace mainframe {
 
 			void setWindow(game::Window& window);
 
+			std::shared_ptr<Element> getFocusRoot();
 			std::shared_ptr<Element> getFocus();
 			void setFocus(std::shared_ptr<Element> elm);
 
