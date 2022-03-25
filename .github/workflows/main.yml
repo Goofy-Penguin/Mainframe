@@ -15,7 +15,8 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install libgl1-mesa-glx libgl1-mesa-dev libglew-dev ninja-build
+        sudo apt install libgl1-mesa-glx libgl1-mesa-dev libglew-dev ninja-build sudo python3-pip
+        sudo pip install conan
 
     - name: Build
       run: |
