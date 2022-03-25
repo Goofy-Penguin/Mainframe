@@ -9,7 +9,10 @@ namespace mainframe::game {
 		bool shouldShutdown = false;
 		unsigned int tps = 66;
 		unsigned int fps = 60;
+		bool runningSlow = false;
 		std::chrono::milliseconds deadlockBreaker = std::chrono::milliseconds(500);
+		std::chrono::nanoseconds delayBetweenTicks;
+		std::chrono::nanoseconds delayBetweenFrames;
 
 	public:
 		// one time initializer
@@ -45,5 +48,8 @@ namespace mainframe::game {
 
 		// returns true after quit() is called
 		bool isQuitting();
+
+		// are we running behind on updates
+		bool isRunningSlow();
 	};
 }

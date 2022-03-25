@@ -19,9 +19,8 @@ namespace mainframe {
 
 		void Engine::draw(const double alpha) {}
 		void Engine::run() {
-			auto delayBetweenTicks = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / tps);
-			auto delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
-			//auto minDelay = std::min(delayBetweenFrames, delayBetweenTicks);
+			delayBetweenTicks = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / tps);
+			delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
 
 			// setup init timestamps
 			time_point gameStart = Clock::now();
@@ -60,9 +59,13 @@ namespace mainframe {
 				// or if we need to keep going without sleep to keep up
 				newTime = Clock::now();
 				frameTimeTPS = newTime - currentTimeTPS;
-				if (frameTimeTPS < delayBetweenTicks) {
-					std::this_thread::sleep_for(1ms);
+				if (frameTimeTPS >= delayBetweenTicks) {
+					runningSlow = true;
+					continue;
 				}
+
+				runningSlow = false;
+				std::this_thread::sleep_for(1ms);
 			}
 		}
 
@@ -76,6 +79,7 @@ namespace mainframe {
 
 		void Engine::setTPS(unsigned int ticksPerSecond){
 			tps = ticksPerSecond;
+			delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
 		}
 
 		unsigned int Engine::getTPS() {
@@ -84,6 +88,7 @@ namespace mainframe {
 
 		void Engine::setFPS(unsigned int framesPerSeond){
 			fps = framesPerSeond;
+			delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
 		}
 
 		unsigned int Engine::getFPS() {
