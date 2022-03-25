@@ -21,7 +21,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G Ninja
+        cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release
         ninja
 
     # TODO probably run the tests
