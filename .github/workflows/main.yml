@@ -16,8 +16,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install build-essential libgl1-mesa-glx libgl1-mesa-dev libglew-dev ninja-build sudo python3-pip
-        pip install conan
-        conan install
+        sudo pip install conan
 
     - name: Build
       run: |
