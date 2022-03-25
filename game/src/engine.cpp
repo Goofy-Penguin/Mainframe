@@ -102,5 +102,9 @@ namespace mainframe {
 		bool Engine::isQuitting() {
 			return shouldShutdown;
 		}
+
+		bool Engine::isRunningSlow() {
+			return runningSlow;
+		}
 	}
 }
