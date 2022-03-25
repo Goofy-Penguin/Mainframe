@@ -1,17 +1,24 @@
 ﻿#pragma once
 
 #include <string>
+#include <chrono>
 
 namespace mainframe::game {
 	class Engine {
 	private:
 		bool shouldShutdown = false;
-		unsigned int tick = 66;
+		unsigned int tps = 66;
+		unsigned int fps = 60;
+		std::chrono::milliseconds deadlockBreaker = std::chrono::milliseconds(500);
 
 	public:
+		// one time initializer
 		virtual void init();
+
+		// mark quit flag and allow for `isQuiting()` for clean exit threaded
 		virtual void quit();
 
+		// poll window and input events
 		virtual void pollEvents();
 
 		// called on a fixed timestep
@@ -23,9 +30,18 @@ namespace mainframe::game {
 		// starts the game loop and blocks until quit is called and is handled
 		virtual void run();
 
-		// sets the game tickrate
-		virtual void setTick(unsigned int tick);
-		virtual unsigned int getTick();
+		// sets maximum time of backlog for update and draw calls. Once backlog will be cleared
+		// and will start skipping cycles
+		virtual void setBreakerTime(const std::chrono::milliseconds& timeBeforeBreaker);
+		virtual const std::chrono::milliseconds& getBreakerTime();
+
+		// sets the update rate per second
+		virtual void setTPS(unsigned int ticksPerSecond);
+		virtual unsigned int getTPS();
+
+		// sets the draw rate per second
+		virtual void setFPS(unsigned int framesPerSecond);
+		virtual unsigned int getFPS();
 
 		// returns true after quit() is called
 		bool isQuitting();

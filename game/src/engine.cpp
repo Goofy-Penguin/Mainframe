@@ -19,40 +19,75 @@ namespace mainframe {
 
 		void Engine::draw(const double alpha) {}
 		void Engine::run() {
-			auto constexpr dt = std::chrono::duration<long long, std::ratio<1, 66>>{1}; // TODO: PASS TICK TO RATIO
-			using duration = decltype(Clock::duration{} + dt);
-			using time_point = std::chrono::time_point<Clock, duration>;
+			auto delayBetweenTicks = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / tps);
+			auto delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
+			//auto minDelay = std::min(delayBetweenFrames, delayBetweenTicks);
 
-			time_point t{};
-			time_point currentTime = Clock::now();
-			duration accumulator = 0s;
+			// setup init timestamps
+			time_point gameStart = Clock::now();
+			time_point currentTimeTPS = gameStart;
+			time_point currentTimeFPS = gameStart;
 
+			// while game is running, do update and draw logic
 			while(!shouldShutdown) {
-				time_point newTime = Clock::now();
-				auto frameTime = newTime - currentTime;
-				if (frameTime > 250ms) frameTime = 250ms; // Anti spiral of death (mostly when debugging stuff, or game paused / minimized) // TODO: PASS Maxframe
-
-				currentTime = newTime;
-    			accumulator += frameTime;
-
+				// process game input
 				pollEvents();
 
-				while (accumulator >= dt) {
-					update(std::chrono::duration<float>{dt} / 1s, t.time_since_epoch().count());
-					t += dt;
-        			accumulator -= dt;
+				// track current "tick" time points
+				time_point newTime = Clock::now();
+				auto frameTimeTPS = newTime - currentTimeTPS;
+				auto frameTimeFPS = newTime - currentTimeFPS;
+
+				// Anti spiral of death (mostly when debugging stuff, or game paused / minimized)
+				if (frameTimeTPS > deadlockBreaker) frameTimeTPS = deadlockBreaker;
+				if (frameTimeFPS > deadlockBreaker) frameTimeFPS = deadlockBreaker;
+
+				// ensure we call update as much times per second as requested
+				while(frameTimeTPS >= delayBetweenTicks) {
+					update(1.0f / static_cast<float>(tps), (newTime - gameStart).count());
+					frameTimeTPS -= delayBetweenTicks;
+					currentTimeTPS += delayBetweenTicks;
 				}
 
-				draw(std::chrono::duration<double>{accumulator} / dt);
+				// we only need to draw a single frame after a update
+				// else we're redrawing the same thing without any change
+				if (frameTimeFPS >= delayBetweenFrames) {
+					draw(1.0f / static_cast<float>(fps));
+					currentTimeFPS = newTime;
+				}
+
+				// check if we can go sleep to let the cpu rest
+				// or if we need to keep going without sleep to keep up
+				newTime = Clock::now();
+				frameTimeTPS = newTime - currentTimeTPS;
+				if (frameTimeTPS < delayBetweenTicks) {
+					std::this_thread::sleep_for(1ms);
+				}
 			}
 		}
 
-		unsigned int Engine::getTick(){
-			return tick;
+		void Engine::setBreakerTime(const std::chrono::milliseconds& timeBeforeBreaker) {
+			deadlockBreaker = timeBeforeBreaker;
 		}
 
-		void Engine::setTick(unsigned int t){
-			tick = t;
+		const std::chrono::milliseconds& Engine::getBreakerTime() {
+			return deadlockBreaker;
+		}
+
+		void Engine::setTPS(unsigned int ticksPerSecond){
+			tps = ticksPerSecond;
+		}
+
+		unsigned int Engine::getTPS() {
+			return tps;
+		}
+
+		void Engine::setFPS(unsigned int framesPerSeond){
+			fps = framesPerSeond;
+		}
+
+		unsigned int Engine::getFPS() {
+			return fps;
 		}
 
 		void Engine::quit() {
