@@ -90,7 +90,8 @@ int main() {
 	}
 
 	GameTest e(w);
-	e.setTick(75);
+	e.setTPS(60);
+	e.setFPS(60);
 
 	e.init();
 	e.run();
