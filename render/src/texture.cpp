@@ -1,5 +1,5 @@
 #include <mainframe/render/texture.h>
-#include <mainframe/libs/lodepng.h>
+#include <lodepng.h>
 
 #include <stdexcept>
 #include <GL/glew.h>
@@ -19,6 +19,8 @@ namespace mainframe {
 		Texture::Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol) {
 			pixels.resize(initsize.y * initsize.x);
 			size = initsize;
+			originalSize = initsize;
+
 			for (auto& elm : pixels) {
 				elm = bgcol;
 			}
@@ -61,27 +63,39 @@ namespace mainframe {
 
 			std::vector<unsigned char> image;
 			unsigned error = lodepng::decode(image, w, h, fileName);
-			if (error != 0) throw std::runtime_error("error loading png");
+			if (error != 0) throw std::runtime_error(fmt::format("[lodepng] Error loading png: {}", error));
+
+			size = {
+				static_cast<int>(w),
+				static_cast<int>(h)
+			};
+			originalSize = size;
 
 			pixels.resize(h * w);
-			size.x = static_cast<int>(w);
-			size.y = static_cast<int>(h);
-
 			for (unsigned y = 0; y < h; y++) {
 				for (unsigned x = 0; x < w; x++) {
 					int offset = y * w * 4 + x * 4;
 
 					auto& p = getPixel(x, y);
-					p.r = static_cast<float>(image[offset++]) / 255;
-					p.g = static_cast<float>(image[offset++]) / 255;
-					p.b = static_cast<float>(image[offset++]) / 255;
-					p.a = static_cast<float>(image[offset++]) / 255;
+					float r = static_cast<float>(image[offset++]) / 255;
+					float g = static_cast<float>(image[offset++]) / 255;
+					float b = static_cast<float>(image[offset++]) / 255;
+					float a = static_cast<float>(image[offset++]) / 255;
+
+					p.r = r * a;
+					p.g = g * a;
+					p.b = b * a;
+					p.a = a;
 				}
 			}
 		}
 
 		const mainframe::math::Vector2i& Texture::getSize() const {
 			return size;
+		}
+
+		const mainframe::math::Vector2i& Texture::getOriginalSize() const {
+			return originalSize;
 		}
 
 		unsigned int Texture::getHandle() const {
@@ -101,13 +115,12 @@ namespace mainframe {
 			newpixels.resize(newsize.y * newsize.x);
 
 			if (!pixels.empty() && size.x > 0 && size.y > 0) {
-				auto wperc = static_cast<float>(newsize.x) / static_cast<float>(size.x);
-				auto hperc = static_cast<float>(newsize.y) / static_cast<float>(size.y);
+				auto percentage = newsize.cast<float>() / size.cast<float>();
 
 				for (int cy = 0; cy < newsize.y; cy++) {
 					for (int cx = 0; cx < newsize.x; cx++) {
 						int pixel = cy * newsize.x + cx;
-						int nearestMatch = static_cast<int>(cy / hperc)* size.x + static_cast<int>(cx / wperc);
+						int nearestMatch = static_cast<int>(cy / percentage.y) * size.x + static_cast<int>(cx / percentage.x);
 
 						newpixels[pixel] = pixels[nearestMatch];
 					}
@@ -151,6 +164,47 @@ namespace mainframe {
 			size = size_;
 		}
 
+		void Texture::setQuality(unsigned int quality) {
+			this->quality = quality;
+
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) return; // Not bound yet
+
+			// Re-bind it
+			glBindTexture(GL_TEXTURE_2D, glhandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, quality);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, quality);
+		}
+
+		void Texture::setMaxAnisotropy() {
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) return; // Not bound yet
+
+			GLfloat fLargest;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+
+			// Re-bind it
+			glBindTexture(GL_TEXTURE_2D, glhandle);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
+		}
+
+		void Texture::setWrap(unsigned int wrap) {
+			this->wrap = wrap;
+
+			auto& glhandle = handle->glHandle;
+			if (glhandle == UINT_MAX) return; // Not bound yet
+
+			// Re-bind it
+			glBindTexture(GL_TEXTURE_2D, glhandle);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+		}
+
+		void Texture::setBlend(unsigned int blend_src, unsigned int blend_dest) {
+			this->blend_src = blend_src;
+			this->blend_dest = blend_dest;
+		}
+
 		void Texture::bind() {
 			auto& glhandle = handle->glHandle;
 			if (glhandle != UINT_MAX) return;
@@ -186,10 +240,10 @@ namespace mainframe {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, glhandle);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, quality);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, quality);
 		}
 
 		std::vector<Color>& Texture::data() {

@@ -4,9 +4,9 @@ namespace mainframe {
 	namespace render {
 		class VIABuffer {
 		private:
-			unsigned int vao = -1;
-			unsigned int vbo = -1;
-			unsigned int ebo = -1;
+			unsigned int vao = 0xFFFFFFFF;
+			unsigned int vbo = 0xFFFFFFFF;
+			unsigned int ebo = 0xFFFFFFFF;
 
 		public:
 			VIABuffer();

@@ -11,6 +11,22 @@ namespace mainframe {
 			return ret;
 		}
 
+		std::shared_ptr<Element> Scene::getFocusRoot() {
+			if (focusedElement.expired()) return {};
+			auto child = focusedElement.lock();
+
+			while(true) {
+				if(child == nullptr) return {};
+				if(!child->hasParent()) return child;
+
+				auto cnv = child->getParent<mainframe::ui::Element>();
+				if(cnv == nullptr) return child; // It's a container, not an element, skip it
+				child = cnv;
+			}
+
+			return {};
+		}
+
 		std::shared_ptr<Element> Scene::getFocus() {
 			if (focusedElement.expired()) return {};
 			return focusedElement.lock();
@@ -98,7 +114,7 @@ namespace mainframe {
 			stencil.draw();
 		}
 
-		void Scene::update() {
+		void Scene::update(float deltaTime) {
 			auto& invoker = getInvoker();
 			while (invoker.available()) {
 				invoker.pop()();
@@ -255,14 +271,14 @@ namespace mainframe {
 			auto elm = focusedElement.lock();
 			switch (state) {
 				case KeyState::inactive: {
-					elm->keyDown(key, scancode, mods, false);
-					elm->onKeyDown(key, scancode, mods, false);
+					elm->keyUp(key, scancode, mods);
+					elm->onKeyUp(key, scancode, mods);
 					break;
 				}
 
 				case KeyState::active: {
-					elm->keyUp(key, scancode, mods);
-					elm->onKeyUp(key, scancode, mods);
+					elm->keyDown(key, scancode, mods, false);
+					elm->onKeyDown(key, scancode, mods, false);
 					break;
 				}
 

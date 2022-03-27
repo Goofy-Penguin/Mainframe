@@ -45,7 +45,7 @@ namespace mainframe {
 			if (!dragging) return;
 
 			auto p = getParent<ElementContainer>();
-			setPos((getPos() + (mousePos - dragStart)).clamp(p->getPos(), p->getPos() + p->getSize() - getSize()));
+			setPos((getPos() + (mousePos - dragStart)).clampVec(p->getPos(), p->getPos() + p->getSize() - getSize()));
 		}
 
 		void Frame::mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods) {
@@ -86,12 +86,6 @@ namespace mainframe {
 			}
 
 			stencil.drawText(*getFont(), getText(), pos, getColor(), getAlignmentX(), getAlignmentY());
-
-			stencil.pushOffset(contentStart + borderSize);
-		}
-
-		void Frame::drawAfter(render::Stencil& stencil) {
-			stencil.popOffset();
 		}
 	}
 }

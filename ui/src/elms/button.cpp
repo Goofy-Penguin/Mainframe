@@ -21,7 +21,7 @@ namespace mainframe {
 			auto bsize = getBorderSize();
 
 			stencil.drawBoxOutlined({}, getSize(), static_cast<float>(bsize), getBorderColor());
-			stencil.drawBox(static_cast<float>(bsize), getSize() - bsize * 2, getHovering() ? getBackColor() : getHoverColor());
+			stencil.drawBox(static_cast<float>(bsize), getSize() - bsize * 2, !getHovering() ? getBackColor() : getHoverColor());
 
 			auto size = getSize();
 

@@ -21,6 +21,10 @@ namespace mainframe {
 
 		class Texture {
 		private:
+			unsigned int quality = 0x2600; // GL_NEAREST
+			unsigned int wrap = 0x2901; // GL_REPEAT
+
+			mainframe::math::Vector2i originalSize;
 			mainframe::math::Vector2i size;
 			std::vector<Color> pixels;
 			std::shared_ptr<TextureHandle> handle = std::make_shared<TextureHandle>();
@@ -28,12 +32,16 @@ namespace mainframe {
 			void checkPixels() const;
 
 		public:
+			unsigned int blend_src = 0x0303; // GL_SRC_ALPHA
+			unsigned int blend_dest = 0x0302; // GL_ONE_MINUS_SRC_ALPHA
+
 			Texture() = default;
 			Texture(const Texture& t) = default;
 			Texture(const mainframe::math::Vector2i& initsize, const mainframe::render::Color& bgcol = Colors::Transparent);
 			Texture(const std::string& fileName);
 
 			const mainframe::math::Vector2i& getSize() const;
+			const mainframe::math::Vector2i& getOriginalSize() const;
 			void resize(const mainframe::math::Vector2i& newsize);
 
 			mainframe::render::Color& getPixel(unsigned x, unsigned y);
@@ -43,9 +51,14 @@ namespace mainframe {
 
 			void setPixel(const mainframe::math::Vector2i& pos, const mainframe::render::Color& col);
 			void setPixels(const mainframe::math::Vector2i& size_, const std::vector<Color>& data);
+			void setMaxAnisotropy();
 
 			void bind();
 			void upload();
+			void setQuality(unsigned int quality);
+			void setWrap(unsigned int wrap);
+			void setBlend(unsigned int blend_src, unsigned int blend_dest);
+
 			void use();
 			void use() const;
 			void clear(const mainframe::render::Color& bgcol = Colors::Transparent);

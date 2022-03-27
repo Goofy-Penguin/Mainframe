@@ -1,52 +1,98 @@
 #include <mainframe/game/engine.h>
+
 #include <iostream>
 #include <chrono>
 #include <thread>
 
 using namespace std::chrono;
+using namespace std::literals;
+
+using Clock = std::chrono::steady_clock;
+
 
 namespace mainframe {
 	namespace game {
-		void Engine::tick() {
-		}
+		void Engine::init() {}
 
-		void Engine::update() {
-		}
+		void Engine::pollEvents() {}
+		void Engine::update(float deltaTime, long long gameTime) {}
 
-		void Engine::draw() {
-		}
-
+		void Engine::draw(const double alpha) {}
 		void Engine::run() {
-			auto lasttick = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - milliseconds(1000);
+			delayBetweenTicks = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / tps);
+			delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
 
-			while (!shouldShutdown) {
-				milliseconds curtime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-				auto msperfps = milliseconds(static_cast<time_t>(1000.0f / targetFPS));
+			// setup init timestamps
+			time_point gameStart = Clock::now();
+			time_point currentTimeTPS = gameStart;
+			time_point currentTimeFPS = gameStart;
 
-				tick();
-				if (shouldShutdown) break;
-				if (curtime - lasttick < msperfps) {
-					std::this_thread::sleep_for(milliseconds(1));
+			// while game is running, do update and draw logic
+			while(!shouldShutdown) {
+				// process game input
+				pollEvents();
+
+				// track current "tick" time points
+				time_point newTime = Clock::now();
+				auto frameTimeTPS = newTime - currentTimeTPS;
+				auto frameTimeFPS = newTime - currentTimeFPS;
+
+				// Anti spiral of death (mostly when debugging stuff, or game paused / minimized)
+				if (frameTimeTPS > deadlockBreaker) frameTimeTPS = deadlockBreaker;
+				if (frameTimeFPS > deadlockBreaker) frameTimeFPS = deadlockBreaker;
+
+				// ensure we call update as much times per second as requested
+				while(frameTimeTPS >= delayBetweenTicks) {
+					update(1.0f / static_cast<float>(tps), (newTime - gameStart).count());
+					frameTimeTPS -= delayBetweenTicks;
+					currentTimeTPS += delayBetweenTicks;
+				}
+
+				// we only need to draw a single frame after a update
+				// else we're redrawing the same thing without any change
+				if (frameTimeFPS >= delayBetweenFrames) {
+					draw(1.0f / static_cast<float>(fps));
+					currentTimeFPS = newTime;
+				}
+
+				// check if we can go sleep to let the cpu rest
+				// or if we need to keep going without sleep to keep up
+				newTime = Clock::now();
+				frameTimeTPS = newTime - currentTimeTPS;
+				if (frameTimeTPS >= delayBetweenTicks) {
+					runningSlow = true;
 					continue;
 				}
 
-				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-				auto framestarttime = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-				lasttick += msperfps;
-				if (curtime - lasttick > milliseconds(1000)) {
-					// we try to make up for ticks that take longer so that we still get the target fps
-					// but it would be bad if we turn it into a while(true) at some point, gotta give it a break
-					lasttick = curtime;
-				}
-
-				update();
-				if (shouldShutdown) break;
-
-				draw();
-
-				auto deltatime = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) - framestarttime;
+				runningSlow = false;
+				std::this_thread::sleep_for(1ms);
 			}
+		}
+
+		void Engine::setBreakerTime(const std::chrono::milliseconds& timeBeforeBreaker) {
+			deadlockBreaker = timeBeforeBreaker;
+		}
+
+		const std::chrono::milliseconds& Engine::getBreakerTime() {
+			return deadlockBreaker;
+		}
+
+		void Engine::setTPS(unsigned int ticksPerSecond){
+			tps = ticksPerSecond;
+			delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
+		}
+
+		unsigned int Engine::getTPS() {
+			return tps;
+		}
+
+		void Engine::setFPS(unsigned int framesPerSeond){
+			fps = framesPerSeond;
+			delayBetweenFrames = std::chrono::duration_cast<std::chrono::nanoseconds>(1000ms / fps);
+		}
+
+		unsigned int Engine::getFPS() {
+			return fps;
 		}
 
 		void Engine::quit() {
@@ -57,12 +103,8 @@ namespace mainframe {
 			return shouldShutdown;
 		}
 
-		void Engine::init() {
-
-		}
-
-		void Engine::setFPS(float count) {
-			this->targetFPS = count;
+		bool Engine::isRunningSlow() {
+			return runningSlow;
 		}
 	}
 }

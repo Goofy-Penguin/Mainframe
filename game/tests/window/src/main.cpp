@@ -14,7 +14,7 @@ public:
 		initTime = std::time(nullptr);
 	}
 
-	virtual void draw() override {
+	virtual void draw(const double alpha) override {
 		window.use(); // only needed for multi window
 
 		// draw logic
@@ -22,16 +22,12 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void tick() override {
-		Window::pollEvents();
-	}
-
 	virtual void quit() override {
 		Engine::quit();
 		window.close();
 	}
 
-	virtual void update() override {
+	virtual void update(float deltaTime, long long gameTime) override {
 		if (window.getShouldClose() || std::time(nullptr) - initTime > 2) {
 			quit();
 		}
@@ -50,7 +46,8 @@ int main() {
 	}
 
 	GameTest e(w);
-	e.setFPS(75);
+	e.setTPS(60);
+	e.setFPS(60);
 
 	e.init();
 	e.run();

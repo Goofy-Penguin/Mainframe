@@ -25,6 +25,9 @@ namespace mainframe {
 			template<class T>
 			Vector2_t(Vector2_t<T> other) : x(static_cast<NumberType>(other.x)), y(static_cast<NumberType>(other.y)) {}
 
+			static VecType zero() { return VecType(); }
+			static VecType one() { return VecType(1, 1); }
+
 			NumberType distance(const VecType& other) const {
 				return std::sqrt(((x - other.x) * (x - other.x)) + ((y - other.y) * (y - other.y)));
 			}
@@ -50,6 +53,10 @@ namespace mainframe {
 				return x * other.y - y * other.x;
 			}
 
+			VecType abs() const {
+				return {std::abs(x), std::abs(y)};
+			}
+
 			VecType lerp(const VecType& other, NumberType timestep) const {
 				VecType ret;
 
@@ -59,10 +66,29 @@ namespace mainframe {
 				return ret;
 			}
 
-			VecType clamp(const VecType& min, const VecType& max) const {
+			VecType floor() const {
+				return { std::floor(x), std::floor(y) };
+			}
+
+			VecType round() const {
+				return { std::round(x), std::round(y) };
+			}
+
+			VecType ceil() const {
+				return { std::ceil(x), std::ceil(y) };
+			}
+
+			VecType clampVec(const VecType& min, const VecType& max) const {
 				return {
 					std::clamp(x, min.x, max.x),
 					std::clamp(y, min.y, max.y)
+				};
+			}
+
+			VecType clamp(NumberType min, NumberType max) const {
+				return {
+					std::clamp(x, min, max),
+					std::clamp(y, min, max)
 				};
 			}
 

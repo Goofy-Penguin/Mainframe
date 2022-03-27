@@ -35,6 +35,10 @@ namespace mainframe::game {
 		void setLocation(const math::Vector3& pos);
 		void lookAt(const math::Vector3& pos);
 		void setAngle(const math::Vector2& angles);
+
+		void setYaw(float yaw);
+		float getYaw();
+
 		void setViewMatrix(const math::Matrix& matrix);
 		void setProjMatrix(const math::Matrix& matrix);
 

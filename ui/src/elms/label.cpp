@@ -12,7 +12,7 @@ namespace mainframe {
 			text = text_;
 		}
 
-		void Label::setFont(const std::shared_ptr<render::Font>& font_) {
+		void Label::setFont(render::Font* font_) {
 			font = font_;
 		}
 
@@ -33,7 +33,7 @@ namespace mainframe {
 			return text;
 		}
 
-		const std::shared_ptr<render::Font>& Label::getFont() {
+		const render::Font* Label::getFont() {
 			return font;
 		}
 

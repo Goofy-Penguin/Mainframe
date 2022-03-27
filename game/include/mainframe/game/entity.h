@@ -4,53 +4,52 @@
 #include <vector>
 #include <memory>
 
-namespace mainframe {
-	namespace game {
-		class World;
+namespace mainframe::game {
+	class World;
 
-		using EntityIdType = uint32_t;
+	using EntityIdType = uint32_t;
 
-		class Entity {
-			World* world;
-			mainframe::math::Matrix matrix;
-			mainframe::math::Vector3 velocity;
-			EntityIdType id = 0xFFFFFFFF;
+	class Entity {
+		World* world = nullptr;
+		mainframe::math::Matrix matrix;
+		mainframe::math::Vector3 velocity;
 
-		public:
-			Entity(World* world_);
-			virtual ~Entity();
+		EntityIdType id = 0xFFFFFFFF;
 
-			virtual void remove();
+	public:
+		Entity();
+		Entity(World* world_);
+		virtual ~Entity();
 
-			void setId(EntityIdType id_);
-			EntityIdType getId() const;
+		virtual void remove(bool isParentRemove = false);
 
-			math::Matrix& getMatrix();
-			const math::Matrix& getMatrix() const;
+		void setId(EntityIdType id_);
+		EntityIdType getId() const;
 
-			virtual math::Vector3 getPosition() const;
-			virtual math::Vector3 getScale() const;
-			virtual math::Vector3 getRotation() const;
-			virtual math::Vector3 getVelocity() const;
+		math::Matrix& getMatrix();
+		const math::Matrix& getMatrix() const;
 
-			virtual void setVelocity(const math::Vector3& force);
-			virtual void setPosition(const math::Vector3& pos);
-			virtual void setScale(const math::Vector3& scale);
-			virtual void setRotation(const math::Vector3& rot);
+		virtual math::Vector3 getPosition() const;
+		virtual math::Vector3 getScale() const;
+		virtual math::Vector3 getRotation() const;
+		virtual math::Vector3 getVelocity() const;
 
-			virtual void initialize();
-			virtual void update();
+		virtual void setVelocity(const math::Vector3& force);
+		virtual void setPosition(const math::Vector3& pos);
+		virtual void setScale(const math::Vector3& scale);
+		virtual void setRotation(const math::Vector3& rot);
 
-			void generateUniqueId();
+		virtual void update(float deltaTime);
 
-			std::vector<EntityIdType> getParentTreeList() const;
+		void generateUniqueId();
 
-			template<class T>
-			T* getWorld() const {
-				return dynamic_cast<T*>(world);
-			}
+		std::vector<EntityIdType> getParentTreeList() const;
 
-			void setWorld(World* world_);
-		};
-	}
+		template<class T = World>
+		T* getWorld() const {
+			return dynamic_cast<T*>(world);
+		}
+
+		virtual void setWorld(World* world_);
+	};
 }

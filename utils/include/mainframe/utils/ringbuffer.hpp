@@ -28,6 +28,10 @@ namespace mainframe {
 				this->m_buffer.resize(size);
 			}
 
+			bool empty() {
+				return this->m_readpos == this->m_writepos;
+			}
+
 			size_t size() {
 				return this->m_size;
 			}
@@ -39,6 +43,10 @@ namespace mainframe {
 
 				this->m_readpos = 0;
 				this->m_writepos = 0;
+			}
+
+			T& operator[](size_t i) {
+				return this->m_buffer[i];
 			}
 
 			void push(const T& func) {

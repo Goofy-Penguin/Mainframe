@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+
 #include <mainframe/math/vector2.h>
+#include <mainframe/numbers/pi.h>
 
 namespace mainframe {
 	namespace math {
@@ -20,6 +22,9 @@ namespace mainframe {
 			explicit Vector3_t(Vector2_t<NumberType> xy, NumberType _z = 0) : x(xy.x), y(xy.y), z(_z) {}
 			Vector3_t(NumberType _x, NumberType _y, NumberType _z = 0) : x(_x), y(_y), z(_z) {}
 
+			static VecType zero() { return VecType(); }
+			static VecType one() { return VecType(1, 1, 1); }
+
 			//TODO: fix to use vector2 or update function to work in 3d space
 			NumberType distanceToLine(const VecType& point_a, const VecType& point_b) {
 				VecType ap = *this - point_a;
@@ -35,6 +40,7 @@ namespace mainframe {
 				return closest_point.distance(*this);
 			}
 
+
 			NumberType distance(const VecType& other) const {
 				return std::sqrt(((x - other.x) * (x - other.x)) + ((y - other.y) * (y - other.y)) + ((z - other.z) * (z - other.z)));
 			}
@@ -47,6 +53,10 @@ namespace mainframe {
 				return (*this) / length();
 			}
 
+			VecType abs() const {
+				return {std::abs(x), std::abs(y), std::abs(z)};
+			}
+
 			Vector2_t<NumberType> xy() const {
 				return {x, y};
 			}
@@ -55,8 +65,35 @@ namespace mainframe {
 				return {x, z, y};
 			}
 
+			VecType lerp(const VecType& other, NumberType timestep) const {
+				if((*this) == other) return other;
+				VecType ret;
+
+				ret.x = x + (other.x - x) * timestep;
+				ret.y = y + (other.y - y) * timestep;
+				ret.z = z + (other.z - z) * timestep;
+
+				return ret;
+			}
+
+			VecType clamp(NumberType min, NumberType max) const {
+				return {
+					std::clamp(x, min, max),
+					std::clamp(y, min, max),
+					std::clamp(z, min, max)
+				};
+			}
+
 			VecType floor() const {
-				return {std::floor(x), std::floor(y), std::floor(z)};
+				return { std::floor(x), std::floor(y), std::floor(z) };
+			}
+
+			VecType round() const {
+				return { std::round(x), std::round(y), std::round(z) };
+			}
+
+			VecType ceil() const {
+				return { std::ceil(x), std::ceil(y), std::ceil(z) };
 			}
 
 			VecType getRotated(const VecType& ang, const VecType& orgin) const {
@@ -75,6 +112,16 @@ namespace mainframe {
 				retVal.z = x * other.y - y * other.x;
 
 				return retVal;
+			}
+
+			// FROM: https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Vector3.cs#L324
+			NumberType angle(const VecType& other) const {
+				float denominator = length() * other.length();
+				if (denominator < 1e-15f)
+					return 0.f;
+
+				float val = dot(other) / denominator;
+				return std::acos(val);
 			}
 
 			NumberType dot(const VecType& other) const {
