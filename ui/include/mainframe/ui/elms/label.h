@@ -23,7 +23,7 @@ namespace mainframe {
 
 			const render::Color getColor();
 			const std::string& getText();
-			render::Font* getFont( );
+			render::Font* getFont();
 			render::Stencil::TextAlignment getAlignmentX();
 			render::Stencil::TextAlignment getAlignmentY();
 
