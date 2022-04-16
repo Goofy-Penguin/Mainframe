@@ -33,7 +33,7 @@ namespace mainframe {
 			return text;
 		}
 
-		const render::Font* Label::getFont() {
+		render::Font* Label::getFont() {
 			return font;
 		}
 
