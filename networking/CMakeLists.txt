@@ -8,7 +8,7 @@
 set(output_target mainframe.networking)
 add_library(${output_target} ${source_files})
 target_include_directories(${output_target} PUBLIC "include")
-target_compile_features(${output_target} PRIVATE cxx_std_20)
+target_compile_features(${output_target} PUBLIC cxx_std_20)
 
 if (build_tests)
 	add_subdirectory("tests")
