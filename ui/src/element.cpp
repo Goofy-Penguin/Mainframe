@@ -19,14 +19,13 @@ namespace mainframe {
 			return invokes;
 		}
 
-		void Element::invoke(std::function<void()> func) {
-			// if we're on the same thread, dont queue it
-			if (getThreadId() == std::this_thread::get_id()) {
-				func();
+		void Element::invoke(std::function<void()> func, bool forceQueue) {
+			if (forceQueue || getThreadId() != std::this_thread::get_id()) {
+				invokes.push(func);
 				return;
 			}
 
-			invokes.push(func);
+			func();
 		}
 
 		void Element::setHovering(bool hovering_) {

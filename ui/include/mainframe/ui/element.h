@@ -59,7 +59,7 @@ namespace mainframe {
 			bool isfocused();
 			virtual void setFocused(bool focused_);
 
-			void invoke(std::function<void()> func);
+			void invoke(std::function<void()> func, bool forceQueue = false);
 
 			virtual bool hitTest(const math::Vector2i& mousePos);
 			virtual void mouseDown(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods);
