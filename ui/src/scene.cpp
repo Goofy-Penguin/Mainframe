@@ -49,23 +49,33 @@ namespace mainframe {
 			setSize(window.getSize());
 
 			window.addOnChar([this](Window& win, unsigned int character) mutable {
-				keyChar(character);
+				invoke([this, character]() {
+					keyChar(character);
+				});
 			});
 
 			window.addOnKey([this](Window& win, unsigned int key, unsigned int scancode, unsigned int action, unsigned int mods) mutable {
-				keyPress(key, scancode, static_cast<ModifierKey>(mods), static_cast<KeyState>(action));
+				invoke([this, key, scancode, action, mods]() {
+					keyPress(key, scancode, static_cast<ModifierKey>(mods), static_cast<KeyState>(action));
+				});
 			});
 
 			window.addOnMouseKey([this](Window& win, const math::Vector2i& location, unsigned int button, unsigned int action, unsigned int mods) mutable {
-				mousePress(location, button, static_cast<ModifierKey>(mods), static_cast<MouseState>(action));
+				invoke([this, location, button, action, mods]() {
+					mousePress(location, button, static_cast<ModifierKey>(mods), static_cast<MouseState>(action));
+				});
 			});
 
 			window.addOnMouseMove([this](Window& win, const math::Vector2i& location) mutable {
-				mouseMove(location);
+				invoke([this, location]() {
+					mouseMove(location);
+				});
 			});
 
 			window.addOnScroll([this](Window& win, const math::Vector2i& location, const math::Vector2i& offset) mutable {
-				mouseScroll(location, offset);
+				invoke([this, location, offset]() {
+					mouseScroll(location, offset);
+				});
 			});
 		}
 
@@ -130,8 +140,13 @@ namespace mainframe {
 			return invokes;
 		}
 
-		void Scene::invoke(std::function<void()> func) {
-			invokes.push(func);
+		void Scene::invoke(std::function<void()> func, bool forceQueue) {
+			if (forceQueue || getThreadId() != std::this_thread::get_id()) {
+				invokes.push(func);
+				return;
+			}
+
+			func();
 		}
 
 		std::shared_ptr<Element> Scene::findElement(const math::Vector2i& mousePos) {

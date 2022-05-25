@@ -43,7 +43,7 @@ namespace mainframe {
 			mainframe::utils::Event<unsigned int> onKeyChar;
 
 			utils::ringbuffer<std::function<void()>>& getInvoker();
-			void invoke(std::function<void()> func);
+			void invoke(std::function<void()> func, bool forceQueue = false);
 
 			void draw(render::Stencil& stencil);
 			void update(float deltaTime);
