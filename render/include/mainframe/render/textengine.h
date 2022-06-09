@@ -10,7 +10,7 @@ namespace mainframe {
 	namespace render {
 		// Not threadsafe, make one engine per thread
 		class TextEngine {
-			FT_Library ft;
+			FT_Library ft = nullptr;
 			std::vector<std::unique_ptr<Font>> faces;
 
 		public:
@@ -23,6 +23,8 @@ namespace mainframe {
 
 			~TextEngine();
 
+			void init();
+			void unload();
 			Font& loadFont(std::string filename, unsigned int size);
 		};
 	}
