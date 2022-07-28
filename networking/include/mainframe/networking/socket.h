@@ -14,6 +14,7 @@
 #ifdef _MSC_VER
 #define _WINSOCKAPI_
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #include <netinet/in.h>
 #endif
@@ -35,9 +36,12 @@ namespace mainframe {
 			};
 
 			bool blocking = true;
+			bool ipv6 = false;
 
 			sockaddr_in addr;
 			sockaddr_in fromAddr;
+			sockaddr_in6 addr6;
+			sockaddr_in6 fromAddr6;
 			unsigned long fromAddr_len = 0;
 
 			SockState state = SockState::skDISCONNECTED;
@@ -45,7 +49,7 @@ namespace mainframe {
 
 			int lastCode = 0;
 
-			Socket();
+			Socket(bool ipv6 = false);
 			~Socket();
 
 			bool create();
@@ -59,6 +63,8 @@ namespace mainframe {
 
 			uint64_t uAddr();
 			bool isError();
+
+			std::string getIpAddress();
 
 			bool canRead();
 
