@@ -29,9 +29,12 @@
 
 namespace mainframe {
 	namespace networking {
-		Socket::Socket() {
+		Socket::Socket(bool ipv6) {
+			this->ipv6 = ipv6;
 			MAXCON = 64;
+
 			memset(&addr, 0, sizeof(addr));
+			memset(&addr6, 0, sizeof(addr6));
 
 #ifdef _MSC_VER
 			WSAStartup(MAKEWORD(1, 1), &wsda);
@@ -67,7 +70,7 @@ namespace mainframe {
 				return false;
 
 			state = SockState::skDISCONNECTED;
-			sock = static_cast<int>(::socket(AF_INET, Type, Protocol));
+			sock = static_cast<int>(::socket(ipv6 ? AF_INET6 : AF_INET, Type, Protocol));
 			lastCode = sock;
 
 			return sock > SOCKET_NONE;
@@ -76,12 +79,26 @@ namespace mainframe {
 		bool Socket::bind(unsigned short port) {
 			if (!check()) return false;
 
-			addr.sin_family = AF_INET;
-			addr.sin_addr.s_addr = htonl(INADDR_ANY);
-			addr.sin_port = htons(port);
-			lastCode = ::bind(sock, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
+			if (ipv6) {
+				addr6.sin6_family = AF_INET6;
+				addr6.sin6_addr = in6addr_any;
+				addr6.sin6_port = htons(port);
+				lastCode = ::bind(sock, reinterpret_cast<struct sockaddr*>(&addr6), sizeof(addr6));
+			} else {
+				addr.sin_family = AF_INET;
+				addr.sin_addr.s_addr = htonl(INADDR_ANY);
+				addr.sin_port = htons(port);
+				lastCode = ::bind(sock, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
+			}
 
-			return this->lastCode > 0 ? false : true;
+			return this->lastCode == 0;
+		}
+
+		std::string Socket::getIpAddress() {
+			char buff[INET6_ADDRSTRLEN];
+
+			inet_ntop(ipv6 ? AF_INET6 : AF_INET, ipv6 ? reinterpret_cast<void*>(&addr6.sin6_addr) : reinterpret_cast<void*>(&addr.sin_addr), buff, sizeof(buff));
+			return buff;
 		}
 
 		bool Socket::listen() {
@@ -96,11 +113,11 @@ namespace mainframe {
 			if (!blocking && !canRead()) return false;
 
 #ifdef _MSC_VER
-			int length = sizeof(socket->addr);
+			int length = ipv6 ? sizeof(socket->addr6) : sizeof(socket->addr);
 #else
-			auto length = static_cast<socklen_t>(sizeof(socket->addr));
+			auto length = static_cast<socklen_t>(ipv6 ? sizeof(socket->addr6) : sizeof(socket->addr));
 #endif
-			socket->sock = static_cast<int>(::accept(sock, reinterpret_cast<struct sockaddr*>(&socket->addr), &length));
+			socket->sock = static_cast<int>(::accept(sock, ipv6 ? reinterpret_cast<struct sockaddr*>(&socket->addr6) : reinterpret_cast<struct sockaddr*>(&socket->addr), &length));
 
 			lastCode = socket->sock;
 			if (socket->sock == SOCKET_ERROR)
@@ -120,6 +137,8 @@ namespace mainframe {
 			::close(sock);
 #endif
 
+			memset(&addr, 0, sizeof(addr));
+			memset(&addr6, 0, sizeof(addr6));
 			sock = static_cast<int>(INVALID_SOCKET);
 		}
 
@@ -131,21 +150,44 @@ namespace mainframe {
 			if (!check())
 				return SocketError::invalidSocket;
 
-#pragma warning( push )
-#pragma warning( disable: 4996)
-			hostent* phe = gethostbyname(host.c_str());
-#pragma warning( pop )
+			struct addrinfo* result = nullptr;
+			struct addrinfo hints;
+			memset(&hints, 0, sizeof(hints));
 
-			if (phe == nullptr)
+			hints.ai_family = AF_UNSPEC;
+			hints.ai_socktype = SOCK_STREAM;
+			hints.ai_protocol = IPPROTO_TCP;
+			auto resp = getaddrinfo(host.c_str(), std::to_string(port).c_str(), &hints, &result);
+			if (resp != 0)
 				return SocketError::invalidHostname;
 
-			memcpy(&addr.sin_addr, phe->h_addr, sizeof(struct in_addr));
+			if (result == nullptr) return SocketError::invalidHostname;
 
-			addr.sin_family = AF_INET;
-			addr.sin_port = htons(port);
+			// check if we need to switch between ipv4 and ipv6
+			bool targetIsIpv6 = result->ai_family == AF_INET6;
+			if (targetIsIpv6 != ipv6) {
+				close();
 
-			if (::connect(sock, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR)
-				return SocketError::failed;
+				ipv6 = targetIsIpv6;
+				create();
+			}
+
+			int connectResult = 0;
+			if (ipv6) {
+				memcpy(&addr6, result->ai_addr, result->ai_addrlen);
+
+				addr6.sin6_family = AF_INET6;
+				addr6.sin6_port = htons(port);
+				connectResult = ::connect(sock, reinterpret_cast<struct sockaddr*>(&addr6), sizeof(addr6));
+			} else {
+				memcpy(&addr, result->ai_addr, result->ai_addrlen);
+
+				addr.sin_family = AF_INET;
+				addr.sin_port = htons(port);
+				connectResult = ::connect(sock, reinterpret_cast<struct sockaddr*>(&addr), sizeof(addr));
+			}
+
+			if (connectResult == SOCKET_ERROR) return SocketError::failed;
 
 			state = SockState::skCONNECTED;
 			return SocketError::success;
