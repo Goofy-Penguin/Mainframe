@@ -578,7 +578,7 @@ namespace mainframe::render {
 			setShader(chunk.shader);
 			setTexture(chunk.texture);
 
-			auto verticeOffset = static_cast<unsigned int>(indices.size());
+			auto verticeOffset = static_cast<unsigned int>(vertices.size());
 			vertices.insert(vertices.end(), chunk.vertices.begin(), chunk.vertices.end());
 
 			size_t incideOffset = indices.size();
