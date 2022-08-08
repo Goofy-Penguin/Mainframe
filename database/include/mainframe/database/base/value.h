@@ -27,7 +27,7 @@ namespace mainframe {
 			operator unsigned int() const { return isNull() ? 0 : static_cast<unsigned int>(std::stoul(raw)); }
 
 			operator long() const { return isNull() ? 0 : std::stol(raw); }
-			operator unsigned long() const { return isNull() ? 0 : static_cast<unsigned int>(std::stoul(raw)); }
+			operator unsigned long() const { return isNull() ? 0 : static_cast<unsigned long>(std::stoul(raw)); }
 
 			operator long long() const { return isNull() ? 0 : std::stoll(raw); }
 			operator unsigned long long() const { return isNull() ? 0 : std::stoull(raw); }
