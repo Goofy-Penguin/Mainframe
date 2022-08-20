@@ -2,7 +2,7 @@
 glfw/3.3.4
 fmt/7.1.3
 glew/2.2.0
-nlohmann_json/3.9.1
+nlohmann_json/3.11.2
 lodepng/cci.20200615
 freetype/2.10.4
 utfcpp/3.2.1
