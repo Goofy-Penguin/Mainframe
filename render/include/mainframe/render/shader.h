@@ -14,6 +14,7 @@ namespace mainframe {
 			Uniform(int _index) : index(_index) {}
 			Uniform() = default;
 
+			int getlocation();
 			void set(int value);
 			void set(float value);
 			void set(const mainframe::math::Vector2& value);

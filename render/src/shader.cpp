@@ -243,5 +243,9 @@ namespace mainframe {
 			glUniformMatrix4fv(index, 1, GL_TRUE, reinterpret_cast<const GLfloat*>(value.getValues().data()));
 #endif
 		}
+
+		int Uniform::getlocation() {
+			return index;
+		}
 	}
 }
