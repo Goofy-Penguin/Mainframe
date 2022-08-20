@@ -237,5 +237,11 @@ namespace mainframe {
 			glUniform3f(index, value.x, value.y, value.z);
 #endif
 		}
+
+		void Uniform::set(const mainframe::math::Matrix& value) {
+#ifndef MAINFRAME_EGL
+			glUniformMatrix4fv(index, 1, GL_TRUE, reinterpret_cast<const GLfloat*>(value.getValues().data()));
+#endif
+		}
 	}
 }

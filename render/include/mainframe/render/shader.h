@@ -2,6 +2,7 @@
 
 #include <mainframe/math/vector2.h>
 #include <mainframe/math/vector3.h>
+#include <mainframe/math/matrix.h>
 #include <string>
 
 namespace mainframe {
@@ -15,9 +16,9 @@ namespace mainframe {
 
 			void set(int value);
 			void set(float value);
-			void set(const mainframe::math::Vector2 & value);
-			void set(const mainframe::math::Vector3 & value);
-
+			void set(const mainframe::math::Vector2& value);
+			void set(const mainframe::math::Vector3& value);
+			void set(const mainframe::math::Matrix& value);
 		};
 
 		class ShaderAttached {
