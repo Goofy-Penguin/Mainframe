@@ -266,10 +266,14 @@ namespace mainframe {
 						case MysqlValueType::TINY:
 						case MysqlValueType::BLOB:
 						case MysqlValueType::NEW_DECIMAL:
+						case MysqlValueType::Null:
 							break;
 
 						default:
-							throw std::runtime_error("Warning: unsupported type " + std::to_string(static_cast<int>(type)) + " in column: " + name);
+							// NOTE: if this throws theres 2 cases:
+							// A: you can add it to the list above and not bother with it.
+							// B: you will have to add code that handles that type at the `Field` object
+							throw std::runtime_error("mysql unsupported type " + std::to_string(static_cast<int>(type)) + " in column: " + name);
 					}
 
 					if (!--field)

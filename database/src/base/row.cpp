@@ -45,5 +45,13 @@ namespace mainframe {
 		std::vector<std::string>::iterator Row::end() const {
 			return columns->end();
 		}
+
+		const std::shared_ptr<std::vector<std::string>>& Row::getColumns() const {
+			return columns;
+		}
+
+		void Row::setColumns(const std::shared_ptr<std::vector<std::string>>& columns) {
+			this->columns = columns;
+		}
 	}
 }
