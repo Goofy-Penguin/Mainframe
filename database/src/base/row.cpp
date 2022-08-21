@@ -4,7 +4,7 @@
 
 namespace mainframe {
 	namespace database {
-		Row::Row(const std::shared_ptr<std::vector<std::string>>& _columns) : columns(_columns) {
+		Row::Row(const std::shared_ptr<std::vector<std::string>> _columns) : columns(_columns) {
 		}
 
 		bool Row::has(const std::string& key) const {
@@ -46,11 +46,11 @@ namespace mainframe {
 			return columns->end();
 		}
 
-		const std::shared_ptr<std::vector<std::string>>& Row::getColumns() const {
+		const std::shared_ptr<std::vector<std::string>> Row::getColumns() const {
 			return columns;
 		}
 
-		void Row::setColumns(const std::shared_ptr<std::vector<std::string>>& columns) {
+		void Row::setColumns(const std::shared_ptr<std::vector<std::string>> columns) {
 			this->columns = columns;
 		}
 	}
