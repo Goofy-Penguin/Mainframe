@@ -133,6 +133,25 @@ namespace mainframe {
 			return retVal;
 		}
 
+		Matrix Matrix::createRotation(const Vector3& rotation) {
+			Matrix retVal;
+			retVal.values[5] = cos(rotation.x);
+			retVal.values[6] = -sin(rotation.x);
+			retVal.values[9] = sin(rotation.x);
+			retVal.values[10] = cos(rotation.x);
+
+			retVal.values[0] = cos(rotation.y);
+			retVal.values[2] = sin(rotation.y);
+			retVal.values[8] = -sin(rotation.y);
+			retVal.values[10] = cos(rotation.y);
+
+			retVal.values[0] = cos(rotation.z);
+			retVal.values[1] = -sin(rotation.z);
+			retVal.values[4] = sin(rotation.z);
+			retVal.values[5] = cos(rotation.z);
+			return retVal;
+		}
+
 		Matrix Matrix::createScale(float scale) {
 			return Matrix::createScale(scale, scale, scale);
 		}
