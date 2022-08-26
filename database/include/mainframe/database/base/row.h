@@ -17,7 +17,9 @@ namespace mainframe {
 			Row() = default;
 			~Row() = default;
 
-			Row(const std::shared_ptr<std::vector<std::string>>& _columns);
+			Row(const std::shared_ptr<std::vector<std::string>> _columns);
+			const std::shared_ptr<std::vector<std::string>> getColumns() const;
+			void setColumns(const std::shared_ptr<std::vector<std::string>> columns);
 
 			bool has(const std::string& key) const;
 			std::vector<std::string>::iterator find(const std::string& key) const;
