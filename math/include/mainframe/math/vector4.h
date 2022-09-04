@@ -19,7 +19,7 @@ namespace mainframe {
 			Vector4_t() = default;
 			Vector4_t(Vector2_t<NumberType> first, Vector2_t<NumberType> second = 0) : x(first.x), y(first.y), z(second.x), w(second.y) {}
 			Vector4_t(Vector3_t<NumberType> vec, NumberType _w = 0) : x(vec.x), y(vec.y), z(vec.z), w(_w) {}
-			Vector4_t(NumberType _x, NumberType _y = 0, NumberType _z = 0, NumberType _w = 0) : x(_x), y(_y), w(_w) {}
+			Vector4_t(NumberType _x, NumberType _y = 0, NumberType _z = 0, NumberType _w = 0) : x(_x), y(_y), z(_z), w(_w) {}
 
 			VecType operator- (const VecType& other) const {
 				return VecType(x - other.x, y - other.y, z - other.z, w - other.w);
@@ -38,19 +38,39 @@ namespace mainframe {
 			}
 
 			VecType operator- (NumberType other) const {
-				return VecType(x - other, y - other, z - other, w - other.w);
+				return VecType(x - other, y - other, z - other, w - other);
 			}
 
 			VecType operator+ (NumberType other) const {
-				return VecType(x + other, y + other, z + other, w + other.w);
+				return VecType(x + other, y + other, z + other, w + other);
 			}
 
 			VecType operator* (NumberType other) const {
-				return VecType(x * other, y * other, z * other, w * other.w);
+				return VecType(x * other, y * other, z * other, w * other);
 			}
 
 			VecType operator/ (NumberType other) const {
-				return VecType(x / other, y / other, z / other, w / other.w);
+				return VecType(x / other, y / other, z / other, w / other);
+			}
+
+			NumberType length() const {
+				return static_cast<NumberType>(std::sqrt(std::pow(x, 2) + std::pow(y, 2) + std::pow(z, 2) + std::pow(w, 2)));
+			}
+
+			VecType normalized() const {
+				return (*this) / length();
+			}
+
+			VecType lerp(const VecType& other, NumberType timestep) const {
+				if((*this) == other) return other;
+				VecType ret;
+
+				ret.x = x + (other.x - x) * timestep;
+				ret.y = y + (other.y - y) * timestep;
+				ret.z = z + (other.z - z) * timestep;
+				ret.w = w + (other.w - w) * timestep;
+
+				return ret;
 			}
 
 			VecType& operator-= (const VecType& other) {
