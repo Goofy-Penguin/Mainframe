@@ -4,6 +4,8 @@
 #include <mainframe/math/vector2.h>
 #include <mainframe/math/vector3.h>
 #include <mainframe/math/matrix.h>
+#include <glm/matrix.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace mainframe::game {
 	class Window;
@@ -19,16 +21,16 @@ namespace mainframe::game {
 
 		void updateLookat();
 
-		math::Matrix mat;
-		math::Matrix projmat;
+		glm::mat4x4 mat;
+		glm::mat4x4 projmat;
 
 	public:
 		math::Vector3 getForward() const;
 		math::Vector3 getLocation() const;
 		const math::Vector3& getLookPos() const;
 		math::Vector2 getAngle() const;
-		const math::Matrix& getViewMatrix() const;
-		const math::Matrix& getProjMatrix() const;
+		const glm::mat4x4& getViewMatrix() const;
+		const glm::mat4x4& getProjMatrix() const;
 
 		void moveLocation(const math::Vector3& offset);
 
@@ -39,8 +41,8 @@ namespace mainframe::game {
 		void setYaw(float yaw);
 		float getYaw();
 
-		void setViewMatrix(const math::Matrix& matrix);
-		void setProjMatrix(const math::Matrix& matrix);
+		void setViewMatrix(const glm::mat4x4& matrix);
+		void setProjMatrix(const glm::mat4x4& matrix);
 
 		void setWindowSize(const math::Vector2i& winsize);
 		const math::Vector2i& getWindowSize();

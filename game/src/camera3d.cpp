@@ -15,11 +15,17 @@ namespace mainframe::game {
 	void Camera3D::updateLookat() {
 		lookPos = {
 			location.x + std::sin(angle.y) * std::cos(angle.x),
-			location.y + std::sin(angle.y) * std::sin(angle.x),
-			location.z + std::cos(angle.y)
+			location.y + std::cos(angle.y),
+			location.z + std::sin(angle.y) * std::sin(angle.x)
 		};
 
-		this->mat = math::Matrix::createLookAt(location, lookPos, {0.0, 1.0, 0.0});
+		mat = glm::lookAt(
+			glm::vec3(location.x, location.y, location.z),
+			glm::vec3(lookPos.x, lookPos.y, lookPos.z),
+			glm::vec3(0, 0, 1)
+		);
+
+		//this->mat = math::Matrix::createLookAt(location, lookPos, {0.0, 1.0, 0.0});
 	}
 
 	void Camera3D::setYaw(float yaw) {
@@ -40,7 +46,7 @@ namespace mainframe::game {
 	}
 
 	math::Vector3 Camera3D::getLocation() const {
-		return location.xzy();
+		return location;
 	}
 
 	const math::Vector3& Camera3D::getLookPos() const {
@@ -51,26 +57,30 @@ namespace mainframe::game {
 		return angle;
 	}
 
-	const math::Matrix& Camera3D::getViewMatrix() const {
+	const glm::mat4x4& Camera3D::getViewMatrix() const {
 		return mat;
 	}
 
-	const math::Matrix& Camera3D::getProjMatrix() const {
+	const glm::mat4x4& Camera3D::getProjMatrix() const {
 		return projmat;
 	}
 
 	void Camera3D::moveLocation(const math::Vector3& offset) {
-		location += offset.xzy();
+		location += offset;
 		updateLookat();
 	}
 
 	void Camera3D::setLocation(const math::Vector3& pos) {
-		location = pos.xzy();
+		location = pos;
 		updateLookat();
 	}
 
 	void Camera3D::lookAt(const math::Vector3& pos) {
-		this->mat = math::Matrix::createLookAt(location, pos, {0.0, 1.0, 0.0});
+		mat = glm::lookAt(
+			glm::vec3(location.x, location.y, location.z),
+			glm::vec3(pos.x, pos.y, pos.z),
+			glm::vec3(0, 0, 1)
+		);
 	}
 
 	void Camera3D::setAngle(const math::Vector2& angles) {
@@ -78,11 +88,11 @@ namespace mainframe::game {
 		updateLookat();
 	}
 
-	void Camera3D::setViewMatrix(const math::Matrix& matrix) {
+	void Camera3D::setViewMatrix(const glm::mat4x4& matrix) {
 		mat = matrix;
 	}
 
-	void Camera3D::setProjMatrix(const math::Matrix& matrix) {
+	void Camera3D::setProjMatrix(const glm::mat4x4& matrix) {
 		projmat = matrix;
 	}
 
@@ -130,7 +140,9 @@ namespace mainframe::game {
 		int viewport[] = {0, 0, (int)windowSize.x, (int)windowSize.y};
 
 		math::Vector3 sp;
-		glhProjectf(pos.x, pos.z, pos.y, mat.getValues(), projmat.getValues(), viewport, (float*)&sp);
+		// FIXME: aaa
+		// TODO: aaaa
+		//glhProjectf(pos.x, pos.z, pos.y, mat.getValues(), projmat.getValues(), viewport, (float*)&sp);
 
 		return sp;
 	}
