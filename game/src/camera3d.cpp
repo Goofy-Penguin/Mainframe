@@ -13,19 +13,13 @@ namespace mainframe::game {
 	}
 
 	void Camera3D::updateLookat() {
-		lookPos = {
-			location.x + std::sin(angle.y) * std::cos(angle.x),
-			location.y + std::cos(angle.y),
-			location.z + std::sin(angle.y) * std::sin(angle.x)
-		};
+		lookPos = location + getForward();
 
 		mat = glm::lookAt(
 			glm::vec3(location.x, location.y, location.z),
 			glm::vec3(lookPos.x, lookPos.y, lookPos.z),
 			glm::vec3(0, 0, 1)
 		);
-
-		//this->mat = math::Matrix::createLookAt(location, lookPos, {0.0, 1.0, 0.0});
 	}
 
 	void Camera3D::setYaw(float yaw) {
@@ -39,9 +33,9 @@ namespace mainframe::game {
 
 	math::Vector3 Camera3D::getForward() const {
 		return {
-			std::sin(angle.x) * std::cos(angle.y),
-			std::cos(angle.x),
-			std::sin(angle.x) * std::sin(angle.y)
+			std::sin(angle.y) * std::cos(angle.x),
+			std::sin(angle.y) * std::sin(angle.x),
+			std::cos(angle.y)
 		};
 	}
 
@@ -53,7 +47,7 @@ namespace mainframe::game {
 		return lookPos;
 	}
 
-	math::Vector2 Camera3D::getAngle() const {
+	math::Vector3 Camera3D::getAngle() const {
 		return angle;
 	}
 
@@ -83,7 +77,7 @@ namespace mainframe::game {
 		);
 	}
 
-	void Camera3D::setAngle(const math::Vector2& angles) {
+	void Camera3D::setAngle(const math::Vector3& angles) {
 		angle = angles;
 		updateLookat();
 	}
