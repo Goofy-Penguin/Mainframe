@@ -21,8 +21,8 @@ namespace mainframe::game {
 
 		void updateLookat();
 
-		glm::mat4x4 mat;
-		glm::mat4x4 projmat;
+		glm::mat4x4 viewMat;
+		glm::mat4x4 projMat;
 
 	public:
 		math::Vector3 getForward() const;
