@@ -117,9 +117,37 @@ namespace mainframe::game {
 	}
 
 	math::Vector3 Camera3D::screenToWorld(const math::Vector2i& screen_pos) const {
-		glm::vec4 viewport = {0, 0, (int)windowSize.x, (int)windowSize.y};
-		//glm::inverse(viewMat * projMat)
-		auto out = glm::unProject(glm::vec3(screen_pos.x, screen_pos.y, 1.f), viewMat * glm::mat4(1.f), projMat, viewport);
-		return {out.x, out.y, 1.f};
+		// change these values to
+		math::Vector3 plane_origin {0, 0, 0};
+		math::Vector3 plane_normal {0, 0, 1};
+		auto windowSizeFloat = windowSize.cast<float>();
+		auto screenPosFloat = screen_pos.cast<float>();
+
+		// get our pos and force aim downwards, the getForward() seems to behave odd when aiming full down
+		auto campos = getLocation();
+
+		// <insert zooperdiebap math animation>
+		glm::mat4x4 viewproj_inv = glm::inverse(projMat * viewMat);
+
+		float screenx_clip = 2 * (screenPosFloat.x / windowSizeFloat.x) - 1;
+		float screeny_clip = 1 - 2 * (screenPosFloat.y) / windowSizeFloat.y;
+
+		glm::vec4 screen_clip = {screenx_clip, screeny_clip, -1, 1};
+		glm::vec4 world_pos = viewproj_inv * screen_clip;
+
+		// divide by the weigth of the universe to resolve black mater offsets
+		world_pos /= world_pos.w;
+
+		// convert the object back to the real universe
+		math::Vector3 mouse_point_world = {world_pos.x, world_pos.y, world_pos.z};
+		math::Vector3 camera_forward_world = mouse_point_world - campos;
+
+		float numerator = (plane_origin - campos).dot(plane_normal);
+		float denumerator = camera_forward_world.dot(plane_normal);
+
+		float delta = numerator / denumerator;
+		math::Vector3 aimPos = camera_forward_world * delta + campos;
+
+		return aimPos;
 	}
 }
