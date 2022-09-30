@@ -213,39 +213,5 @@ namespace mainframe {
 			return {};
 #endif
 		}
-
-		void Uniform::set(int value) {
-#ifndef MAINFRAME_EGL
-			glUniform1i(index, value);
-#endif
-		}
-
-		void Uniform::set(float value) {
-#ifndef MAINFRAME_EGL
-			glUniform1f(index, value);
-#endif
-		}
-
-		void Uniform::set(const mainframe::math::Vector2& value) {
-#ifndef MAINFRAME_EGL
-			glUniform2f(index, value.x, value.y);
-#endif
-		}
-
-		void Uniform::set(const mainframe::math::Vector3& value) {
-#ifndef MAINFRAME_EGL
-			glUniform3f(index, value.x, value.y, value.z);
-#endif
-		}
-
-		void Uniform::set(const mainframe::math::Matrix& value) {
-#ifndef MAINFRAME_EGL
-			glUniformMatrix4fv(index, 1, GL_TRUE, reinterpret_cast<const GLfloat*>(value.getValues().data()));
-#endif
-		}
-
-		int Uniform::getlocation() {
-			return index;
-		}
 	}
 }
