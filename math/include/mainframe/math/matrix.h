@@ -10,6 +10,7 @@ namespace mainframe {
 			std::array<float, 16> values {0};
 
 		public:
+			static Matrix createRotation(const Vector3& rotation);
 			static Matrix createRotationX(float rotation);
 			static Matrix createRotationY(float rotation);
 			static Matrix createRotationZ(float rotation);

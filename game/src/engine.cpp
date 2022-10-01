@@ -46,6 +46,8 @@ namespace mainframe {
 					update(1.0f / static_cast<float>(tps), (newTime - gameStart).count());
 					frameTimeTPS -= delayBetweenTicks;
 					currentTimeTPS += delayBetweenTicks;
+
+					if (runningSlow) break;
 				}
 
 				// we only need to draw a single frame after a update
