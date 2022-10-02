@@ -6,50 +6,50 @@
 #include <mainframe/render/uniform.h>
 #include <string>
 
-namespace mainframe {
-	namespace render {
-		class ShaderAttached {
-		public:
-			std::string filename;
-			int handle;
+namespace mainframe::render {
+	class ShaderAttached {
+	public:
+		std::string filename;
+		int handle;
 
-			ShaderAttached() = default;
-			ShaderAttached(const std::string& file, int _handle) : filename(file), handle(_handle) {}
-		};
+		ShaderAttached() = default;
+		ShaderAttached(const std::string& file, int _handle) : filename(file), handle(_handle) {}
+	};
 
-		class Shader {
-			int programHandle = -1;
+	class Shader {
+		int programHandle = -1;
 
-		public:
-			std::vector<ShaderAttached> attached;
+	public:
+		std::vector<ShaderAttached> attached;
 
-			Shader();
-			~Shader();
+		Shader();
+		~Shader();
 
-			void use() const;
-			void link();
-			bool attachRaw(const std::string& text, int mode);
-			bool attach(const std::string& file, int mode);
-			void cleanup();
+		void use() const;
+		void link();
 
-			int getHandle() const;
+		bool attachRaw(const std::string& text, int mode);
+		bool attach(const std::string& path, int mode);
 
-			// Setting vectors
-			void setUniform(std::string sName, const mainframe::math::Vector2* vectors, int count = 1);
-			void setUniform(std::string sName, const mainframe::math::Vector3* vectors, int count = 1);
+		void cleanup();
 
-			// Setting floats
-			void setUniform(std::string sName, const float* values, int count = 1);
-			void setUniform(std::string sName, const float value);
+		int getHandle() const;
 
-			// Setting 4x4 matrices
-			//void setUniform(std::string sName, const TomatoLib::Matrix& mMatrix);
+		// Setting vectors
+		void setUniform(std::string sName, const mainframe::math::Vector2* vectors, int count = 1);
+		void setUniform(std::string sName, const mainframe::math::Vector3* vectors, int count = 1);
 
-			// Setting integers
-			void setUniform(std::string sName, const int* values, int count = 1);
-			void setUniform(std::string sName, const int value);
+		// Setting floats
+		void setUniform(std::string sName, const float* values, int count = 1);
+		void setUniform(std::string sName, const float value);
 
-			Uniform getUniform(const std::string& sName);
-		};
-	}
+		// Setting 4x4 matrices
+		//void setUniform(std::string sName, const TomatoLib::Matrix& mMatrix);
+
+		// Setting integers
+		void setUniform(std::string sName, const int* values, int count = 1);
+		void setUniform(std::string sName, const int value);
+
+		Uniform getUniform(const std::string& sName);
+	};
 }
