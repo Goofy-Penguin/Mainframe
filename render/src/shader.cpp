@@ -62,7 +62,11 @@ namespace mainframe::render {
 		GLuint handle = glCreateShader(mode);
 
 		glShaderSource(handle, 1, &fileDataConst, nullptr);
+		#ifdef MAINFRAME_OPENGL_ARB
 		glCompileShaderIncludeARB(handle, 1, &searchpath, nullptr);
+		#else
+		glCompileShader(handle);
+		#endif
 
 		infile.close();
 
@@ -103,7 +107,12 @@ namespace mainframe::render {
 		const char* str = text.c_str();
 
 		glShaderSource(handle, 1, (const GLchar**)&str, nullptr);
+
+		#ifdef MAINFRAME_OPENGL_ARB
 		glCompileShaderIncludeARB(handle, 1, &searchpath, nullptr);
+		#else
+		glCompileShader(handle);
+		#endif
 
 		//Check if compile is succesfull
 		GLint isSuccesfullyCompiled = 0;
