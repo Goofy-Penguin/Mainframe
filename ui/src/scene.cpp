@@ -197,6 +197,8 @@ namespace mainframe {
 
 		void Scene::mousePress(const math::Vector2i& mousePos, unsigned int button, ModifierKey mods, MouseState state) {
 			if (state == MouseState::inactive) {
+				pressingMouseButton--;
+
 				if (focusedElement.expired()) {
 					onMousePress(mousePos, button, mods, state);
 					return;
@@ -212,6 +214,8 @@ namespace mainframe {
 				focused->onMouseUp(mousePos - focused->getPos(), button, mods);
 				return;
 			}
+
+			pressingMouseButton++;
 
 			math::Vector2i offsetOut;
 			auto target = findElement(mousePos, offsetOut);
@@ -235,18 +239,24 @@ namespace mainframe {
 			math::Vector2i offsetOut;
 			auto target = findElement(mousePos, offsetOut);
 
-			// not hovering anything, so send it off to the scene event
-			if (target == nullptr) {
-				// do we have previous element
-				if (!hoveredElement.expired()) {
-					auto elm = hoveredElement.lock();
-					elm->setHovering(false);
+			// were holding our mouse on something, like dragging?
+			if (pressingMouseButton > 0 && !focusedElement.expired()) {
+				target = focusedElement.lock();
+				offsetOut = target->getPosAbsolute();
+			} else {
+				// not hovering anything, so send it off to the scene event
+				if (target == nullptr) {
+					// do we have previous element
+					if (!hoveredElement.expired()) {
+						auto elm = hoveredElement.lock();
+						elm->setHovering(false);
 
-					hoveredElement.reset();
+						hoveredElement.reset();
+					}
+
+					onMouseMove(mousePos);
+					return;
 				}
-
-				onMouseMove(mousePos);
-				return;
 			}
 
 			// see if we're having a different target, if so notify it

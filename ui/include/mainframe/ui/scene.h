@@ -30,6 +30,7 @@ namespace mainframe {
 			std::shared_ptr<Element> findElement(const std::shared_ptr<Element>& elmPtr, const math::Vector2i& mousePos, const math::Vector2i& offset, math::Vector2i& offsetOut);
 
 			utils::ringbuffer<std::function<void()>> invokes = {64};
+			int pressingMouseButton = 0;
 
 		public:
 
