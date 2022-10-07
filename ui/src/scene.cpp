@@ -240,23 +240,30 @@ namespace mainframe {
 			auto target = findElement(mousePos, offsetOut);
 
 			// were holding our mouse on something, like dragging?
+			std::shared_ptr<Element> focused;
 			if (pressingMouseButton > 0 && !focusedElement.expired()) {
-				target = focusedElement.lock();
-				offsetOut = target->getPosAbsolute();
-			} else {
-				// not hovering anything, so send it off to the scene event
-				if (target == nullptr) {
-					// do we have previous element
-					if (!hoveredElement.expired()) {
-						auto elm = hoveredElement.lock();
-						elm->setHovering(false);
+				focused = focusedElement.lock();
+			}
+
+			// not hovering anything, so send it off to the scene event
+			if (target == nullptr) {
+				// do we have previous element
+				if (!hoveredElement.expired()) {
+					auto elm = hoveredElement.lock();
+					elm->setHovering(false);
 
 						hoveredElement.reset();
 					}
 
-					onMouseMove(mousePos);
-					return;
+				onMouseMove(mousePos);
+
+				// also send it to the dragged element if relevant
+				if (focused != nullptr) {
+					auto absPos = focused->getPosAbsolute();
+					focused->mouseMove(mousePos - absPos);
+					focused->onMouseMove(mousePos - absPos);
 				}
+				return;
 			}
 
 			// see if we're having a different target, if so notify it
@@ -274,6 +281,13 @@ namespace mainframe {
 
 			target->mouseMove(mousePos - offsetOut);
 			target->onMouseMove(mousePos - offsetOut);
+
+			// also send it to the dragged element if relevant
+			if (focused != nullptr) {
+				auto absPos = focused->getPosAbsolute();
+				focused->mouseMove(mousePos - absPos);
+				focused->onMouseMove(mousePos - absPos);
+			}
 		}
 
 		void Scene::mouseScroll(const math::Vector2i& mousePos, const math::Vector2i& offset) {
