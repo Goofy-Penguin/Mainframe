@@ -252,8 +252,8 @@ namespace mainframe {
 					auto elm = hoveredElement.lock();
 					elm->setHovering(false);
 
-					hoveredElement.reset();
-				}
+						hoveredElement.reset();
+					}
 
 				onMouseMove(mousePos);
 
