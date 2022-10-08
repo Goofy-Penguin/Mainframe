@@ -106,7 +106,7 @@ namespace mainframe::render {
 		if (colA.a == 0 && colB.a == 0 && colC.a == 0) return;
 
 		setTexture(getPixelTexture());
-		setShader(shader2D);
+		if(shaderOverride) setShader(shader2D);
 
 		pushVertice(a + offset, aUV, colA);
 		pushVertice(b + offset, bUV, colB);
@@ -116,7 +116,7 @@ namespace mainframe::render {
 
 	void Stencil::drawPolygon(const Polygon& poly) {
 		setTexture(getPixelTexture());
-		setShader(shader2D);
+		if(shaderOverride) setShader(shader2D);
 
 		auto spos = static_cast<unsigned int>(vertices.size());
 		for (auto v : poly.verts)
@@ -130,7 +130,7 @@ namespace mainframe::render {
 		if (col.a == 0) return;
 
 		setTexture(getPixelTexture());
-		setShader(shader2D);
+		if(shaderOverride) setShader(shader2D);
 
 		auto radius = size / 2;
 		auto radiusBorder = radius - borderSize;
@@ -167,7 +167,7 @@ namespace mainframe::render {
 		if (col.a == 0) return;
 
 		setTexture(getPixelTexture());
-		setShader(shader2D);
+		if(shaderOverride) setShader(shader2D);
 
 		auto radius = size / 2;
 		auto targetPos = pos + radius;
@@ -195,7 +195,7 @@ namespace mainframe::render {
 		pos += offset;
 
 		setTexture(getPixelTexture());
-		setShader(shader2D);
+		if(shaderOverride) setShader(shader2D);
 
 		// top 4
 		math::Vector2 A = pos;
@@ -252,7 +252,7 @@ namespace mainframe::render {
 		drawTexture(pos, size, tex.getHandle(), col, uvStart, uvEnd, rotation, origin);
 	}
 
-	void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin, bool overrideShader) {
+	void Stencil::drawTexture(mainframe::math::Vector2 pos, mainframe::math::Vector2 size, unsigned int rawTextureHandle, Color col, mainframe::math::Vector2 uvStart, mainframe::math::Vector2 uvEnd, float rotation, const mainframe::math::Vector2& origin) {
 		if (col.a == 0) return;
 		pos += offset;
 
@@ -312,7 +312,7 @@ namespace mainframe::render {
 		c.y += size.y;
 
 		setTexture(rawTextureHandle);
-		if (overrideShader) setShader(shader2D);
+		if (shaderOverride) setShader(shader2D);
 
 		auto rotOrigin = origin.isNaN() ? pos + size / 2 : pos + origin;
 
@@ -333,7 +333,7 @@ namespace mainframe::render {
 
 	void Stencil::drawLine(const mainframe::math::Vector2& from, const mainframe::math::Vector2& to, float width, const Color& col, const mainframe::math::Vector2 uvStart, const mainframe::math::Vector2 uvEnd) {
 		setTexture(getPixelTexture());
-		setShader(shader2D);
+		if (shaderOverride) setShader(shader2D);
 
 		float angle = from.angle(to);
 
@@ -408,6 +408,7 @@ namespace mainframe::render {
 			}
 
 
+			setShaderOverride(false);
 			drawTexture(
 				{curpos.x + glyph.bearing.x, curpos.y - glyph.bearing.y},
 				{static_cast<float>(glyph.size.x), static_cast<float>(glyph.size.y)},
@@ -416,9 +417,9 @@ namespace mainframe::render {
 				glyph.textureTopLeft,
 				glyph.textureBottomRight,
 				rotation,
-				origin,
-				false
+				origin
 			);
+			setShaderOverride(true);
 
 			curpos.x += glyph.advance.x;
 			curpos.y += glyph.advance.y;
@@ -434,6 +435,13 @@ namespace mainframe::render {
 		deptDisabled = disabled;
 	}
 
+	bool Stencil::getShaderOverride() {
+		return shaderOverride;
+	}
+
+	void Stencil::setShaderOverride(bool enabled) {
+		shaderOverride = enabled;
+	}
 
 	Stencil::~Stencil() {
 		getPixelTextureDecRef();
