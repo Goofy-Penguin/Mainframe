@@ -407,7 +407,7 @@ namespace mainframe::render {
 				curpos.x += font.getKerning(glyph, *prevGlyph);
 			}
 
-
+			auto oldState = getShaderOverride();
 			setShaderOverride(false);
 			drawTexture(
 				{curpos.x + glyph.bearing.x, curpos.y - glyph.bearing.y},
@@ -419,7 +419,7 @@ namespace mainframe::render {
 				rotation,
 				origin
 			);
-			setShaderOverride(true);
+			setShaderOverride(oldState);
 
 			curpos.x += glyph.advance.x;
 			curpos.y += glyph.advance.y;
