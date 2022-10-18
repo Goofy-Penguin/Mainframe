@@ -145,7 +145,8 @@ namespace mainframe {
 
 			uint32_t point = 0;
 			auto beginIter = text.begin();
-			auto endIter = text.end();
+			auto endIter = utf8::find_invalid(text.begin(), text.end());
+
 			while (beginIter != endIter) {
 				point = utf8::next(beginIter, endIter);
 				if (point == '\n') {
