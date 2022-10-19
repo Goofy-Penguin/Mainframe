@@ -351,9 +351,12 @@ namespace mainframe::render {
 		pushIndices(3, 2, 1);
 	}
 
-
 	void Stencil::drawBox(const math::Vector2& pos, const math::Vector2& size, Color col) {
 		drawTexture(pos, size, getPixelTexture(), col);
+	}
+
+	void Stencil::drawBox(const math::Vector2& pos, const math::Vector2& size, Color col, float rotation) {
+		drawTexture(pos, size, getPixelTexture(), col, {}, {1, 1}, rotation);
 	}
 
 	void Stencil::drawText(const Font& font, const std::string& text, const math::Vector2& pos, Color col, TextAlignment alignx, TextAlignment aligny, float rotation, const mainframe::math::Vector2& origin) {
@@ -389,7 +392,7 @@ namespace mainframe::render {
 
 		uint32_t point = 0;
 		auto beginIter = text.begin();
-		auto endIter = text.end();
+		auto endIter = utf8::find_invalid(text.begin(), text.end());
 		while (beginIter != endIter) {
 			point = utf8::next(beginIter, endIter);
 
