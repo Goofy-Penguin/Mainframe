@@ -13,8 +13,11 @@ namespace mainframe {
 	namespace networking {
 		class Packet;
 		template<typename T>
-		concept isNetworkable = requires(T t, Packet p) {
+		concept isNetworkRead = requires(T t, Packet p) {
 			{ t.networkRead(p) };
+		};
+		template<typename T>
+		concept isNetworkWrite = requires(T t, Packet p) {
 			{ t.networkWrite(p) };
 		};
 
@@ -44,7 +47,7 @@ namespace mainframe {
 
 			template<class T>
 			void read(T& ret) {
-    			if constexpr (isNetworkable<T>) {
+    			if constexpr (isNetworkRead<T>) {
 					ret.networkRead(*this);
 				} else {
 					static_assert(std::is_trivially_copyable_v<T>, "Fallback option for not a (vector, map, string, and does not supply a networkRead) is 'just memcpy it lel', but that needs T to be trivially copyable, or we're potentially memcpying classes that have strings in them or somesuch.");
@@ -147,7 +150,7 @@ namespace mainframe {
 
 			template<class T>
 			void write(const T& obj) {
-				if constexpr (isNetworkable<T>) {
+				if constexpr (isNetworkWrite<T>) {
 					obj.networkWrite(*this);
 				} else {
 					static_assert(std::is_trivially_copyable_v<T>, "Fallback option for not a (vector, map, string, and does not supply a networkWrite) is 'just reinterpret_cast it lel', but that needs T to be trivially copyable, or we're potentially reinterpreting classes that have strings in them or somesuch.");
