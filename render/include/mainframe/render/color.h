@@ -69,6 +69,30 @@ namespace mainframe {
 				}
 			}
 
+			static ColorType debug(int index) {
+				ColorType cols[]{
+					ColorType(255, 82, 82, 255),// rgb(255, 82, 82)
+					ColorType(51, 217, 178, 255),// rgb(51, 217, 178)
+					ColorType(52, 172, 224, 255),// rgb(52, 172, 224)
+					ColorType(112, 111, 211, 255),// rgb(112, 111, 211)
+					ColorType(179, 55, 113, 255),// rgb(179, 55, 113)
+					ColorType(252, 66, 123, 255),// rgb(252, 66, 123)
+					ColorType(241, 196, 15, 255),// rgb(241, 196, 15)
+
+					ColorType(88, 177, 159, 255),// rgb(88, 177, 159)
+					ColorType(27, 20, 100, 255),// rgb(27, 20, 100)
+					ColorType(87, 88, 187, 255),// rgb(87, 88, 187)
+					ColorType(255, 255, 255, 255) // rgb(255, 255, 255)
+				};
+
+				auto col = cols[index % (sizeof(cols) / sizeof(ColorType))];
+				if constexpr(std::is_same<NumberType, int>::value) {
+					return col;
+				} else {
+					return col / 255.0f;
+				}
+			}
+
 			Color_t() = default;
 			Color_t(NumberType _r, NumberType _g = 0, NumberType _b = 0, NumberType _a = -1) : r(_r), g(_g), b(_b), a(_a) {
                 if (a == -1) {
