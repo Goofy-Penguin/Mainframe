@@ -1,9 +1,10 @@
 #include <mainframe/render/texture.h>
-
-#include <stb/stb_image.h>
-
 #include <GL/glew.h>
 #include <stdexcept>
+
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
 
 namespace mainframe::render {
 	void TextureHandle::reset() {
