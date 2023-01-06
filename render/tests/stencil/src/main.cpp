@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <mainframe/game/engine.h>
 #include <mainframe/game/window.h>
 #include <mainframe/render/stencil.h>
