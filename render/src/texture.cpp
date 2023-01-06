@@ -1,9 +1,9 @@
 #include <mainframe/render/texture.h>
 
+#include <stb/stb_image.h>
+
 #include <GL/glew.h>
 #include <stdexcept>
-
-#include <stb/stb_image.h>
 
 namespace mainframe::render {
 	void TextureHandle::reset() {
