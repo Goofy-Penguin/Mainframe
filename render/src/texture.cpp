@@ -58,8 +58,8 @@ namespace mainframe::render {
 	}
 
 	Texture::Texture(const std::string& fileName) {
-		int w = static_cast<int>(size.x);
-		int h = static_cast<int>(size.y);
+		int w;
+		int h;
 		int channels;
 
 		stbi_uc *image = stbi_load(fileName.c_str(), &w, &h, &channels, 4);
