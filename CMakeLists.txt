@@ -30,7 +30,6 @@ find_package(GLEW REQUIRED)
 find_package(fmt REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(nlohmann_json REQUIRED)
-find_package(lodepng REQUIRED)
 find_package(utf8cpp REQUIRED)
 find_package(glm REQUIRED)
 
