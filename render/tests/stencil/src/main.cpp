@@ -3,6 +3,7 @@
 #include <mainframe/render/stencil.h>
 #include <mainframe/render/font.h>
 #include <mainframe/render/textengine.h>
+#include <mainframe/render/texture.h>
 #include <mainframe/math/vector2.h>
 #include <fmt/printf.h>
 
