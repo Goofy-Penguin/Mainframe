@@ -19,7 +19,9 @@ jobs:
           sudo pip install conan
 
       - name: Install Conan packages
-        run: conan install . -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+        run: |
+          conan profile new default --detect
+          conan install . -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
 
       - name: Build
         run: |
