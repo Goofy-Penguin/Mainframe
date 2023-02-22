@@ -65,7 +65,7 @@ namespace mainframe {
 				return {x, z, y};
 			}
 
-			VecType lerp(const VecType& other, NumberType timestep) const {
+			VecType lerp(const VecType& other, float timestep) const {
 				if((*this) == other) return other;
 				VecType ret;
 

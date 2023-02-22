@@ -116,6 +116,19 @@ namespace mainframe {
 				return (*this) / length();
 			}
 
+			ColorType lerp(const ColorType& other, float timestep) const {
+				if((*this) == other) return other;
+				ColorType ret;
+
+				ret.r = r + (other.r - r) * timestep;
+				ret.g = g + (other.g - g) * timestep;
+				ret.b = b + (other.b - b) * timestep;
+				ret.a = a + (other.a - a) * timestep;
+
+				return ret;
+			}
+
+
 			std::string toString() const {
 				return fmt::format("{},{},{},{}", r, g, b, a);
 			}

@@ -57,7 +57,7 @@ namespace mainframe {
 				return {std::abs(x), std::abs(y)};
 			}
 
-			VecType lerp(const VecType& other, NumberType timestep) const {
+			VecType lerp(const VecType& other, float timestep) const {
 				VecType ret;
 
 				ret.x = x + (other.x - x) * timestep;
