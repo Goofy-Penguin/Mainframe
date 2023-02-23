@@ -120,11 +120,11 @@ namespace mainframe {
 				if((*this) == other) return other;
 				ColorType ret;
 
-				ret.r = r + (other.r - r) * timestep;
-				ret.g = g + (other.g - g) * timestep;
-				ret.b = b + (other.b - b) * timestep;
-				ret.a = a + (other.a - a) * timestep;
-
+				ret.r = static_cast<NumberType>(static_cast<float>(r) + static_cast<float>(other.r - r) * timestep);
+				ret.g = static_cast<NumberType>(static_cast<float>(g) + static_cast<float>(other.g - g) * timestep);
+				ret.b = static_cast<NumberType>(static_cast<float>(b) + static_cast<float>(other.b - b) * timestep);
+				ret.a = static_cast<NumberType>(static_cast<float>(a) + static_cast<float>(other.a - a) * timestep);
+				
 				return ret;
 			}
 
