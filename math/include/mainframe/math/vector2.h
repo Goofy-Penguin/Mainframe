@@ -60,8 +60,8 @@ namespace mainframe {
 			VecType lerp(const VecType& other, float timestep) const {
 				VecType ret;
 
-				ret.x = x + (other.x - x) * timestep;
-				ret.y = y + (other.y - y) * timestep;
+				ret.x = static_cast<NumberType>(static_cast<float>(x) + static_cast<float>(other.x - x) * timestep);
+				ret.y = static_cast<NumberType>(static_cast<float>(y) + static_cast<float>(other.y - y) * timestep);
 
 				return ret;
 			}
