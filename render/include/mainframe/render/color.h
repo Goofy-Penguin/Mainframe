@@ -116,6 +116,19 @@ namespace mainframe {
 				return (*this) / length();
 			}
 
+			ColorType lerp(const ColorType& other, float timestep) const {
+				if((*this) == other) return other;
+				ColorType ret;
+
+				ret.r = static_cast<NumberType>(static_cast<float>(r) + static_cast<float>(other.r - r) * timestep);
+				ret.g = static_cast<NumberType>(static_cast<float>(g) + static_cast<float>(other.g - g) * timestep);
+				ret.b = static_cast<NumberType>(static_cast<float>(b) + static_cast<float>(other.b - b) * timestep);
+				ret.a = static_cast<NumberType>(static_cast<float>(a) + static_cast<float>(other.a - a) * timestep);
+				
+				return ret;
+			}
+
+
 			std::string toString() const {
 				return fmt::format("{},{},{},{}", r, g, b, a);
 			}

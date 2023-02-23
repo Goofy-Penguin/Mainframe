@@ -486,7 +486,12 @@ namespace mainframe::render {
 		in vec2 output_texpos;\n\n\
 		uniform sampler2D tex;\n\n\
 		void main(){\n\
-			outColor = vec4(1.0, 1.0, 1.0, texture(tex, output_texpos).r) * output_color;\n\
+			vec2 tex = texture2D(tex, output_texpos).rg;\n\
+			vec4 col = vec4(0.0, 0.0, 0.0, tex.g) * output_color;\n\
+			\n\
+			if((tex.g != 0. && tex.r != 0.) || tex.g == 0.) col = vec4(1.0, 1.0, 1.0, tex.r) * output_color; \n\
+			\n\
+			outColor = col;\n\
 		}\n", GL_FRAGMENT_SHADER);
 
 		shader2DText.attachRaw("\

@@ -27,7 +27,7 @@ public:
 		window.close();
 	}
 
-	virtual void update(float deltaTime, long long gameTime) override {
+	virtual void update(float deltaTime, int64_t gameTime) override {
 		if (window.getShouldClose() || std::time(nullptr) - initTime > 2) {
 			quit();
 		}

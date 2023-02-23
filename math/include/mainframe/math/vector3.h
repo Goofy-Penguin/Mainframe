@@ -65,13 +65,13 @@ namespace mainframe {
 				return {x, z, y};
 			}
 
-			VecType lerp(const VecType& other, NumberType timestep) const {
+			VecType lerp(const VecType& other, float timestep) const {
 				if((*this) == other) return other;
 				VecType ret;
 
-				ret.x = x + (other.x - x) * timestep;
-				ret.y = y + (other.y - y) * timestep;
-				ret.z = z + (other.z - z) * timestep;
+				ret.x = static_cast<NumberType>(static_cast<float>(x) + static_cast<float>(other.x - x) * timestep);
+				ret.y = static_cast<NumberType>(static_cast<float>(y) + static_cast<float>(other.y - y) * timestep);
+				ret.z = static_cast<NumberType>(static_cast<float>(z) + static_cast<float>(other.z - z) * timestep);
 
 				return ret;
 			}
