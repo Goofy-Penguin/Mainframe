@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Conan packages
         run: |
-          conan profile new default --detect
+          conan profile detect
           conan install . -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
 
       - name: Build
