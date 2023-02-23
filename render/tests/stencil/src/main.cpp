@@ -69,7 +69,7 @@ public:
 		window.swapBuffer();
 	}
 
-	virtual void update(float deltaTime, long long gameTime) override {
+	virtual void update(float deltaTime, int64_t gameTime) override {
 		Window::pollEvents();
 	}
 

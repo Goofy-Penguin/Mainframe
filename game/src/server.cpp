@@ -32,7 +32,7 @@ namespace mainframe {
 			playerLock.unlock();
 		}
 
-		void Server::update(float deltaTime, long long gameTime) {
+		void Server::update(float deltaTime, int64_t gameTime) {
 			Engine::update(deltaTime, gameTime);
 
 			playerLock.lock();

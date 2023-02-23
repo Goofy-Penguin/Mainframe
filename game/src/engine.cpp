@@ -15,7 +15,7 @@ namespace mainframe {
 		void Engine::init() {}
 
 		void Engine::pollEvents() {}
-		void Engine::update(float deltaTime, long long gameTime) {}
+		void Engine::update(float deltaTime, int64_t gameTime) {}
 
 		void Engine::draw(const double alpha) {}
 		void Engine::run() {
