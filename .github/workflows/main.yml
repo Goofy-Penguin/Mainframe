@@ -20,6 +20,7 @@ jobs:
 
       - name: Install Conan packages
         run: |
+          conan profile detect --force
           mkdir build
           conan install . --output-folder=build --build=missing
 
