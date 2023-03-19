@@ -9,5 +9,5 @@ glm/cci.20230113
 stb/cci.20210910
 
 [generators]
-cmake_find_package
-cmake_paths
+CMakeDeps
+CMakeToolchain
