@@ -3,10 +3,10 @@ glfw/3.3.8
 fmt/9.1.0
 glew/2.2.0
 nlohmann_json/3.11.2
-freetype/2.10.4
-utfcpp/3.2.1
+freetype/2.13.0
+utfcpp/3.2.3
 glm/cci.20230113
-stb/cci.20210910
+stb/cci.20220909
 
 [generators]
 cmake_find_package
