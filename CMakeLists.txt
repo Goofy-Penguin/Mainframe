@@ -7,7 +7,7 @@ set(MAINFRAME_VERSION ${MAINFRAME_VERSION_MAJOR}.${MAINFRAME_VERSION_MINOR} CACH
 project ("mainframe" VERSION ${MAINFRAME_VERSION})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPDLOG_FMT_EXTERNAL -DNOMINMAX")
-set(CMAKE_CXX_STANDARD 23)
+
 set (build_tests true CACHE BOOL "build tests")
 set (build_samples true CACHE BOOL "build samples")
 
@@ -17,6 +17,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 if (WIN32)
+	set(CMAKE_CXX_STANDARD 23)
 	set(mf_winlibs opengl32)
 else()
 	set(mf_winlibs z)
