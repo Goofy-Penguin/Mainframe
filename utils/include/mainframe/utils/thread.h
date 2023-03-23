@@ -20,8 +20,8 @@ namespace mainframe {
 			void initAsync(int workers = 2);
 			void shutdownAsync();
 
-			void runOnMain(const std::function<void()>& func, bool isblocking = false, bool forcequeue = false);
-			void runOnAsync(const std::function<void()>& func, bool isblocking = false, bool forcequeue = false);
+			void runOnMain(std::function<void()>&& func, bool isblocking = false, bool forcequeue = false);
+			void runOnAsync(std::function<void()>&& func, bool isblocking = false, bool forcequeue = false);
 
 			bool isMain();
 

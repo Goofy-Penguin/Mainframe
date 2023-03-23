@@ -21,7 +21,7 @@ namespace mainframe {
 
 		void Element::invoke(std::function<void()> func, bool forceQueue) {
 			if (forceQueue || getThreadId() != std::this_thread::get_id()) {
-				invokes.push(func);
+				invokes.push(std::move(func));
 				return;
 			}
 

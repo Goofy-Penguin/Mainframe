@@ -58,7 +58,7 @@ namespace mainframe::game {
 					continue;
 				}
 
-				incomming.push(msg);
+				incomming.push(std::move(msg));
 			}
 		});
 	}
@@ -110,7 +110,7 @@ namespace mainframe::game {
 			message->write(static_cast<uint32_t>(message->size()));
 		}
 
-		outgoing.push(message);
+		outgoing.push(std::move(message));
 	}
 
 	void Player::tick() {
