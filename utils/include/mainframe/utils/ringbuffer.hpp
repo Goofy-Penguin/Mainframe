@@ -49,7 +49,7 @@ namespace mainframe {
 				return this->m_buffer[i];
 			}
 
-			void push(const T& func) {
+			void push(T&& func) {
 				std::lock_guard<std::mutex> lock {this->m_write_mutex};
 				while ((this->m_writepos + 1) % this->m_size == this->m_readpos) {
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -58,7 +58,7 @@ namespace mainframe {
 				// store new index
 				size_t writepos = this->m_writepos + 1;
 				writepos %= this->m_size;
-				this->m_buffer[writepos] = func;
+				this->m_buffer[writepos] = std::move(func);
 
 				// save it
 				this->m_writepos = writepos % this->m_size;
@@ -76,7 +76,7 @@ namespace mainframe {
 				auto& obj = this->m_buffer[readpos];
 
 				this->m_readpos = readpos;
-				return obj;
+				return std::move(obj);
 			}
 
 			bool available() {

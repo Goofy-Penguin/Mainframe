@@ -48,14 +48,14 @@ namespace mainframe {
 				inited = false;
 			}
 
-			void runOnMain(const std::function<void()>& func, bool isblocking, bool forcequeue) {
+			void runOnMain(std::function<void()>&& func, bool isblocking, bool forcequeue) {
 				if (isMain() && !forcequeue) {
 					func();
 					return;
 				}
 
 				if (!isblocking) {
-					callsToDoOnMainThread.push(func);
+					callsToDoOnMainThread.push(std::move(func));
 
 					return;
 				}
@@ -71,23 +71,23 @@ namespace mainframe {
 				}
 			}
 
-			void runOnAsync(const std::function<void()>& func, bool isblocking, bool forcequeue) {
+			void runOnAsync(std::function<void()>&& func, bool isblocking, bool forcequeue) {
 				if (!isMain() && !forcequeue) {
 					func();
 					return;
 				}
 
 				if (!isblocking) {
-					callsToDoOnAsyncThread.push(func);
+					callsToDoOnAsyncThread.push(std::move(func));
 
 					return;
 				}
 
 				bool isdone = false;
-				callsToDoOnAsyncThread.push([&isdone, &func]() {
+				callsToDoOnAsyncThread.push(std::move([&isdone, &func]() {
 					func();
 					isdone = true;
-				});
+				}));
 
 				while (!isdone) {
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
