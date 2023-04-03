@@ -44,6 +44,8 @@ namespace mainframe {
 				// ensure we call update as much times per second as requested
 				while(frameTimeTPS >= delayBetweenTicks) {
 					update(1.0f / static_cast<float>(tps), (newTime - gameStart).count());
+					if (shouldShutdown) return;
+
 					frameTimeTPS -= delayBetweenTicks;
 					currentTimeTPS += delayBetweenTicks;
 
